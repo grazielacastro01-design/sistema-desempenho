@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Sistema de Desempenho</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+    }
+
+    /* Parte da imagem ao lado */
+    .side-image {
+      flex: 1;
+      background: url('logo.png') no-repeat center center;
+      background-size: cover;
+    }
+
+    /* Parte do login */
+    .login-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #f0f2f5;
+      padding: 50px;
+    }
+
+    .login-box h2 {
+      margin-bottom: 20px;
+    }
+
+    .login-box input[type="text"],
+    .login-box input[type="password"] {
+      width: 100%;
+      max-width: 300px;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .login-box button {
+      width: 100%;
+      max-width: 300px;
+      padding: 10px;
+      margin-top: 10px;
+      border: none;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .login-box button:hover {
+      background-color: #0056b3;
+    }
+
+    .forgot-password {
+      margin-top: 10px;
+      font-size: 0.9em;
+    }
+
+    .forgot-password a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    .forgot-password a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Imagem ao lado -->
+  <div class="side-image"></div>
+
+  <!-- Login -->
+  <div class="login-box">
+    <h2>Sistema de Desempenho</h2>
+    <input type="text" placeholder="Usuário" id="usuario">
+    <input type="password" placeholder="Senha" id="senha">
+    <button onclick="entrar()">Entrar</button>
+    <div class="forgot-password">
+      <a href="#">Esqueci a senha</a>
+    </div>
+  </div>
+
+<script>
+  function entrar() {
+    const usuario = document.getElementById('usuario').value;
+    const senha = document.getElementById('senha').value;
+
+    if(usuario === "admin" && senha === "1234") {
+      alert("Login realizado com sucesso!");
+      window.location.href = "index.html";
+    } else {
+      alert("Usuário ou senha incorretos!");
+    }
+  }
+</script>
+
+</body>
+</html>
