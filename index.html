@@ -96,9 +96,10 @@
     const usuario = document.getElementById('usuario').value;
     const senha = document.getElementById('senha').value;
 
+    // Usuário e senha corretos
     if(usuario === "admin" && senha === "1234") {
       alert("Login realizado com sucesso!");
-      window.location.href = "index.html";
+      window.location.href = "home.html"; // <- redirecionando pra home
     } else {
       alert("Usuário ou senha incorretos!");
     }
