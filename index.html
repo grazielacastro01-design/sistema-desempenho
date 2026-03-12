@@ -1,110 +1,84 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR" class="h-full">
 <head>
   <meta charset="UTF-8">
-  <title>Login - Sistema de Desempenho</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sistema de Desempenho de Funcionário</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      height: 100vh;
-      display: flex;
-    }
-
-    /* Parte da imagem ao lado */
-    .side-image {
-      flex: 1;
-      background: url('logo.png') no-repeat center center;
-      background-size: cover;
-    }
-
-    /* Parte do login */
-    .login-box {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background-color: #f0f2f5;
-      padding: 50px;
-    }
-
-    .login-box h2 {
-      margin-bottom: 20px;
-    }
-
-    .login-box input[type="text"],
-    .login-box input[type="password"] {
-      width: 100%;
-      max-width: 300px;
-      padding: 10px;
-      margin: 10px 0;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
-
-    .login-box button {
-      width: 100%;
-      max-width: 300px;
-      padding: 10px;
-      margin-top: 10px;
-      border: none;
-      border-radius: 5px;
-      background-color: #007bff;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .login-box button:hover {
-      background-color: #0056b3;
-    }
-
-    .forgot-password {
-      margin-top: 10px;
-      font-size: 0.9em;
-    }
-
-    .forgot-password a {
-      color: #007bff;
-      text-decoration: none;
-    }
-
-    .forgot-password a:hover {
-      text-decoration: underline;
-    }
+    * { font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { margin: 0; }
+    .overlay-bg { background: rgba(0,0,0,0.4); }
+    .logo-header { width: 80px; height: 80px; }
   </style>
 </head>
-<body>
+<body class="h-full">
 
-  <!-- Imagem ao lado -->
-  <div class="side-image"></div>
-
-  <!-- Login -->
-  <div class="login-box">
-    <h2>Sistema de Desempenho</h2>
-    <input type="text" placeholder="Usuário" id="usuario">
-    <input type="password" placeholder="Senha" id="senha">
-    <button onclick="entrar()">Entrar</button>
-    <div class="forgot-password">
-      <a href="#">Esqueci a senha</a>
-    </div>
+<!-- Header -->
+<header class="bg-slate-800 text-white shadow-lg">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center h-16 gap-4">
+    <img src="logo.png" alt="Logo" class="logo-header">
+    <h1 class="text-xl sm:text-2xl font-bold">Sistema de Desempenho de Funcionário</h1>
+    <nav class="ml-auto hidden md:flex gap-6">
+      <a href="#" class="text-emerald-400 font-medium">Início</a>
+      <a href="cadastrar.html" target="_blank" class="text-slate-300 hover:text-white font-medium">Colaboradores</a>
+      <a href="metas.html" target="_blank" class="text-slate-300 hover:text-white font-medium">Metas</a>
+      <a href="avaliacoes.html" target="_blank" class="text-slate-300 hover:text-white font-medium">Avaliações</a>
+      <a href="relatorios.html" target="_blank" class="text-slate-300 hover:text-white font-medium">Relatórios</a>
+    </nav>
   </div>
+</header>
 
-<script>
-  function entrar() {
-    const usuario = document.getElementById('usuario').value;
-    const senha = document.getElementById('senha').value;
+<!-- Hero Section -->
+<section class="relative h-[70vh] bg-cover bg-center flex items-center justify-center" style="background-image: url('fundo.jpg');">
+  <div class="overlay-bg absolute inset-0"></div>
+  <div class="relative text-center text-white px-4">
+    <h2 class="text-3xl sm:text-4xl font-bold mb-2">Bem-vindo ao Sistema</h2>
+    <p class="text-base sm:text-lg max-w-2xl mx-auto">Gerencie o desempenho dos colaboradores, defina metas, registre feedbacks e acompanhe a evolução da sua equipe.</p>
+  </div>
+</section>
 
-    // Usuário e senha corretos
-    if(usuario === "admin" && senha === "1234") {
-      alert("Login realizado com sucesso!");
-      window.location.href = "home.html"; // <- redirecionando pra home
-    } else {
-      alert("Usuário ou senha incorretos!");
-    }
-  }
-</script>
+<!-- Funcionalidades -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+  <!-- Cadastrar Colaboradores -->
+  <div class="bg-white rounded-xl shadow-md p-6">
+    <h4 class="text-lg font-semibold mb-2">Cadastrar Colaboradores</h4>
+    <p class="text-slate-600 mb-4">Adicionar novos funcionários ao sistema.</p>
+    <a href="cadastrar.html" target="_blank" class="w-full py-2.5 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg inline-block text-center">Acessar</a>
+  </div>
+  <!-- Definir Metas -->
+  <div class="bg-white rounded-xl shadow-md p-6">
+    <h4 class="text-lg font-semibold mb-2">Definir Metas</h4>
+    <p class="text-slate-600 mb-4">Estabelecer metas individuais ou por equipe.</p>
+    <a href="metas.html" target="_blank" class="w-full py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-medium rounded-lg inline-block text-center">Acessar</a>
+  </div>
+  <!-- Registrar Feedback -->
+  <div class="bg-white rounded-xl shadow-md p-6">
+    <h4 class="text-lg font-semibold mb-2">Registrar Feedback</h4>
+    <p class="text-slate-600 mb-4">Documentar feedbacks periódicos.</p>
+    <a href="feedback.html" target="_blank" class="w-full py-2.5 bg-purple-500 hover:bg-purple-600 text-white font-medium rounded-lg inline-block text-center">Acessar</a>
+  </div>
+  <!-- Realizar Avaliações -->
+  <div class="bg-white rounded-xl shadow-md p-6">
+    <h4 class="text-lg font-semibold mb-2">Realizar Avaliações</h4>
+    <p class="text-slate-600 mb-4">Executar avaliações de desempenho.</p>
+    <a href="avaliacoes.html" target="_blank" class="w-full py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-medium rounded-lg inline-block text-center">Acessar</a>
+  </div>
+  <!-- Gerar Relatórios -->
+  <div class="bg-white rounded-xl shadow-md p-6">
+    <h4 class="text-lg font-semibold mb-2">Gerar Relatórios</h4>
+    <p class="text-slate-600 mb-4">Criar relatórios detalhados de desempenho.</p>
+    <a href="relatorios.html" target="_blank" class="w-full py-2.5 bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-lg inline-block text-center">Acessar</a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-slate-800 text-slate-400 py-6 text-center">
+  © 2026 Sistema de Desempenho de Funcionário
+</footer>
 
 </body>
 </html>
