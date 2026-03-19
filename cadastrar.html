@@ -1,36 +1,73 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="h-full">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cadastrar Colaboradores</title>
-<script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastrar - Sistema de Desempenho</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    * { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .logo-header { width: 50px; height: 50px; object-fit: contain; border-radius: 4px; }
+  </style>
 </head>
+<body class="bg-gray-50 h-full flex flex-col">
 
-<body class="bg-gray-100 p-8">
+<header class="bg-slate-800 text-white shadow-lg">
+  <div class="max-w-7xl mx-auto px-4 flex items-center h-16 gap-4">
+    <img src="logo.jpg" alt="Logo" class="logo-header">
+    <nav class="ml-auto flex gap-6">
+      <a href="index.html" class="text-slate-300 hover:text-white">Início</a>
+      <a href="cadastrar.html" class="text-blue-400 font-medium">Colaboradores</a>
+      <a href="relatorios.html" class="text-slate-300 hover:text-white">Relatórios</a>
+    </nav>
+  </div>
+</header>
 
-<h1 class="text-3xl font-bold mb-6">Cadastrar Colaboradores</h1>
+<main class="flex-grow flex items-center justify-center py-10">
+  <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-md border border-slate-100">
+    <h2 class="text-2xl font-bold text-slate-800 mb-6">Novo Colaborador</h2>
+    <form id="formCadastro" class="space-y-4">
+      <div>
+        <label class="block text-sm font-semibold mb-1">Nome Completo</label>
+        <input type="text" id="nome" required class="w-full border border-slate-200 p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Cargo</label>
+        <input type="text" id="cargo" required class="w-full border border-slate-200 p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Setor</label>
+        <select id="setor" required class="w-full border border-slate-200 p-2.5 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white">
+          <option value="Marketing">Marketing</option>
+          <option value="Vendas">Vendas</option>
+          <option value="TI">Tecnologia</option>
+          <option value="RH">RH</option>
+        </select>
+      </div>
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-lg transition transform hover:-translate-y-0.5">Finalizar Cadastro</button>
+    </form>
+  </div>
+</main>
 
-<form class="bg-white p-6 rounded-lg shadow-md max-w-md">
+<script>
+  document.getElementById('formCadastro').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const novo = {
+      nome: document.getElementById('nome').value,
+      cargo: document.getElementById('cargo').value,
+      setor: document.getElementById('setor').value
+    };
 
-<label class="block mb-2 font-semibold">Nome</label>
-<input type="text" class="w-full border p-2 rounded mb-4">
+    const lista = JSON.parse(localStorage.getItem('colaboradores')) || [];
+    lista.push(novo);
+    localStorage.setItem('colaboradores', JSON.stringify(lista));
 
-<label class="block mb-2 font-semibold">Cargo</label>
-<input type="text" class="w-full border p-2 rounded mb-4">
-
-<label class="block mb-2 font-semibold">Setor</label>
-<input type="text" class="w-full border p-2 rounded mb-4">
-
-<button class="bg-blue-500 text-white px-4 py-2 rounded">
-Cadastrar
-</button>
-
-</form>
-
-<a href="index.html" class="block mt-6 text-blue-600">
-⬅ Voltar para o sistema
-</a>
-
+    Swal.fire({ title: 'Sucesso!', text: 'Colaborador salvo com sucesso!', icon: 'success', confirmButtonColor: '#1e293b' });
+    this.reset();
+  });
+</script>
 </body>
 </html>

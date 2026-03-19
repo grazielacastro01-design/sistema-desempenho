@@ -1,31 +1,56 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="h-full">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Relatórios</title>
-<script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <title>Relatórios - Sistema de Desempenho</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style> * { font-family: 'Plus Jakarta Sans', sans-serif; } </style>
 </head>
+<body class="bg-gray-50 h-full">
 
-<body class="bg-gray-100 p-8">
+<header class="bg-slate-800 text-white shadow-lg p-4">
+  <div class="max-w-7xl mx-auto flex justify-between items-center">
+    <h1 class="text-xl font-bold">Relatórios de Desempenho</h1>
+    <a href="index.html" class="text-sm bg-slate-700 px-3 py-1 rounded">Voltar ao Início</a>
+  </div>
+</header>
 
-<h1 class="text-3xl font-bold mb-6">Relatórios de Desempenho</h1>
+<main class="max-w-7xl mx-auto px-4 py-10">
+  <div class="bg-white rounded-xl shadow-md overflow-hidden">
+    <table class="w-full text-left">
+      <thead class="bg-slate-50 border-b">
+        <tr>
+          <th class="px-6 py-4 text-sm font-semibold">Nome</th>
+          <th class="px-6 py-4 text-sm font-semibold">Cargo</th>
+          <th class="px-6 py-4 text-sm font-semibold">Setor</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaDados" class="divide-y divide-slate-100">
+        </tbody>
+    </table>
+  </div>
+</main>
 
-<div class="bg-white p-6 rounded-lg shadow-md max-w-md">
+<script>
+  function carregar() {
+    const lista = JSON.parse(localStorage.getItem('colaboradores')) || [];
+    const corpo = document.getElementById('tabelaDados');
+    
+    if(lista.length === 0) {
+      corpo.innerHTML = '<tr><td colspan="3" class="px-6 py-4 text-center text-slate-500">Ninguém cadastrado.</td></tr>';
+      return;
+    }
 
-<p class="mb-4">Aqui aparecerão os relatórios de desempenho dos funcionários.</p>
-
-<ul class="list-disc ml-6">
-<li>Relatório mensal</li>
-<li>Desempenho por funcionário</li>
-<li>Metas atingidas</li>
-</ul>
-
-</div>
-
-<a href="index.html" class="block mt-6 text-blue-600">
-⬅ Voltar para o sistema
-</a>
-
+    corpo.innerHTML = lista.map(c => `
+      <tr class="hover:bg-slate-50 transition">
+        <td class="px-6 py-4 text-slate-700 font-medium">${c.nome}</td>
+        <td class="px-6 py-4 text-slate-600">${c.cargo}</td>
+        <td class="px-6 py-4 text-slate-600">${c.setor}</td>
+      </tr>
+    `).join('');
+  }
+  carregar();
+</script>
 </body>
 </html>
