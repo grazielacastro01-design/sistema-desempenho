@@ -11,46 +11,62 @@
 
 <header class="bg-slate-800 text-white shadow-lg p-4">
   <div class="max-w-7xl mx-auto flex justify-between items-center">
-    <h1 class="text-xl font-bold">Relatórios de Desempenho</h1>
+    <h1 class="text-xl font-bold">Relatórios de Desempenho (Dados do Banco)</h1>
     <a href="index.html" class="text-sm bg-slate-700 px-3 py-1 rounded">Voltar ao Início</a>
   </div>
 </header>
 
 <main class="max-w-7xl mx-auto px-4 py-10">
-  <div class="bg-white rounded-xl shadow-md overflow-hidden">
+  <div class="bg-white rounded-xl shadow-md overflow-hidden border border-slate-200">
     <table class="w-full text-left">
-      <thead class="bg-slate-50 border-b">
+      <thead class="bg-slate-50 border-b border-slate-200">
         <tr>
           <th class="px-6 py-4 text-sm font-semibold">Nome</th>
-          <th class="px-6 py-4 text-sm font-semibold">Cargo</th>
-          <th class="px-6 py-4 text-sm font-semibold">Setor</th>
+          <th class="px-6 py-4 text-sm font-semibold">Telefone</th>
+          <th class="px-6 py-4 text-sm font-semibold">CPF</th>
         </tr>
       </thead>
       <tbody id="tabelaDados" class="divide-y divide-slate-100">
+          <tr><td colspan="3" class="px-6 py-4 text-center text-slate-400 italic">Carregando dados...</td></tr>
         </tbody>
     </table>
   </div>
 </main>
 
 <script>
-  function carregar() {
-    const lista = JSON.parse(localStorage.getItem('colaboradores')) || [];
+  async function carregarRelatorio() {
     const corpo = document.getElementById('tabelaDados');
     
-    if(lista.length === 0) {
-      corpo.innerHTML = '<tr><td colspan="3" class="px-6 py-4 text-center text-slate-500">Ninguém cadastrado.</td></tr>';
-      return;
-    }
+    try {
+      // BUSCANDO DADOS DO RAILWAY
+      const resposta = await fetch('https://sistema-desempenho-production.up.railway.app/api/pessoas');
+      
+      if (!resposta.ok) throw new Error('Erro ao buscar dados');
 
-    corpo.innerHTML = lista.map(c => `
-      <tr class="hover:bg-slate-50 transition">
-        <td class="px-6 py-4 text-slate-700 font-medium">${c.nome}</td>
-        <td class="px-6 py-4 text-slate-600">${c.cargo}</td>
-        <td class="px-6 py-4 text-slate-600">${c.setor}</td>
-      </tr>
-    `).join('');
+      const lista = await resposta.json();
+
+      if (lista.length === 0) {
+        corpo.innerHTML = '<tr><td colspan="3" class="px-6 py-4 text-center text-slate-500">Ninguém cadastrado no banco de dados.</td></tr>';
+        return;
+      }
+
+      // Mapeando os dados que vêm do banco (tbPessoa)
+      corpo.innerHTML = lista.map(p => `
+        <tr class="hover:bg-slate-50 transition">
+          <td class="px-6 py-4 text-slate-700 font-medium">${p.nome || 'N/A'}</td>
+          <td class="px-6 py-4 text-slate-600">${p.telefone || 'N/A'}</td>
+          <td class="px-6 py-4 text-slate-600">${p.cpf || 'N/A'}</td>
+        </tr>
+      `).join('');
+
+    } catch (error) {
+      console.error('Erro:', error);
+      corpo.innerHTML = '<tr><td colspan="3" class="px-6 py-4 text-center text-red-500 font-semibold">Erro ao conectar com o servidor do Railway.</td></tr>';
+    }
   }
-  carregar();
+
+  // Chama a função assim que a página carrega
+  window.onload = carregarRelatorio;
 </script>
 </body>
 </html>
