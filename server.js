@@ -8,30 +8,31 @@ const app = express();
 // Configurações essenciais
 app.use(cors());
 app.use(express.json());
-// Esta linha abaixo faz o site abrir (index.html, etc.)
 app.use(express.static(path.join(__dirname)));
 
 // Configuração para o Banco de Dados do Railway
+// Usando 'mysql://' ajuda o Node a entender que é um banco externo
 const db = mysql.createConnection({
   host: process.env.MYSQLHOST,
   user: process.env.MYSQLUSER,
   password: process.env.MYSQLPASSWORD,
   database: process.env.MYSQLDATABASE,
-  port: process.env.MYSQLPORT || 3306
+  port: process.env.MYSQLPORT || 3306,
+  connectTimeout: 10000 
 });
 
 db.connect((err) => {
   if (err) {
-    console.error('❌ Erro ao conectar ao MySQL do Railway:', err);
+    console.error('❌ ERRO CRÍTICO NO BANCO:', err.message);
+    // Isso vai nos mostrar nos logs se o erro mudou de 127.0.0.1 para outra coisa
     return;
   }
-  console.log('✅ Conectado ao banco de dados do Railway!');
+  console.log('✅ SUCESSO: Conectado ao MySQL do Railway!');
 });
 
 // Rota para Cadastrar
 app.post('/cadastrar', (req, res) => {
     const { nome, cpf, nascimento, telefone, pessoa_tipo_id } = req.body;
-    
     const sql = "INSERT INTO tbPessoa (nome, cpf, nascimento, telefone, pessoa_tipo_id) VALUES (?, ?, ?, ?, ?)";
     
     db.query(sql, [nome, cpf, nascimento, telefone, pessoa_tipo_id], (err, result) => {
@@ -55,12 +56,10 @@ app.get('/api/pessoas', (req, res) => {
     });
 });
 
-// Rota principal para abrir o site direto no link
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// Ajuste a porta para o Railway
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`🚀 Servidor rodando na porta ${PORT}`);
