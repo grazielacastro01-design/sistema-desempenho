@@ -63,8 +63,8 @@
     };
 
     try {
-      // Usando caminho relativo para funcionar no Railway
-      const response = await fetch('/cadastrar', {
+      // URL COMPLETA DO RAILWAY PARA FUNCIONAR EM QUALQUER DISPOSITIVO
+      const response = await fetch('https://sistema-desempenho-production.up.railway.app/cadastrar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dadosPessoa)
@@ -84,7 +84,7 @@
       }
     } catch (error) {
       console.error('Erro no Fetch:', error);
-      Swal.fire('Erro!', 'Não foi possível conectar ao servidor. Verifique os logs no Railway.', 'error');
+      Swal.fire('Erro!', 'Não foi possível conectar ao servidor. Verifique se o backend está online no Railway.', 'error');
     }
   });
 </script>
