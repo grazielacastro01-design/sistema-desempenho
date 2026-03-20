@@ -1,105 +1,44 @@
-<!DOCTYPE html>
-<html lang="pt-BR" class="h-full">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cadastrar - Sistema de Desempenho</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
-  </style>
-</head>
-<body class="bg-gray-50 h-full flex flex-col">
-
-<header class="bg-slate-800 text-white shadow-lg p-4">
-  <div class="max-w-7xl mx-auto flex justify-between items-center">
-    <h1 class="text-xl font-bold">Cadastro de Pessoas (MySQL)</h1>
-    <a href="index.html" class="text-sm bg-slate-700 px-3 py-1 rounded hover:bg-slate-600 transition">Início</a>
-  </div>
-</header>
-
-<main class="flex-grow flex items-center justify-center py-10">
-  <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-md border border-slate-100">
-    <form id="formCadastroBD" class="space-y-4">
-      <div>
-        <label class="block text-sm font-semibold mb-1">Nome Completo</label>
-        <input type="text" id="nome" required class="w-full border border-slate-200 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
-      </div>
-      <div>
-        <label class="block text-sm font-semibold mb-1">CPF (Obrigatório no Banco)</label>
-        <input type="text" id="cpf" placeholder="000.000.000-00" required class="w-full border border-slate-200 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
-      </div>
-      <div class="grid grid-cols-2 gap-4">
-        <div>
-          <label class="block text-sm font-semibold mb-1">Nascimento</label>
-          <input type="date" id="nascimento" required class="w-full border border-slate-200 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
-        <div>
-          <label class="block text-sm font-semibold mb-1">Telefone</label>
-          <input type="text" id="telefone" placeholder="(85) 9..." required class="w-full border border-slate-200 p-2.5 rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
-      </div>
-      <div>
-        <label class="block text-sm font-semibold mb-1">Tipo de Pessoa (tbPessoaTipo)</label>
-        <select id="pessoa_tipo_id" class="w-full border border-slate-200 p-2.5 rounded-lg bg-white outline-none focus:ring-2 focus:ring-blue-500">
-          <option value="1">1 - Colaborador</option>
-          <option value="2">2 - Gestor</option>
-        </select>
-      </div>
-      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg shadow-lg transition transform active:scale-95">
-        Gravar no Banco de Dados
-      </button>
-    </form>
-  </div>
-</main>
-
 <script>
   document.getElementById('formCadastroBD').addEventListener('submit', async function(e) {
     e.preventDefault();
 
+    // Coletando os dados do formulário
     const dadosPessoa = {
       nome: document.getElementById('nome').value,
       cpf: document.getElementById('cpf').value,
       nascimento: document.getElementById('nascimento').value,
       telefone: document.getElementById('telefone').value,
-      pessoa_tipo_id: parseInt(document.getElementById('pessoa_tipo_id').value)
+      pessoa_tipo_id: document.getElementById('pessoa_tipo_id').value
     };
 
     try {
-      // Usamos 127.0.0.1 para evitar problemas de DNS que às vezes ocorrem com 'localhost'
-      const response = await fetch('http://127.0.0.1:3000/api/pessoas', {
+      // --- FORMA CORRETA (Caminho Relativo) ---
+      // Isso faz o site falar com o seu próprio servidor no Railway
+      const response = await fetch('/cadastrar', { 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dadosPessoa)
       });
 
-      const resultado = await response.json();
-
       if (response.ok) {
         Swal.fire({ 
-          title: 'Sucesso!', 
-          text: resultado.message || 'Dados gravados no MySQL!', 
-          icon: 'success',
-          confirmButtonColor: '#2563eb'
+            title: 'Sucesso!', 
+            text: 'Dados gravados com sucesso no banco de dados!', 
+            icon: 'success',
+            confirmButtonColor: '#2563eb'
         });
-        this.reset();
+        this.reset(); // Limpa o formulário após o sucesso
       } else {
-        Swal.fire({
-          title: 'Erro no Banco!', 
-          text: resultado.error || 'Verifique os dados enviados.', 
-          icon: 'error'
-        });
+        const erroMsg = await response.text();
+        throw new Error(erroMsg || 'Erro ao salvar no banco');
       }
     } catch (error) {
+      console.error('Erro no envio:', error);
       Swal.fire({
-        title: 'Erro de Conexão!', 
-        text: 'O servidor Node.js não respondeu. Verifique se o terminal está rodando.', 
+        title: 'Erro de Conexão!',
+        text: 'O servidor não respondeu. Verifique os Logs no painel do Railway.',
         icon: 'error'
       });
     }
   });
 </script>
-</body>
-</html>
