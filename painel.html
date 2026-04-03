@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Principal - SGP</title>
+    <style>
+        :root { 
+            --primary: #004085; 
+            --bg: #f4f7f6; 
+            --white: #ffffff;
+        }
+        
+        body { 
+            font-family: 'Segoe UI', Arial, sans-serif; 
+            background: var(--bg); 
+            margin: 0; 
+        }
+
+        /* Cabeçalho Profissional */
+        .header { 
+            background: var(--primary); 
+            color: white; 
+            padding: 12px 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+        }
+
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        
+        /* Logo Pequena no Canto do Painel */
+        .logo-header { 
+            width: 40px; 
+            height: 40px; 
+            object-fit: contain; 
+            background: white; 
+            border-radius: 4px; 
+            padding: 2px;
+        }
+
+        .container { padding: 40px 5%; max-width: 1200px; margin: auto; }
+        
+        h1 { color: #2c3e50; margin-bottom: 10px; }
+        .subtitle { color: #7f8c8d; margin-bottom: 30px; font-size: 1.1rem; }
+
+        .grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 25px; 
+        }
+
+        /* Estilo dos Cards */
+        .card { 
+            background: var(--white); 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            text-align: center; 
+            border-top: 5px solid var(--primary); 
+            transition: all 0.3s ease;
+        }
+
+        .card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 12px 20px rgba(0,0,0,0.1); 
+        }
+
+        .card-icon { font-size: 45px; margin-bottom: 15px; display: block; }
+        .card h3 { color: var(--primary); margin: 10px 0; }
+        .card p { color: #666; font-size: 0.95rem; line-height: 1.5; height: 45px; }
+
+        .btn-card { 
+            display: inline-block; 
+            margin-top: 20px; 
+            padding: 12px 30px; 
+            background: var(--primary); 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            transition: 0.3s;
+        }
+
+        .btn-card:hover { opacity: 0.9; }
+
+        .logout-btn { 
+            background: #dc3545; 
+            color: white; 
+            border: none; 
+            padding: 8px 18px; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-weight: bold; 
+        }
+
+        .user-info { display: flex; align-items: center; gap: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-left">
+            <img src="logo.jpg" alt="Logo" class="logo-header">
+            <strong>SISTEMA DE GESTÃO DE PERFORMANCE</strong>
+        </div>
+        <div class="user-info">
+            <span id="nomeUser" style="font-weight: 500;">Carregando...</span>
+            <button class="logout-btn" onclick="sair()">Sair</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Olá, <span id="saudacaoNome" style="color: var(--primary);"></span>! 👋</h1>
+        <p class="subtitle">Bem-vinda ao seu centro estratégico. Selecione uma ferramenta abaixo:</p>
+
+        <div class="grid">
+            <div class="card">
+                <span class="card-icon">👥</span>
+                <h3>Equipe</h3>
+                <p>Gerencie o cadastro de colaboradores e informações básicas.</p>
+                <a href="colaboradores.html" class="btn-card">Acessar</a>
+            </div>
+
+            <div class="card">
+                <span class="card-icon">📈</span>
+                <h3>Avaliações</h3>
+                <p>Registre notas de desempenho e métricas de produtividade.</p>
+                <a href="avaliacoes.html" class="btn-card">Iniciar</a>
+            </div>
+
+            <div class="card">
+                <span class="card-icon">📊</span>
+                <h3>Resultados</h3>
+                <p>Gere relatórios detalhados e exporte indicadores em PDF.</p>
+                <a href="relatorios.html" class="btn-card">Visualizar</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Verificação de Segurança e Saudação
+        const nomeCompleto = localStorage.getItem('usuarioLogado');
+        
+        if (!nomeCompleto) {
+            window.location.href = 'login.html';
+        } else {
+            const primeiroNome = nomeCompleto.split(' ')[0];
+            document.getElementById('nomeUser').innerText = 'Olá, ' + primeiroNome;
+            document.getElementById('saudacaoNome').innerText = primeiroNome;
+        }
+
+        function sair() {
+            localStorage.removeItem('usuarioLogado');
+            window.location.href = 'index.html'; // Volta para a Landing Page profissional
+        }
+    </script>
+</body>
+</html>
