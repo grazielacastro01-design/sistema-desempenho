@@ -8,7 +8,6 @@
         :root {
             --primary: #004085;
             --white: #ffffff;
-            --overlay: rgba(255, 255, 255, 0.9); /* Overlay claro para combinar com o fundo */
         }
 
         body, html {
@@ -16,14 +15,14 @@
             padding: 0;
             height: 100%;
             font-family: 'Segoe UI', Arial, sans-serif;
-            overflow: hidden; /* Mantém a tela limpa */
+            overflow: hidden;
         }
 
-        /* Fundo do sistema (Sua imagem image_1.png) */
+        /* Fundo do sistema usando fundo.jpg */
         .hero {
             height: 100vh;
-            background: linear-gradient(var(--overlay), var(--overlay)), 
-                        url('image_1.png'); /* Nome do seu arquivo de fundo aqui */
+            background: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
+                        url('fundo.jpg'); /* Sua imagem de fundo */
             background-size: cover;
             background-position: center;
             display: flex;
@@ -31,40 +30,42 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            color: #333; /* Texto escuro sobre fundo claro */
+            padding: 0 20px;
         }
 
-        /* Estilo do título e descrição */
+        /* Título Principal */
         .hero h1 {
             color: var(--primary);
-            font-size: 3.5rem;
-            margin: 0 0 15px 0;
+            font-size: 3.2rem;
+            margin-bottom: 20px;
+            font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: -1px;
         }
 
+        /* FRASE PROFISSIONAL ATUALIZADA */
         .hero p {
-            font-size: 1.3rem;
-            max-width: 650px;
-            margin-bottom: 50px;
-            opacity: 0.9;
-            color: #555;
-            font-weight: 500;
+            font-size: 1.4rem;
+            max-width: 800px;
+            margin-bottom: 40px;
+            color: #2c3e50;
+            line-height: 1.6;
+            font-weight: 400;
         }
 
-        /* Botões de Direcionamento */
+        /* Botões */
         .btn-group {
             display: flex;
             gap: 20px;
         }
 
         .btn {
-            padding: 16px 45px;
+            padding: 16px 40px;
             text-decoration: none;
             font-weight: bold;
-            border-radius: 8px;
-            transition: 0.3s;
-            font-size: 1.1rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-size: 1rem;
             text-transform: uppercase;
         }
 
@@ -81,16 +82,20 @@
         }
 
         .btn:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 64, 133, 0.2);
         }
 
-        /* Footer discreto */
+        .btn-register:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
         footer {
             position: absolute;
             bottom: 20px;
-            font-size: 0.8rem;
-            color: #999;
+            font-size: 0.85rem;
+            color: #7f8c8d;
         }
     </style>
 </head>
@@ -98,14 +103,16 @@
 
     <section class="hero">
         <h1>Sistema de Desempenho de Funcionário</h1>
-        <p>A solução acadêmica completa para avaliação de desempenho, acompanhamento de metas e feedbacks contínuos.</p>
+        
+        <p>Potencialize a gestão de talentos com monitoramento estratégico, 
+           análise de indicadores de performance e feedbacks assertivos para o crescimento organizacional.</p>
         
         <div class="btn-group">
             <a href="login.html" class="btn btn-login">Acessar Sistema</a>
             <a href="cadastrar_usuario.html" class="btn btn-register">Criar Conta</a>
         </div>
 
-        <footer>© 2026 Projeto Acadêmico - Sistema de Desempenho de Funcionário</footer>
+        <footer>© 2026 SGP - Gestão Inteligente de Capital Humano</footer>
     </section>
 
 </body>

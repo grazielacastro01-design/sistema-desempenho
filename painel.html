@@ -3,43 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bem-vinda - Sistema de Desempenho</title>
+    <title>SGP - Sistema de Gestão de Performance</title>
     <style>
+        :root {
+            --primary: #004085;
+            --white: #ffffff;
+        }
+
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
-            width: 100%;
+            font-family: 'Segoe UI', Arial, sans-serif;
             overflow: hidden;
         }
-        .bg-image {
-            /* Usando a sua imagem de fundo */
-            background-image: url('image_0671ca.jpg'); 
-            height: 100%;
-            background-position: center;
-            background-repeat: no-repeat;
+
+        /* Fundo do sistema usando fundo.jpg */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
+                        url('fundo.jpg'); /* Sua imagem de fundo */
             background-size: cover;
+            background-position: center;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            text-align: center;
+            padding: 0 20px;
         }
-        .btn-entrar {
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            background-color: #004085;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
+
+        /* Título Principal */
+        .hero h1 {
+            color: var(--primary);
+            font-size: 3.2rem;
+            margin-bottom: 20px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+
+        /* FRASE PROFISSIONAL ATUALIZADA */
+        .hero p {
+            font-size: 1.4rem;
+            max-width: 800px;
+            margin-bottom: 40px;
+            color: #2c3e50;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        /* Botões */
+        .btn-group {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 16px 40px;
             text-decoration: none;
             font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            text-transform: uppercase;
+        }
+
+        .btn-login {
+            background-color: var(--primary);
+            color: white;
+            border: 2px solid var(--primary);
+        }
+
+        .btn-register {
+            background-color: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 64, 133, 0.2);
+        }
+
+        .btn-register:hover {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        footer {
+            position: absolute;
+            bottom: 20px;
+            font-size: 0.85rem;
+            color: #7f8c8d;
         }
     </style>
 </head>
 <body>
-    <div class="bg-image">
-        <a href="login.html" class="btn-entrar">ENTRAR NO SISTEMA</a>
-    </div>
+
+    <section class="hero">
+        <h1>Sistema de Desempenho de Funcionário</h1>
+        
+        <p>Potencialize a gestão de talentos com monitoramento estratégico, 
+           análise de indicadores de performance e feedbacks assertivos para o crescimento organizacional.</p>
+        
+        <div class="btn-group">
+            <a href="login.html" class="btn btn-login">Acessar Sistema</a>
+            <a href="cadastrar_usuario.html" class="btn btn-register">Criar Conta</a>
+        </div>
+
+        <footer>© 2026 SGP - Gestão Inteligente de Capital Humano</footer>
+    </section>
+
 </body>
 </html>
