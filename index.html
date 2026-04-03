@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SGP - Sistema de Gestão de Performance</title>
     <style>
-        /* Configurações Gerais */
         :root {
             --primary: #004085;
-            --accent: #007bff;
             --white: #ffffff;
-            --overlay: rgba(0, 0, 0, 0.5); /* Escurece a foto para o texto aparecer */
+            --overlay: rgba(255, 255, 255, 0.85); /* Overlay claro para combinar com o fundo azul claro */
         }
 
         body, html {
@@ -18,46 +16,14 @@
             padding: 0;
             height: 100%;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
         }
 
-        /* Navbar Transparente sobre a Imagem */
-        .navbar {
-            position: absolute;
-            top: 0;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 50px;
-            box-sizing: border-box;
-            z-index: 10;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(5px);
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            color: white;
-            font-weight: bold;
-            font-size: 1.5rem;
-        }
-
-        .logo-icon {
-            background: var(--white);
-            color: var(--primary);
-            padding: 5px 12px;
-            border-radius: 8px;
-            font-size: 1.2rem;
-        }
-
-        /* LANDING PAGE (HERO SECTION) */
+        /* Hero Section usando seu arquivo image_fafe37.jpg */
         .hero {
             height: 100vh;
-            /* IMAGEM DE FUNDO AQUI */
             background: linear-gradient(var(--overlay), var(--overlay)), 
-                        url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=80');
+                        url('image_fafe37.jpg'); 
             background-size: cover;
             background-position: center;
             display: flex;
@@ -65,102 +31,89 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            color: white;
+            padding: 0 20px;
+        }
+
+        /* Logo usando seu arquivo image_fafdf9.jpg */
+        .logo-container {
+            margin-bottom: 30px;
+            animation: fadeIn 1.5s ease-in;
+        }
+        
+        .logo-container img {
+            height: 180px; /* Tamanho de destaque para a logo */
+            width: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
         .hero h1 {
-            font-size: 3.5rem;
-            margin: 0;
-            letter-spacing: 2px;
+            color: var(--primary);
+            font-size: 2.5rem;
+            margin: 10px 0;
+            max-width: 800px;
         }
 
         .hero p {
-            font-size: 1.3rem;
-            max-width: 700px;
-            margin: 20px 0 40px;
-            opacity: 0.9;
+            color: #555;
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-bottom: 40px;
         }
 
-        /* Botões de Ação */
-        .btn-container {
+        /* Botões */
+        .btn-group {
             display: flex;
             gap: 20px;
         }
 
         .btn {
-            padding: 15px 35px;
+            padding: 15px 45px;
             text-decoration: none;
             font-weight: bold;
             border-radius: 50px;
             transition: 0.3s;
+            font-size: 1rem;
             text-transform: uppercase;
-            font-size: 0.9rem;
         }
 
-        .btn-primary {
-            background: var(--white);
+        .btn-login {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-register {
+            background-color: transparent;
             color: var(--primary);
-        }
-
-        .btn-outline {
-            border: 2px solid var(--white);
-            color: var(--white);
+            border: 2px solid var(--primary);
         }
 
         .btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
-        .logout-btn {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="logo-area">
-            <div class="logo-icon">SGP</div>
-            <span>Gestão de Performance</span>
-        </div>
-        <div>
-            <span id="userName" style="color: white; margin-right: 20px;">Olá!</span>
-            <button class="logout-btn" onclick="sair()">Sair</button>
-        </div>
-    </nav>
-
     <section class="hero">
-        <h1 id="boasVindas">Bem-vinda ao Sistema</h1>
-        <p>Acompanhe metas, realize avaliações de desempenho e gerencie feedbacks periódicos da sua equipe em um só lugar.</p>
+        <div class="logo-container">
+            <img src="image_fafdf9.jpg" alt="Logo Desempenho de Funcionário">
+        </div>
+
+        <h1>Sistema de Gestão de Performance</h1>
+        <p>Desenvolvimento acadêmico para análise de competências, metas e evolução profissional.</p>
         
-        <div class="btn-container">
-            <a href="colaboradores.html" class="btn btn-primary">Ver Colaboradores</a>
-            <a href="#" class="btn btn-outline">Nova Avaliação</a>
+        <div class="btn-group">
+            <a href="login.html" class="btn btn-login">Acessar Sistema</a>
+            <a href="cadastrar_usuario.html" class="btn btn-register">Criar Conta</a>
         </div>
     </section>
-
-    <script>
-        const nomeLogado = localStorage.getItem('usuarioLogado');
-
-        if (!nomeLogado) {
-            window.location.href = 'login.html';
-        } else {
-            const primeiroNome = nomeLogado.split(' ')[0];
-            document.getElementById('userName').innerText = 'Olá, ' + primeiroNome;
-            document.getElementById('boasVindas').innerText = 'Bem-vinda, ' + primeiroNome + '!';
-        }
-
-        function sair() {
-            localStorage.removeItem('usuarioLogado');
-            window.location.href = 'login.html';
-        }
-    </script>
 
 </body>
 </html>
