@@ -2,22 +2,58 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Painel Principal - Sistema de Desempenho de Funcionário</title>
+    <title>Painel Principal - SGP</title>
     <style>
         :root { --primary: #004085; --bg: #f4f7f6; }
         body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; }
-        .header { background: var(--primary); color: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        
+        .header { 
+            background: var(--primary); 
+            color: white; 
+            padding: 10px 5%; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+        }
+
+        .header-left { display: flex; align-items: center; gap: 15px; }
+        .logo-header { width: 45px; height: 45px; object-fit: contain; border-radius: 5px; background: white; }
+
         .container { padding: 40px 5%; max-width: 1200px; margin: auto; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 30px; }
-        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; border-top: 5px solid var(--primary); }
-        .btn { display: inline-block; margin-top: 15px; padding: 10px 25px; background: var(--primary); color: white; text-decoration: none; border-radius: 6px; font-weight: bold; }
-        .logout-btn { background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+        
+        .card { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            text-align: center; 
+            border-top: 5px solid var(--primary); 
+            transition: transform 0.2s;
+        }
+        .card:hover { transform: translateY(-5px); }
+
+        .btn { 
+            display: inline-block; 
+            margin-top: 15px; 
+            padding: 10px 25px; 
+            background: var(--primary); 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 6px; 
+            font-weight: bold; 
+        }
+        .logout-btn { background: #dc3545; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <strong>SISTEMA DE DESEMPENHO DE FUNCIONÁRIO</strong>
+        <div class="header-left">
+            <img src="logo.jpg" alt="Logo" class="logo-header">
+            <strong>SISTEMA DE DESEMPENHO DE FUNCIONÁRIO</strong>
+        </div>
         <div>
             <span id="nomeUser" style="margin-right: 15px; font-weight: 500;">Olá!</span>
             <button class="logout-btn" onclick="sair()">Sair</button>
@@ -40,7 +76,7 @@
                 <div style="font-size: 40px;">📝</div>
                 <h3>Avaliações</h3>
                 <p>Registrar novas notas de performance na tbAvaliacacao.</p>
-                <a href="#" class="btn">Iniciar</a>
+                <a href="avaliacoes.html" class="btn">Iniciar</a>
             </div>
 
             <div class="card">
@@ -54,23 +90,25 @@
                 <div style="font-size: 40px;">📊</div>
                 <h3>Relatórios</h3>
                 <p>Gerar indicadores e exportar resultados em PDF.</p>
-                <a href="#" class="btn">Gerar</a>
+                <a href="relatorios.html" class="btn">Gerar</a>
             </div>
         </div>
     </div>
 
     <script>
+        // Verifica se o usuário está logado
         const nome = localStorage.getItem('usuarioLogado');
         if (!nome) {
             window.location.href = 'login.html';
         } else {
-            document.getElementById('nomeUser').innerText = nome;
+            document.getElementById('nomeUser').innerText = 'Olá, ' + nome.split(' ')[0];
             document.getElementById('saudacaoNome').innerText = nome.split(' ')[0];
         }
 
         function sair() {
             localStorage.removeItem('usuarioLogado');
-            window.location.href = 'index.html'; // Ao sair, volta para a Landing Page
+            // Redireciona para a ladpage (conforme seu novo arquivo)
+            window.location.href = 'ladpage.html'; 
         }
     </script>
 </body>
