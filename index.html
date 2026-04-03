@@ -9,14 +9,12 @@
   <style>
     * { font-family: 'Plus Jakarta Sans', sans-serif; }
     .overlay-bg { background: rgba(0,0,0,0.5); }
-    .logo-header { width: 50px; height: 50px; object-fit: contain; border-radius: 4px; }
   </style>
 </head>
-<body class="h-full bg-gray-50">
+<body class="h-full bg-gray-50 flex flex-col">
 
 <header class="bg-slate-800 text-white shadow-lg">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center h-16 gap-4">
-    <img src="logo.jpg" alt="Logo" class="logo-header">
     <h1 class="text-xl font-bold">Sistema de Desempenho</h1>
     <nav class="ml-auto hidden md:flex gap-6">
       <a href="index.html" class="text-emerald-400 font-medium">Início</a>
@@ -36,7 +34,7 @@
   </div>
 </section>
 
-<section class="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+<section class="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 flex-grow">
   <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-blue-500">
     <h4 class="text-lg font-bold mb-2">Colaboradores</h4>
     <p class="text-slate-600 mb-4 text-sm">Cadastre novos membros na equipe.</p>
@@ -55,7 +53,7 @@
 </section>
 
 <footer class="bg-slate-800 text-slate-400 py-6 text-center mt-auto">
-  © 2026 Sistema de Desempenho Profissional
+  © 2026 sistema de desempenho de funcionario
 </footer>
 </body>
 </html>
