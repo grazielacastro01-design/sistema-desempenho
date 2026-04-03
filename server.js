@@ -1,43 +1,59 @@
 const express = require('express');
 const mysql = require('mysql2');
-const cors = require('cors'); 
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const path = require('path');
+
 const app = express();
+const port = process.env.PORT || 3000;
 
-app.use(express.json());
-app.use(cors()); 
+// Configurações para o servidor entender JSON e formulários
+app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// Conexão com o seu MySQL do Railway
-const db = mysql.createConnection(process.env.MYSQL_URL || 'mysql://root:EdiCrrOOgYNiSQtDJYSXaHKwEtNCFiiO@autorack.proxy.rlwy.net:42256/railway');
+// Servir os arquivos estáticos (HTML, CSS) para o navegador
+app.use(express.static(path.join(__dirname, '/')));
+
+// --- CONEXÃO REAL COM O BANCO DE DADOS (RAILWAY) ---
+const db = mysql.createConnection({
+    host: 'autorack.proxy.rlwy.net',
+    user: 'root',
+    password: 'EdiCrrOOgyNiSQtDJYSXaHKWetNCFiiO',
+    database: 'railway',
+    port: 42256
+});
 
 db.connect((err) => {
     if (err) {
-        console.error('Erro ao conectar ao MySQL:', err);
+        console.error('❌ Erro ao conectar ao MySQL do Railway:', err);
         return;
     }
-    console.log('Conectado ao Banco de Dados do Railway!');
+    console.log('✅ Conectado ao Banco de Dados do Railway com sucesso!');
 });
 
-// --- ROTA DE LOGIN ---
+// --- ROTAS DO SISTEMA ---
+
+// 1. Rota de Login (Consultando a sua tbUsuarios)
 app.post('/login', (req, res) => {
-    const { email, senha } = req.body;
-    // Seleciona usando 'login' e 'senha' da tbUsuarios
-    const query = 'SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?';
-
-    db.query(query, [email, senha], (err, results) => {
-        if (err) {
-            console.error('ERRO NO LOGIN:', err);
-            return res.status(500).json({ message: 'Erro interno no servidor.' });
-        }
-
+    const { login, senha } = req.body;
+    const sql = "SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?";
+    
+    db.query(sql, [login, senha], (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
         if (results.length > 0) {
-            // Login bem-sucedido
-            res.status(200).json({ message: 'Login realizado!', user: results[0] });
+            res.status(200).json({ message: "Sucesso", user: results[0] });
         } else {
-            // NOVO: Mensagem genérica para segurança
-            res.status(401).json({ message: 'E-mail ou senha incorretos.' });
+            res.status(401).json({ message: "Login ou senha incorretos" });
         }
     });
 });
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+// Rota para abrir a Landing Page
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.listen(port, () => {
+    console.log(`🚀 Servidor rodando em http://localhost:${port}`);
+});
