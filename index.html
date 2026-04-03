@@ -3,27 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Sistema de Gestão de Performance</title>
+    <title>Sistema de Desempenho de Funcionário</title>
     <style>
         :root {
             --primary: #004085;
-            --white: #ffffff;
-            --overlay: rgba(255, 255, 255, 0.85); /* Overlay claro para combinar com o fundo azul claro */
+            --overlay: rgba(255, 255, 255, 0.85);
         }
 
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             overflow: hidden;
         }
 
-        /* Hero Section usando seu arquivo image_fafe37.jpg */
+        /* Hero Section usando seu arquivo fundo.jpg */
         .hero {
             height: 100vh;
             background: linear-gradient(var(--overlay), var(--overlay)), 
-                        url('image_fafe37.jpg'); 
+                        url('fundo.jpg'); 
             background-size: cover;
             background-position: center;
             display: flex;
@@ -34,85 +33,65 @@
             padding: 0 20px;
         }
 
-        /* Logo usando seu arquivo image_fafdf9.jpg */
-        .logo-container {
-            margin-bottom: 30px;
-            animation: fadeIn 1.5s ease-in;
-        }
-        
+        /* Logo usando seu arquivo logo.jpg */
         .logo-container img {
-            height: 180px; /* Tamanho de destaque para a logo */
+            height: 220px;
             width: auto;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 25px;
         }
 
-        .hero h1 {
-            color: var(--primary);
-            font-size: 2.5rem;
-            margin: 10px 0;
-            max-width: 800px;
-        }
-
-        .hero p {
-            color: #555;
-            font-size: 1.2rem;
-            max-width: 600px;
-            margin-bottom: 40px;
-        }
-
-        /* Botões */
-        .btn-group {
-            display: flex;
-            gap: 20px;
-        }
-
-        .btn {
-            padding: 15px 45px;
-            text-decoration: none;
-            font-weight: bold;
-            border-radius: 50px;
-            transition: 0.3s;
-            font-size: 1rem;
+        h1 { 
+            color: var(--primary); 
+            font-size: 2.8rem; 
+            margin: 10px 0; 
             text-transform: uppercase;
         }
 
-        .btn-login {
-            background-color: var(--primary);
-            color: white;
+        p { 
+            color: #444; 
+            font-size: 1.2rem; 
+            margin-bottom: 40px; 
+            max-width: 700px; 
+            font-weight: 500;
         }
 
-        .btn-register {
-            background-color: transparent;
-            color: var(--primary);
-            border: 2px solid var(--primary);
+        .btn-group { display: flex; gap: 20px; }
+        
+        .btn {
+            padding: 16px 45px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 8px;
+            transition: 0.3s;
+            text-transform: uppercase;
         }
 
-        .btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
+        .btn-login { background-color: var(--primary); color: white; border: 2px solid var(--primary); }
+        .btn-register { border: 2px solid var(--primary); color: var(--primary); background: transparent; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+
+        footer { position: absolute; bottom: 20px; font-size: 0.8rem; color: #777; }
     </style>
 </head>
 <body>
 
     <section class="hero">
         <div class="logo-container">
-            <img src="image_fafdf9.jpg" alt="Logo Desempenho de Funcionário">
+            <img src="logo.jpg" alt="Logo do Sistema">
         </div>
 
-        <h1>Sistema de Gestão de Performance</h1>
-        <p>Desenvolvimento acadêmico para análise de competências, metas e evolução profissional.</p>
+        <h1>Sistema de Desempenho de Funcionário</h1>
+        <p>Gestão estratégica de talentos, acompanhamento de metas e avaliações periódicas para o crescimento profissional.</p>
         
         <div class="btn-group">
             <a href="login.html" class="btn btn-login">Acessar Sistema</a>
             <a href="cadastrar_usuario.html" class="btn btn-register">Criar Conta</a>
         </div>
+
+        <footer>© 2026 Projeto Acadêmico - Sistema de Desempenho de Funcionário</footer>
     </section>
 
 </body>
