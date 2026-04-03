@@ -11,7 +11,7 @@
             display: flex; 
             justify-content: center; 
             align-items: center; 
-            background: #f4f7f6; /* Fundo suave */
+            background: #f4f7f6; 
             margin: 0; 
         }
         .login-box { 
@@ -24,20 +24,15 @@
             text-align: center; 
         }
 
-        /* Estilo para a Logo no Cabeçalho do Login */
-        .logo-login-container {
-            margin-bottom: 25px;
-            animation: fadeIn 1s ease-in;
-        }
+        /* Estilo para a nova Logo */
+        .logo-login-container { margin-bottom: 20px; }
         .logo-login-container img {
-            width: 110px; /* Tamanho ajustado da logo flutuante */
+            width: 150px; /* Ajuste o tamanho conforme achar melhor */
             height: auto;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1); /* Efeito flutuante suave */
+            border-radius: 8px;
         }
 
-        h2 { color: #004085; margin: 10px 0 5px 0; font-size: 1.6rem; }
-        .subtitulo { color: #666; font-size: 0.9rem; margin-bottom: 25px; }
+        .subtitulo { color: #666; font-size: 0.9rem; margin-bottom: 25px; font-weight: 500; }
         
         input { 
             width: 100%; 
@@ -49,6 +44,18 @@
             font-size: 1rem;
         }
         
+        /* Mensagem de Erro em Vermelho */
+        #error-message {
+            color: #dc3545;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            display: none; /* Escondido por padrão */
+        }
+
         .btn-login { 
             width: 100%; 
             padding: 14px; 
@@ -60,10 +67,20 @@
             font-weight: bold; 
             font-size: 1rem;
             transition: 0.3s; 
-            margin-top: 10px;
         }
-        .btn-login:hover { background: #002752; transform: translateY(-2px); }
-        .btn-login:disabled { background: #ccc; cursor: not-allowed; }
+        .btn-login:hover { background: #002752; }
+
+        /* Estilo para Esqueceu a Senha */
+        .forgot-password {
+            display: block;
+            text-align: right;
+            margin-top: -5px;
+            margin-bottom: 15px;
+            color: #004085;
+            text-decoration: none;
+            font-size: 0.85rem;
+        }
+        .forgot-password:hover { text-decoration: underline; }
 
         .divider { margin: 25px 0; border-top: 1px solid #eee; position: relative; }
         .divider::after { 
@@ -91,48 +108,59 @@
             font-weight: bold;
             box-sizing: border-box; 
         }
-        .btn-registrar:hover { background: #f0f4f8; }
-        
-        .btn-voltar {
-            display: block;
-            margin-top: 20px;
-            color: #888;
-            text-decoration: none;
-            font-size: 0.85rem;
-        }
-        .btn-voltar:hover { color: #555; }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
     </style>
 </head>
 <body>
 
     <div class="login-box">
         <div class="logo-login-container">
-            <img src="image_0.png" alt="Logo Desempenho de Funcionário">
+            <img src="image_07ac81.jpg" alt="Logo Desempenho de Funcionário">
         </div>
 
         <p class="subtitulo">Sistema de Desempenho de Funcionário</p>
+
+        <div id="error-message">E-mail ou senha errados. por favor tente novamente</div>
         
-        <input type="email" id="email" placeholder="E-mail profissional" required>
-        <input type="password" id="senha" placeholder="Senha" required>
+        <input type="email" id="email" placeholder="E-mail profissional">
+        <input type="password" id="senha" placeholder="Senha">
         
-        <button class="btn-login" id="btnEntrar" onclick="fazerLogin()">Entrar</button>
+        <a href="#" class="forgot-password">Esqueceu a senha?</a>
+        
+        <button class="btn-login" onclick="fazerLogin()">Entrar</button>
         
         <div class="divider"></div>
         
         <a href="cadastrar_usuario.html" class="btn-registrar">Criar Nova Conta</a>
-        
-        <a href="index.html" class="btn-voltar">← Voltar ao início</a>
     </div>
 
     <script>
-        // Mantenha seu script de login idêntico aqui (sem alterações)
         async function fazerLogin() {
-            // ... (seu código de login existente) ...
+            const email = document.getElementById('email').value;
+            const senha = document.getElementById('senha').value;
+            const errorDiv = document.getElementById('error-message');
+
+            // Limpa o erro ao tentar logar
+            errorDiv.style.display = 'none';
+
+            try {
+                const response = await fetch('https://sistema-desempenho-production.up.railway.app/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, senha })
+                });
+
+                if (response.ok) {
+                    const dados = await response.json();
+                    localStorage.setItem('usuarioLogado', dados.user.nome);
+                    window.location.href = 'painel.html'; 
+                } else {
+                    // Mostra a mensagem em vermelho se errar
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                errorDiv.innerText = "Erro de conexão com o servidor.";
+                errorDiv.style.display = 'block';
+            }
         }
     </script>
 </body>
