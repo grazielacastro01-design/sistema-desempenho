@@ -17,19 +17,38 @@ db.connect((err) => {
     console.log('Conectado ao Banco de Dados do Railway!');
 });
 
-// Rota de Cadastro corrigida para as suas colunas: nome, login, senha
+// --- ROTA DE CADASTRO ---
 app.post('/cadastrar-usuario', (req, res) => {
     const { nome, email, senha } = req.body;
-
-    // AJUSTE AQUI: Mudei 'email' para 'login' para bater com o seu print
     const query = 'INSERT INTO tbUsuarios (nome, login, senha) VALUES (?, ?, ?)';
 
     db.query(query, [nome, email, senha], (err, result) => {
         if (err) {
-            console.error('ERRO NO BANCO:', err);
-            return res.status(500).json({ message: 'Erro ao salvar no banco.', detalhe: err.message });
+            console.error('ERRO NO CADASTRO:', err);
+            return res.status(500).json({ message: 'Erro ao salvar no banco.' });
         }
         res.status(201).json({ message: 'Usuário cadastrado com sucesso!' });
+    });
+});
+
+// --- ROTA DE LOGIN (NOVIDADE!) ---
+app.post('/login', (req, res) => {
+    const { email, senha } = req.body;
+    const query = 'SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?';
+
+    db.query(query, [email, senha], (err, results) => {
+        if (err) {
+            console.error('ERRO NO LOGIN:', err);
+            return res.status(500).json({ message: 'Erro interno no servidor.' });
+        }
+
+        if (results.length > 0) {
+            // Se encontrou o usuário, retorna sucesso
+            res.status(200).json({ message: 'Login realizado!', user: results[0] });
+        } else {
+            // Se não encontrou, retorna erro de credenciais
+            res.status(401).json({ message: 'E-mail ou senha incorretos.' });
+        }
     });
 });
 
