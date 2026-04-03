@@ -77,5 +77,36 @@ app.post('/colaboradores', (req, res) => {
     });
 });
 
+// --- NOVIDADE: ROTA PARA SALVAR AVALIAÇÃO (tbAvaliacacao) ---
+app.post('/avaliacoes', (req, res) => {
+    const { pessoa_id, nota, data_avaliacao } = req.body;
+    const query = 'INSERT INTO tbAvaliacacao (pessoa_id, nota, data_avaliacao) VALUES (?, ?, ?)';
+
+    db.query(query, [pessoa_id, nota, data_avaliacao], (err, result) => {
+        if (err) {
+            console.error('Erro ao salvar avaliação:', err);
+            return res.status(500).json({ message: 'Erro ao salvar avaliação.' });
+        }
+        res.status(201).json({ message: 'Avaliação registrada com sucesso!' });
+    });
+});
+
+// --- NOVIDADE: ROTA PARA LISTAR AVALIAÇÕES (Unindo com nomes das pessoas) ---
+app.get('/avaliacoes', (req, res) => {
+    const query = `
+        SELECT a.avaliacao_id, p.nome, a.nota, a.data_avaliacao 
+        FROM tbAvaliacacao a 
+        JOIN tbPessoas p ON a.pessoa_id = p.pessoa_id
+        ORDER BY a.data_avaliacao DESC`;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar avaliações:', err);
+            return res.status(500).json({ message: 'Erro ao buscar avaliações.' });
+        }
+        res.status(200).json(results);
+    });
+});
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
