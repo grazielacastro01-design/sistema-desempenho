@@ -2,71 +2,94 @@
 <html lang="pt-BR" class="h-full">
 <head>
   <meta charset="UTF-8">
-  <title>Relatórios - Sistema de Desempenho</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatórios de Performance | Sistema 2026</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style> * { font-family: 'Plus Jakarta Sans', sans-serif; } </style>
 </head>
-<body class="bg-gray-50 h-full">
+<body class="h-full bg-slate-50 flex flex-col font-['Plus_Jakarta_Sans']">
 
-<header class="bg-slate-800 text-white shadow-lg p-4">
-  <div class="max-w-7xl mx-auto flex justify-between items-center">
-    <h1 class="text-xl font-bold">Relatórios de Desempenho (Dados do Banco)</h1>
-    <a href="index.html" class="text-sm bg-slate-700 px-3 py-1 rounded">Voltar ao Início</a>
-  </div>
-</header>
+  <header class="bg-slate-900 text-white shadow-md p-4 print:hidden">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-indigo-500 rounded flex items-center justify-center font-bold italic">R</div>
+        <h1 class="text-xl font-bold italic tracking-tight">Indicadores de Desempenho</h1>
+      </div>
+      <a href="dashboard.html" class="text-slate-400 hover:text-white text-sm font-semibold transition-all">← Voltar ao Painel</a>
+    </div>
+  </header>
 
-<main class="max-w-7xl mx-auto px-4 py-10">
-  <div class="bg-white rounded-xl shadow-md overflow-hidden border border-slate-200">
-    <table class="w-full text-left">
-      <thead class="bg-slate-50 border-b border-slate-200">
-        <tr>
-          <th class="px-6 py-4 text-sm font-semibold">Nome</th>
-          <th class="px-6 py-4 text-sm font-semibold">Telefone</th>
-          <th class="px-6 py-4 text-sm font-semibold">CPF</th>
-        </tr>
-      </thead>
-      <tbody id="tabelaDados" class="divide-y divide-slate-100">
-          <tr><td colspan="3" class="px-6 py-4 text-center text-slate-400 italic">Carregando dados...</td></tr>
-        </tbody>
-    </table>
-  </div>
-</main>
-
-<script>
-  async function carregarRelatorio() {
-    const corpo = document.getElementById('tabelaDados');
+  <main class="max-w-5xl mx-auto px-4 py-12 w-full flex-grow">
     
-    try {
-      // BUSCANDO DADOS DO RAILWAY
-      const resposta = await fetch('https://sistema-desempenho-production.up.railway.app/api/pessoas');
-      
-      if (!resposta.ok) throw new Error('Erro ao buscar dados');
+    <section class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-10 print:hidden">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-end">
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Filtrar Colaborador</label>
+          <select class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 transition">
+            <option>Selecione um funcionário...</option>
+            <option>Graziela Castro</option>
+            <option>Brenda Silva</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Ciclo de Avaliação</label>
+          <select class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 transition">
+            <option>1º Trimestre - 2026</option>
+            <option>2º Trimestre - 2026</option>
+          </select>
+        </div>
+        <button onclick="window.print()" class="bg-indigo-600 text-white py-3 px-6 rounded-lg font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 transition flex items-center justify-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          </svg>
+          Gerar PDF / Imprimir
+        </button>
+      </div>
+    </section>
 
-      const lista = await resposta.json();
+    <div id="relatorio-conteudo" class="bg-white p-10 rounded-2xl shadow-xl border border-slate-100 print:shadow-none print:border-none">
+      <div class="flex justify-between items-start mb-10 border-b border-slate-100 pb-6">
+        <div>
+          <h2 class="text-3xl font-extrabold text-slate-800">Relatório de Performance</h2>
+          <p class="text-slate-500 mt-1 uppercase text-xs font-bold tracking-widest">SISTEMA DE DESEMPENHO PROFISSIONAL</p>
+        </div>
+        <div class="text-right">
+          <p class="text-sm font-bold text-slate-700">Data de Emissão: 03/04/2026</p>
+          <p class="text-xs text-slate-400">ID do Relatório: #00129</p>
+        </div>
+      </div>
 
-      if (lista.length === 0) {
-        corpo.innerHTML = '<tr><td colspan="3" class="px-6 py-4 text-center text-slate-500">Ninguém cadastrado no banco de dados.</td></tr>';
-        return;
-      }
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+        <div class="p-4 bg-slate-50 rounded-xl text-center border border-slate-100">
+          <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Média Global</p>
+          <p class="text-2xl font-bold text-indigo-600 italic">4.8</p>
+        </div>
+        <div class="p-4 bg-slate-50 rounded-xl text-center border border-slate-100">
+          <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Metas Atingidas</p>
+          <p class="text-2xl font-bold text-emerald-500 italic">92%</p>
+        </div>
+        <div class="p-4 bg-slate-50 rounded-xl text-center border border-slate-100">
+          <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Feedbacks</p>
+          <p class="text-2xl font-bold text-slate-700 italic">12</p>
+        </div>
+        <div class="p-4 bg-slate-50 rounded-xl text-center border border-slate-100">
+          <p class="text-[10px] uppercase font-bold text-slate-400 mb-1">Status PDI</p>
+          <p class="text-2xl font-bold text-rose-500 italic uppercase text-[12px]">Concluído</p>
+        </div>
+      </div>
 
-      // Mapeando os dados que vêm do banco (tbPessoa)
-      corpo.innerHTML = lista.map(p => `
-        <tr class="hover:bg-slate-50 transition">
-          <td class="px-6 py-4 text-slate-700 font-medium">${p.nome || 'N/A'}</td>
-          <td class="px-6 py-4 text-slate-600">${p.telefone || 'N/A'}</td>
-          <td class="px-6 py-4 text-slate-600">${p.cpf || 'N/A'}</td>
-        </tr>
-      `).join('');
+      <div class="space-y-6">
+        <h4 class="font-bold text-slate-800 border-l-4 border-indigo-500 pl-3">Parecer do Gestor</h4>
+        <p class="text-slate-600 leading-relaxed italic text-sm">
+          "A colaboradora demonstrou excelência técnica no desenvolvimento do projeto de performance, superando as expectativas em relação aos prazos e organização dos arquivos. Recomenda-se foco contínuo em integração de banco de dados no próximo ciclo."
+        </p>
+      </div>
+    </div>
+  </main>
 
-    } catch (error) {
-      console.error('Erro:', error);
-      corpo.innerHTML = '<tr><td colspan="3" class="px-6 py-4 text-center text-red-500 font-semibold">Erro ao conectar com o servidor do Railway.</td></tr>';
-    }
-  }
+  <footer class="bg-white border-t border-slate-200 py-6 text-center text-slate-400 text-xs font-bold tracking-widest print:hidden">
+    © 2026 SISTEMA DE DESEMPENHO PROFISSIONAL
+  </footer>
 
-  // Chama a função assim que a página carrega
-  window.onload = carregarRelatorio;
-</script>
 </body>
 </html>
