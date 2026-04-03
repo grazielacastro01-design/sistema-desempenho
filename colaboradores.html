@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colaboradores - SGP</title>
+    <style>
+        :root { --primary: #004085; --bg: #f4f7f6; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; padding: 20px; }
+        .container { max-width: 1000px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .header-pagi { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid var(--bg); padding-bottom: 15px; }
+        h2 { color: var(--primary); margin: 0; }
+        .btn-voltar { text-decoration: none; color: #666; font-weight: bold; font-size: 0.9rem; }
+        .btn-add { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { text-align: left; padding: 15px; border-bottom: 1px solid #eee; }
+        th { background-color: #f8f9fa; color: var(--primary); }
+
+        /* Estilos do Modal */
+        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); }
+        .modal-content { background-color: white; margin: 10% auto; padding: 30px; border-radius: 10px; width: 400px; }
+        .modal-content input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        .modal-btns { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-pagi">
+        <div>
+            <a href="painel.html" class="btn-voltar">← Voltar ao Painel</a>
+            <h2>Gestão de Colaboradores</h2>
+        </div>
+        <button class="btn-add" onclick="abrirModal()">+ Novo Colaborador</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome Completo</th>
+                <th>CPF</th>
+                <th>Data de Nascimento</th>
+            </tr>
+        </thead>
+        <tbody id="tabelaCorpo">
+            </tbody>
+    </table>
+</div>
+
+<div id="meuModal" class="modal">
+    <div class="modal-content">
+        <h3>Cadastrar Colaborador</h3>
+        <input type="text" id="nomePessoa" placeholder="Nome Completo">
+        <input type="text" id="cpfPessoa" placeholder="CPF (apenas números)">
+        <label style="font-size: 0.8rem; color: #666;">Data de Nascimento:</label>
+        <input type="date" id="nascimentoPessoa">
+        
+        <div class="modal-btns">
+            <button onclick="fecharModal()" style="background:#ccc; border:none; padding:10px; border-radius:5px; cursor:pointer;">Cancelar</button>
+            <button onclick="salvarColaborador()" style="background:var(--primary); color:white; border:none; padding:10px; border-radius:5px; cursor:pointer;">Salvar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_URL = 'https://sistema-desempenho-production.up.railway.app/colaboradores';
+
+    function abrirModal() { document.getElementById('meuModal').style.display = 'block'; }
+    function fecharModal() { document.getElementById('meuModal').style.display = 'none'; }
+
+    async function carregarColaboradores() {
+        const corpoTabela = document.getElementById('tabelaCorpo');
+        try {
+            const response = await fetch(API_URL);
+            const dados = await response.json();
+            corpoTabela.innerHTML = "";
+            dados.forEach(p => {
+                corpoTabela.innerHTML += `
+                    <tr>
+                        <td>#${p.pessoa_id}</td>
+                        <td>${p.nome}</td>
+                        <td>${p.cpf}</td>
+                        <td>${new Date(p.nascimento).toLocaleDateString('pt-BR')}</td>
+                    </tr>`;
+            });
+        } catch (e) { console.error(e); }
+    }
+
+    async function salvarColaborador() {
+        const nome = document.getElementById('nomePessoa').value;
+        const cpf = document.getElementById('cpfPessoa').value;
+        const nascimento = document.getElementById('nascimentoPessoa').value;
+
+        if(!nome || !cpf || !nascimento) return alert("Preencha tudo!");
+
+        try {
+            const res = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome, cpf, nascimento })
+            });
+
+            if(res.ok) {
+                alert("Cadastrado!");
+                fecharModal();
+                carregarColaboradores(); // Atualiza a lista na hora
+            }
+        } catch (e) { alert("Erro ao salvar"); }
+    }
+
+    carregarColaboradores();
+</script>
+</body>
+</html>
