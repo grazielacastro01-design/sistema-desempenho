@@ -1,61 +1,28 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="h-full">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Desempenho</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    * { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .overlay-bg { background: rgba(0,0,0,0.5); }
-    .logo-header { width: 50px; height: 50px; object-fit: contain; border-radius: 4px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Desempenho - Sine Municipal</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background-color: #f8f9fa; color: #333; }
+        header { background: #004085; color: white; padding: 80px 20px; text-align: center; }
+        .container { max-width: 800px; margin: 40px auto; text-align: center; padding: 20px; }
+        h1 { margin: 0; font-size: 2.5rem; }
+        p { font-size: 1.2rem; color: #666; }
+        .btn-acessar { background: #28a745; color: white; padding: 15px 40px; text-decoration: none; border-radius: 30px; font-weight: bold; display: inline-block; margin-top: 20px; transition: 0.3s; }
+        .btn-acessar:hover { background: #218838; transform: scale(1.05); }
+    </style>
 </head>
-<body class="h-full bg-gray-50">
-
-<header class="bg-slate-800 text-white shadow-lg">
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center h-16 gap-4">
-    <img src="logo.jpg" alt="Logo" class="logo-header">
-    <h1 class="text-xl font-bold">Sistema de Desempenho</h1>
-    <nav class="ml-auto hidden md:flex gap-6">
-      <a href="index.html" class="text-emerald-400 font-medium">Início</a>
-      <a href="cadastrar.html" class="text-slate-300 hover:text-white font-medium">Colaboradores</a>
-      <a href="metas.html" class="text-slate-300 hover:text-white font-medium">Metas</a>
-      <a href="avaliacoes.html" class="text-slate-300 hover:text-white font-medium">Avaliações</a>
-      <a href="relatorios.html" class="text-slate-300 hover:text-white font-medium">Relatórios</a>
-    </nav>
-  </div>
-</header>
-
-<section class="relative h-[60vh] bg-cover bg-center flex items-center justify-center" style="background-image: url('fundo.jpg');">
-  <div class="overlay-bg absolute inset-0"></div>
-  <div class="relative text-center text-white px-4">
-    <h2 class="text-4xl font-bold mb-4">Bem-vindo ao Painel de Gestão</h2>
-    <p class="text-lg max-w-2xl mx-auto text-slate-200">Gerencie sua equipe, acompanhe metas e registre evoluções em um só lugar.</p>
-  </div>
-</section>
-
-<section class="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-  <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-blue-500">
-    <h4 class="text-lg font-bold mb-2">Colaboradores</h4>
-    <p class="text-slate-600 mb-4 text-sm">Cadastre novos membros na equipe.</p>
-    <a href="cadastrar.html" class="w-full py-2 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg inline-block text-center transition">Acessar</a>
-  </div>
-  <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-emerald-500">
-    <h4 class="text-lg font-bold mb-2">Metas</h4>
-    <p class="text-slate-600 mb-4 text-sm">Defina prazos e objetivos.</p>
-    <a href="metas.html" class="w-full py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-medium rounded-lg inline-block text-center transition">Acessar</a>
-  </div>
-  <div class="bg-white rounded-xl shadow-md p-6 border-t-4 border-rose-500">
-    <h4 class="text-lg font-bold mb-2">Relatórios</h4>
-    <p class="text-slate-600 mb-4 text-sm">Veja os resultados salvos.</p>
-    <a href="relatorios.html" class="w-full py-2 bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-lg inline-block text-center transition">Acessar</a>
-  </div>
-</section>
-
-<footer class="bg-slate-800 text-slate-400 py-6 text-center mt-auto">
-  © 2026 Sistema de Desempenho Profissional
-</footer>
+<body>
+    <header>
+        <h1>Gestão de Desempenho e Currículos</h1>
+        <p>Solução inteligente para o Sine Municipal de Caucaia.</p>
+    </header>
+    <div class="container">
+        <h2>Bem-vinda, Graziela!</h2>
+        <p>Este sistema permite organizar candidatos e analisar indicadores de produtividade de forma simplificada.</p>
+        <a href="login.html" class="btn-acessar">ENTRAR NO SISTEMA</a>
+    </div>
 </body>
 </html>

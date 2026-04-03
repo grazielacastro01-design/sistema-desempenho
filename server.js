@@ -8,11 +8,10 @@ const app = express();
 // Configurações essenciais
 app.use(cors());
 app.use(express.json());
-// Serve os arquivos HTML (index, cadastrar, etc) automaticamente
+// Serve os arquivos HTML (index, cadastrar, login, etc) automaticamente
 app.use(express.static(path.join(__dirname)));
 
-// --- ATUALIZAÇÃO DA CONEXÃO ---
-// O Railway prefere usar a URL completa (mysql://...) para evitar erros de rede local
+// --- CONEXÃO COM O BANCO ---
 const db = mysql.createConnection(process.env.MYSQL_URL || {
     host: process.env.MYSQLHOST,
     user: process.env.MYSQLUSER,
@@ -30,17 +29,32 @@ db.connect((err) => {
     console.log('✅ SUCESSO: Conectado ao MySQL do Railway!');
 });
 
-// Rota para Cadastrar
+// --- ROTA: CADASTRAR PESSOA (SINE) ---
 app.post('/cadastrar', (req, res) => {
     const { nome, cpf, nascimento, telefone, pessoa_tipo_id } = req.body;
     const sql = "INSERT INTO tbPessoa (nome, cpf, nascimento, telefone, pessoa_tipo_id) VALUES (?, ?, ?, ?, ?)";
     
     db.query(sql, [nome, cpf, nascimento, telefone, pessoa_tipo_id], (err, result) => {
         if (err) {
-            console.error('Erro ao inserir:', err);
+            console.error('Erro ao inserir pessoa:', err);
             return res.status(500).send("Erro ao salvar no banco");
         }
         res.status(200).send("Cadastrado com sucesso!");
+    });
+});
+
+// --- ROTA: CADASTRAR NOVO USUÁRIO (SISTEMA) ---
+// Esta é a rota que fará o botão "Finalizar Cadastro" funcionar
+app.post('/cadastrar-usuario', (req, res) => {
+    const { nome, email, senha } = req.body;
+    const sql = "INSERT INTO tbUsuarios (nome, email, senha) VALUES (?, ?, ?)";
+    
+    db.query(sql, [nome, email, senha], (err, result) => {
+        if (err) {
+            console.error('Erro ao inserir usuário:', err);
+            return res.status(500).send("Erro ao cadastrar usuário");
+        }
+        res.status(200).send("Usuário cadastrado com sucesso!");
     });
 });
 
