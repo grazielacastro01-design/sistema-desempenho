@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SGP - Sistema de Gestão de Performance</title>
+    <title>Sistema de Desempenho de Funcionários</title>
+    <link rel="icon" type="image/x-icon" href="logo.jpg">
+    
     <style>
         :root {
             --primary: #004085;
@@ -18,11 +20,11 @@
             overflow: hidden;
         }
 
-        /* Fundo do sistema usando fundo.jpg */
         .hero {
             height: 100vh;
-            background: linear-gradient(rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0.7)), 
-                        url('fundo.jpg'); /* Sua imagem de fundo */
+            /* Usando fundo azul suave se a imagem falhar, e a imagem de fundo */
+            background: linear-gradient(rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8)), 
+                        url('fundo.jpg'); 
             background-size: cover;
             background-position: center;
             display: flex;
@@ -33,19 +35,23 @@
             padding: 0 20px;
         }
 
-        /* Título Principal */
+        /* ESTILO PARA A LOGO APARECER NO MEIO DA PÁGINA TAMBÉM */
+        .logo-img {
+            max-width: 150px;
+            margin-bottom: 20px;
+        }
+
         .hero h1 {
             color: var(--primary);
-            font-size: 3.2rem;
+            font-size: 2.8rem;
             margin-bottom: 20px;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: -1px;
         }
 
-        /* FRASE PROFISSIONAL ATUALIZADA */
         .hero p {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             max-width: 800px;
             margin-bottom: 40px;
             color: #2c3e50;
@@ -53,7 +59,6 @@
             font-weight: 400;
         }
 
-        /* Botões */
         .btn-group {
             display: flex;
             gap: 20px;
@@ -102,10 +107,12 @@
 <body>
 
     <section class="hero">
-        <h1>Sistema de Desempenho de Funcionário</h1>
+        <img src="logo.jpg" alt="Logo" class="logo-img">
+        
+        <h1>Sistema de Desempenho de Funcionários</h1>
         
         <p>Potencialize a gestão de talentos com monitoramento estratégico, 
-           análise de indicadores de performance e feedbacks assertivos para o crescimento organizacional.</p>
+           análise de indicadores de performance e feedbacks assertivos.</p>
         
         <div class="btn-group">
             <a href="login.html" class="btn btn-login">Acessar Sistema</a>
