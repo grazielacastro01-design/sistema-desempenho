@@ -3,101 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Controle - Sistema de Desempenho</title>
+    <title>SGP - Sistema de Gestão de Performance</title>
     <style>
-        :root { --primary: #004085; --bg: #f4f7f6; --text: #333; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--bg); margin: 0; color: var(--text); }
-        
-        /* Cabeçalho Limpo */
-        .header { background: var(--primary); color: white; padding: 1rem 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .header strong { font-size: 1.2rem; letter-spacing: 1px; }
-        
-        .container { padding: 40px 5%; max-width: 1200px; margin: auto; }
-        
-        .welcome-section { margin-bottom: 30px; }
-        h1 { color: var(--primary); margin: 0; font-size: 2rem; }
-        .subtitle { color: #666; margin-top: 5px; }
+        /* Configurações Gerais */
+        :root {
+            --primary: #004085;
+            --accent: #007bff;
+            --white: #ffffff;
+            --overlay: rgba(0, 0, 0, 0.5); /* Escurece a foto para o texto aparecer */
+        }
 
-        /* Grid de Funcionalidades */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-top: 20px; }
-        
-        .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: 0.3s; text-align: center; border: 1px solid #eee; }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); border-color: var(--primary); }
-        
-        .card h3 { margin: 15px 0 10px 0; color: var(--primary); font-size: 1.3rem; }
-        .card p { color: #777; font-size: 0.95rem; line-height: 1.4; margin-bottom: 20px; }
-        
-        .btn { display: inline-block; padding: 12px 25px; background: var(--primary); color: white; text-decoration: none; border-radius: 6px; font-weight: bold; transition: 0.2s; }
-        .btn:hover { background: #002d5e; }
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
 
-        .logout-btn { background: #dc3545; color: white; border: none; padding: 8px 18px; border-radius: 5px; cursor: pointer; font-weight: bold; }
-        .logout-btn:hover { background: #a71d2a; }
+        /* Navbar Transparente sobre a Imagem */
+        .navbar {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            box-sizing: border-box;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
 
-        footer { text-align: center; margin-top: 50px; color: #999; font-size: 0.85rem; padding-bottom: 20px; }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .logo-icon {
+            background: var(--white);
+            color: var(--primary);
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+        }
+
+        /* LANDING PAGE (HERO SECTION) */
+        .hero {
+            height: 100vh;
+            /* IMAGEM DE FUNDO AQUI */
+            background: linear-gradient(var(--overlay), var(--overlay)), 
+                        url('https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin: 0;
+            letter-spacing: 2px;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 20px 0 40px;
+            opacity: 0.9;
+        }
+
+        /* Botões de Ação */
+        .btn-container {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 50px;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: var(--white);
+            color: var(--primary);
+        }
+
+        .btn-outline {
+            border: 2px solid var(--white);
+            color: var(--white);
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
-    <header class="header">
-        <div><strong>SISTEMA DE DESEMPENHO</strong></div>
+    <nav class="navbar">
+        <div class="logo-area">
+            <div class="logo-icon">SGP</div>
+            <span>Gestão de Performance</span>
+        </div>
         <div>
-            <span id="nomeDisplay" style="margin-right: 15px; font-weight: 500;">Usuário</span>
+            <span id="userName" style="color: white; margin-right: 20px;">Olá!</span>
             <button class="logout-btn" onclick="sair()">Sair</button>
         </div>
-    </header>
+    </nav>
 
-    <div class="container">
-        <div class="welcome-section">
-            <h1 id="saudacao">Bem-vinda!</h1>
-            <p class="subtitle">Gestão acadêmica de performance, metas e indicadores.</p>
+    <section class="hero">
+        <h1 id="boasVindas">Bem-vinda ao Sistema</h1>
+        <p>Acompanhe metas, realize avaliações de desempenho e gerencie feedbacks periódicos da sua equipe em um só lugar.</p>
+        
+        <div class="btn-container">
+            <a href="colaboradores.html" class="btn btn-primary">Ver Colaboradores</a>
+            <a href="#" class="btn btn-outline">Nova Avaliação</a>
         </div>
-
-        <div class="grid">
-            <div class="card">
-                <div style="font-size: 40px;">👥</div>
-                <h3>Colaboradores</h3>
-                <p>Gestão de membros da equipe, cargos e dados cadastrais.</p>
-                <a href="colaboradores.html" class="btn">Acessar</a>
-            </div>
-
-            <div class="card">
-                <div style="font-size: 40px;">📝</div>
-                <h3>Avaliações</h3>
-                <p>Realizar ciclos de performance, autoavaliações e feedbacks.</p>
-                <a href="#" class="btn">Iniciar</a>
-            </div>
-
-            <div class="card">
-                <div style="font-size: 40px;">🎯</div>
-                <h3>Metas & OKRs</h3>
-                <p>Definição de objetivos e acompanhamento de indicadores.</p>
-                <a href="#" class="btn">Gerenciar</a>
-            </div>
-
-            <div class="card">
-                <div style="font-size: 40px;">📊</div>
-                <h3>Relatórios</h3>
-                <p>Análise de resultados e exportação de desempenho em PDF.</p>
-                <a href="#" class="btn">Visualizar</a>
-            </div>
-        </div>
-
-        <footer>
-            Projeto Acadêmico - Sistema de Gestão de Desempenho de Funcionários
-        </footer>
-    </div>
+    </section>
 
     <script>
-        // Lógica de Autenticação e Personalização
-        const nomeCompleto = localStorage.getItem('usuarioLogado');
+        const nomeLogado = localStorage.getItem('usuarioLogado');
 
-        if (!nomeCompleto) {
+        if (!nomeLogado) {
             window.location.href = 'login.html';
         } else {
-            // Pega apenas o primeiro nome para a saudação
-            const primeiroNome = nomeCompleto.split(' ')[0];
-            document.getElementById('nomeDisplay').innerText = nomeCompleto;
-            document.getElementById('saudacao').innerText = 'Olá, ' + primeiroNome + '! 👋';
+            const primeiroNome = nomeLogado.split(' ')[0];
+            document.getElementById('userName').innerText = 'Olá, ' + primeiroNome;
+            document.getElementById('boasVindas').innerText = 'Bem-vinda, ' + primeiroNome + '!';
         }
 
         function sair() {
@@ -105,5 +161,6 @@
             window.location.href = 'login.html';
         }
     </script>
+
 </body>
 </html>
