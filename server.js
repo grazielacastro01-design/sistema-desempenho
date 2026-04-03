@@ -17,7 +17,7 @@ db.connect((err) => {
     console.log('Conectado ao Banco de Dados do Railway!');
 });
 
-// --- ROTA DE CADASTRO ---
+// --- ROTA DE CADASTRO DE USUÁRIO (Login do Sistema) ---
 app.post('/cadastrar-usuario', (req, res) => {
     const { nome, email, senha } = req.body;
     const query = 'INSERT INTO tbUsuarios (nome, login, senha) VALUES (?, ?, ?)';
@@ -31,7 +31,7 @@ app.post('/cadastrar-usuario', (req, res) => {
     });
 });
 
-// --- ROTA DE LOGIN (NOVIDADE!) ---
+// --- ROTA DE LOGIN ---
 app.post('/login', (req, res) => {
     const { email, senha } = req.body;
     const query = 'SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?';
@@ -43,12 +43,37 @@ app.post('/login', (req, res) => {
         }
 
         if (results.length > 0) {
-            // Se encontrou o usuário, retorna sucesso
             res.status(200).json({ message: 'Login realizado!', user: results[0] });
         } else {
-            // Se não encontrou, retorna erro de credenciais
             res.status(401).json({ message: 'E-mail ou senha incorretos.' });
         }
+    });
+});
+
+// --- ROTA PARA LISTAR COLABORADORES (Puxa da tbPessoas) ---
+app.get('/colaboradores', (req, res) => {
+    const query = 'SELECT * FROM tbPessoas';
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar colaboradores:', err);
+            return res.status(500).json({ message: 'Erro ao buscar dados.' });
+        }
+        res.status(200).json(results);
+    });
+});
+
+// --- ROTA PARA CADASTRAR NOVO COLABORADOR (Insere na tbPessoas) ---
+app.post('/colaboradores', (req, res) => {
+    const { nome, cpf, nascimento } = req.body;
+    const query = 'INSERT INTO tbPessoas (nome, cpf, nascimento) VALUES (?, ?, ?)';
+
+    db.query(query, [nome, cpf, nascimento], (err, result) => {
+        if (err) {
+            console.error('Erro ao inserir colaborador:', err);
+            return res.status(500).json({ message: 'Erro ao salvar colaborador.' });
+        }
+        res.status(201).json({ message: 'Colaborador cadastrado com sucesso!' });
     });
 });
 
