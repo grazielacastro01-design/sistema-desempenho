@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Desempenho de Funcionário</title>
+    <title>SGP - Sistema de Gestão de Performance</title>
     <style>
         :root {
             --primary: #004085;
-            --overlay: rgba(255, 255, 255, 0.85);
+            --white: #ffffff;
+            --overlay: rgba(255, 255, 255, 0.9); /* Overlay claro para combinar com o fundo */
         }
 
         body, html {
@@ -15,14 +16,14 @@
             padding: 0;
             height: 100%;
             font-family: 'Segoe UI', Arial, sans-serif;
-            overflow: hidden;
+            overflow: hidden; /* Mantém a tela limpa */
         }
 
-        /* Hero Section usando seu arquivo fundo.jpg */
+        /* Fundo do sistema (Sua imagem image_1.png) */
         .hero {
             height: 100vh;
             background: linear-gradient(var(--overlay), var(--overlay)), 
-                        url('fundo.jpg'); 
+                        url('image_1.png'); /* Nome do seu arquivo de fundo aqui */
             background-size: cover;
             background-position: center;
             display: flex;
@@ -30,61 +31,74 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 0 20px;
+            color: #333; /* Texto escuro sobre fundo claro */
         }
 
-        /* Logo usando seu arquivo logo.jpg */
-        .logo-container img {
-            height: 220px;
-            width: auto;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            margin-bottom: 25px;
-        }
-
-        h1 { 
-            color: var(--primary); 
-            font-size: 2.8rem; 
-            margin: 10px 0; 
+        /* Estilo do título e descrição */
+        .hero h1 {
+            color: var(--primary);
+            font-size: 3.5rem;
+            margin: 0 0 15px 0;
             text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
-        p { 
-            color: #444; 
-            font-size: 1.2rem; 
-            margin-bottom: 40px; 
-            max-width: 700px; 
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 650px;
+            margin-bottom: 50px;
+            opacity: 0.9;
+            color: #555;
             font-weight: 500;
         }
 
-        .btn-group { display: flex; gap: 20px; }
-        
+        /* Botões de Direcionamento */
+        .btn-group {
+            display: flex;
+            gap: 20px;
+        }
+
         .btn {
             padding: 16px 45px;
             text-decoration: none;
             font-weight: bold;
             border-radius: 8px;
             transition: 0.3s;
+            font-size: 1.1rem;
             text-transform: uppercase;
         }
 
-        .btn-login { background-color: var(--primary); color: white; border: 2px solid var(--primary); }
-        .btn-register { border: 2px solid var(--primary); color: var(--primary); background: transparent; }
+        .btn-login {
+            background-color: var(--primary);
+            color: white;
+            border: 2px solid var(--primary);
+        }
 
-        .btn:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .btn-register {
+            background-color: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
 
-        footer { position: absolute; bottom: 20px; font-size: 0.8rem; color: #777; }
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        /* Footer discreto */
+        footer {
+            position: absolute;
+            bottom: 20px;
+            font-size: 0.8rem;
+            color: #999;
+        }
     </style>
 </head>
 <body>
 
     <section class="hero">
-        <div class="logo-container">
-            <img src="logo.jpg" alt="Logo do Sistema">
-        </div>
-
         <h1>Sistema de Desempenho de Funcionário</h1>
-        <p>Gestão estratégica de talentos, acompanhamento de metas e avaliações periódicas para o crescimento profissional.</p>
+        <p>A solução acadêmica completa para avaliação de desempenho, acompanhamento de metas e feedbacks contínuos.</p>
         
         <div class="btn-group">
             <a href="login.html" class="btn btn-login">Acessar Sistema</a>
