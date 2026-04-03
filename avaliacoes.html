@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Avaliações - Sistema de Desempenho</title>
+  <title>Avaliações - Sistema de Desempenho de Funcionário</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -18,9 +18,9 @@
   <div class="max-w-7xl mx-auto px-4 flex items-center h-16 gap-4">
     <img src="logo.jpg" alt="Logo" class="logo-header">
     <nav class="ml-auto flex gap-6">
-      <a href="index.html" class="text-slate-300 hover:text-white">Início</a>
+      <a href="painel.html" class="text-slate-300 hover:text-white">Painel</a>
+      <a href="colaboradores.html" class="text-slate-300 hover:text-white">Colaboradores</a>
       <a href="avaliacoes.html" class="text-orange-400 font-medium">Avaliações</a>
-      <a href="relatorios.html" class="text-slate-300 hover:text-white">Relatórios</a>
     </nav>
   </div>
 </header>
@@ -44,36 +44,76 @@
         <input type="number" id="nota" min="0" max="10" required placeholder="Ex: 9.5" step="0.1" class="w-full border border-slate-200 p-2.5 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
       </div>
       <div>
-        <label class="block text-sm font-semibold mb-1">Feedback Escrito</label>
-        <textarea id="feedback" placeholder="Pontos positivos e de melhoria..." class="w-full border border-slate-200 p-2.5 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none h-24"></textarea>
+        <label class="block text-sm font-semibold mb-1">Data da Avaliação</label>
+        <input type="date" id="data_avaliacao" required class="w-full border border-slate-200 p-2.5 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none">
       </div>
-      <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-lg shadow-lg transition transform hover:-translate-y-0.5">Salvar Avaliação</button>
+      <button type="submit" id="btnSalvar" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-lg shadow-lg transition transform hover:-translate-y-0.5">Salvar Avaliação</button>
     </form>
   </div>
 </main>
 
 <script>
-  function popularSelect() {
-    const select = document.getElementById('selectColaborador');
-    const colaboradores = JSON.parse(localStorage.getItem('colaboradores')) || [];
-    
-    if (colaboradores.length === 0) {
-      select.innerHTML = '<option value="">Nenhum colaborador encontrado</option>';
-      return;
-    }
+  const API_URL = 'https://sistema-desempenho-production.up.railway.app';
 
-    select.innerHTML = '<option value="">Escolha um funcionário</option>';
-    colaboradores.forEach(c => {
-      select.innerHTML += `<option value="${c.nome}">${c.nome}</option>`;
-    });
+  // 1. Busca os colaboradores do BANCO DE DADOS
+  async function popularSelect() {
+    const select = document.getElementById('selectColaborador');
+    try {
+      const response = await fetch(`${API_URL}/colaboradores`);
+      const colaboradores = await response.json();
+      
+      select.innerHTML = '<option value="">Escolha um funcionário</option>';
+      colaboradores.forEach(c => {
+        // Usamos o ID como valor para salvar corretamente no banco
+        select.innerHTML += `<option value="${c.pessoa_id}">${c.nome}</option>`;
+      });
+    } catch (error) {
+      console.error('Erro ao carregar:', error);
+      select.innerHTML = '<option value="">Erro ao carregar lista</option>';
+    }
   }
 
-  document.getElementById('formAvaliacao').addEventListener('submit', function(e) {
+  // 2. Salva a avaliação no BANCO DE DADOS
+  document.getElementById('formAvaliacao').addEventListener('submit', async function(e) {
     e.preventDefault();
-    Swal.fire({ title: 'Avaliação Registrada!', text: 'A nota foi salva no sistema.', icon: 'success', confirmButtonColor: '#c2410c' });
-    this.reset();
+    const btn = document.getElementById('btnSalvar');
+    
+    const dados = {
+      pessoa_id: document.getElementById('selectColaborador').value,
+      nota: document.getElementById('nota').value,
+      data_avaliacao: document.getElementById('data_avaliacao').value
+    };
+
+    btn.disabled = true;
+    btn.innerText = "Salvando...";
+
+    try {
+      const response = await fetch(`${API_URL}/avaliacoes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dados)
+      });
+
+      if (response.ok) {
+        Swal.fire({ 
+            title: 'Avaliação Registrada!', 
+            text: 'A nota foi salva com sucesso no banco de dados.', 
+            icon: 'success', 
+            confirmButtonColor: '#c2410c' 
+        });
+        this.reset();
+      } else {
+        alert("Erro ao salvar avaliação.");
+      }
+    } catch (error) {
+      alert("Erro de conexão com o servidor.");
+    } finally {
+      btn.disabled = false;
+      btn.innerText = "Salvar Avaliação";
+    }
   });
 
+  // Inicializa a lista
   popularSelect();
 </script>
 </body>
