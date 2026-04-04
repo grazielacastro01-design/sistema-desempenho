@@ -5,55 +5,58 @@ const bodyParser = require('body-parser');
 const path = require('path');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 3000; // O servidor do seu site continua rodando na 3000
 
-// Configurações para o servidor entender JSON e formulários
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// Servir os arquivos estáticos (HTML, CSS) para o navegador
 app.use(express.static(path.join(__dirname, '/')));
 
-// --- CONEXÃO REAL COM O BANCO DE DADOS (RAILWAY) ---
+// --- CONEXÃO CONFIGURADA PARA O BANCO OFICIAL NO RAILWAY ---
 const db = mysql.createConnection({
-    host: 'autorack.proxy.rlwy.net',
+    host: 'shuttle.proxy.rlwy.net',
     user: 'root',
-    password: 'EdiCrrOOgyNiSQtDJYSXaHKWetNCFiiO',
+    password: 'HMhYIbGRRSVOFiROAVJdwKynxQakxiIq',
     database: 'railway',
-    port: 42256
+    port: 30041 
 });
 
 db.connect((err) => {
     if (err) {
-        console.error('❌ Erro ao conectar ao MySQL do Railway:', err);
+        console.error('❌ Erro ao conectar no Railway:', err.message);
+        console.log('DICA: Verifique se sua internet está ativa e se os dados do Railway no painel continuam os mesmos.');
         return;
     }
-    console.log('✅ Conectado ao Banco de Dados do Railway com sucesso!');
+    console.log('✅ CONECTADO AO BANCO OFICIAL NA NUVEM!');
 });
 
-// --- ROTAS DO SISTEMA ---
-
-// 1. Rota de Login (Consultando a sua tbUsuarios)
+// --- ROTA DE LOGIN ---
 app.post('/login', (req, res) => {
     const { login, senha } = req.body;
     const sql = "SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?";
     
     db.query(sql, [login, senha], (err, results) => {
-        if (err) return res.status(500).json({ error: err.message });
+        if (err) {
+            console.error('Erro na consulta:', err);
+            return res.status(500).json({ error: err.message });
+        }
+        
         if (results.length > 0) {
+            // Login correto - agora buscando do Railway!
             res.status(200).json({ message: "Sucesso", user: results[0] });
         } else {
+            // Login ou senha errados
             res.status(401).json({ message: "Login ou senha incorretos" });
         }
     });
 });
 
-// Rota para abrir a Landing Page
+// Rota para carregar sua página principal (index.html)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(port, () => {
-    console.log(`🚀 Servidor rodando em http://localhost:${port}`);
+    console.log(`🚀 Servidor local rodando em http://localhost:${port}`);
+    console.log(`📡 Conectado remotamente ao banco de dados no Railway`);
 });
