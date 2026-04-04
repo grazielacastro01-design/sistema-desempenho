@@ -1,18 +1,16 @@
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(express.static(path.join(__dirname, '/')));
 
-// --- CONEXÃO COM RAILWAY ---
+// --- CONEXÃO RAILWAY ---
 const db = mysql.createConnection({
     host: 'shuttle.proxy.rlwy.net',
     user: 'root',
@@ -23,13 +21,13 @@ const db = mysql.createConnection({
 
 db.connect((err) => {
     if (err) {
-        console.error('❌ Erro ao conectar no Railway:', err.message);
+        console.error('❌ Erro no Railway:', err.message);
         return;
     }
-    console.log('✅ CONECTADO AO BANCO NO RAILWAY!');
+    console.log('✅ CONECTADO AO BANCO!');
 });
 
-// --- ROTA DE LOGIN (Sprint 4) ---
+// --- ROTA DE LOGIN ---
 app.post('/login', (req, res) => {
     const { login, senha } = req.body;
     const sql = "SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?";
@@ -43,22 +41,31 @@ app.post('/login', (req, res) => {
     });
 });
 
-// --- ROTA DE CADASTRO DE PESSOAS (Sprint 5) ---
-app.post('/cadastrar-funcionario', (req, res) => {
-    const { nome, cpf, nascimento, telefone, pessoa_tipo_id } = req.body;
-
-    const sql = "INSERT INTO tbPessoas (nome, cpf, nascimento, telefone, pessoa_tipo_id) VALUES (?, ?, ?, ?, ?)";
+// --- ROTA DE CADASTRO DE USUÁRIO (Sprint 5) ---
+app.post('/cadastrar-usuario', (req, res) => {
+    const { nome, login, senha } = req.body;
+    const sql = "INSERT INTO tbUsuarios (nome, login, senha) VALUES (?, ?, ?)";
     
-    db.query(sql, [nome, cpf, nascimento, telefone, pessoa_tipo_id], (err, result) => {
+    db.query(sql, [nome, login, senha], (err, result) => {
         if (err) {
-            console.error('Erro ao inserir:', err);
-            return res.status(500).send("Erro ao salvar no banco: " + err.message);
+            console.error('Erro ao cadastrar:', err);
+            return res.status(500).json({ error: "Erro ao salvar usuário." });
         }
-        res.status(201).send("Sucesso");
+        res.status(201).json({ message: "Sucesso" });
     });
 });
 
-app.get('/', (req, res) => {
+// Rota para cadastrar pessoas/funcionários (Opcional para a Sprint 5, mas bom ter)
+app.post('/cadastrar-funcionario', (req, res) => {
+    const { nome, cpf, nascimento, telefone, pessoa_tipo_id } = req.body;
+    const sql = "INSERT INTO tbPessoas (nome, cpf, nascimento, telefone, pessoa_tipo_id) VALUES (?, ?, ?, ?, ?)";
+    db.query(sql, [nome, cpf, nascimento, telefone, pessoa_tipo_id], (err, result) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.status(201).json({ message: "Sucesso" });
+    });
+});
+
+app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
