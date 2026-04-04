@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '/')));
 
-// --- CONEXÃO RAILWAY (Dados da sua imagem) ---
+// --- CONEXÃO RAILWAY ---
 const db = mysql.createConnection({
     host: 'shuttle.proxy.rlwy.net',
     user: 'root',
@@ -25,17 +25,29 @@ db.connect((err) => {
     console.log('✅ Banco de Dados Conectado!');
 });
 
-// --- ROTA DE CADASTRO (Sprint 5) ---
+// --- ROTA DE CADASTRO (Sprint 5 Atualizada) ---
 app.post('/cadastrar-usuario', (req, res) => {
     const { nome, login, senha } = req.body;
-    // Usando as colunas: nome, login, senha (conforme sua imagem do Railway)
+    
+    // Log para você ver no terminal do VS Code/Railway se os dados chegaram
+    console.log("Recebendo tentativa de cadastro para o login:", login);
+
     const sql = "INSERT INTO tbUsuarios (nome, login, senha) VALUES (?, ?, ?)";
     
     db.query(sql, [nome, login, senha], (err, result) => {
         if (err) {
-            console.error(err);
-            return res.status(500).json({ error: "Erro ao salvar" });
+            console.error('ERRO DETALHADO NO BANCO:', err);
+            
+            // Se o erro for de login duplicado (ER_DUP_ENTRY)
+            if (err.code === 'ER_DUP_ENTRY') {
+                return res.status(409).json({ error: "Este login já existe!" });
+            }
+            
+            // Se for qualquer outro erro (coluna errada, conexão, etc)
+            return res.status(500).json({ error: "Erro ao salvar no banco: " + err.message });
         }
+        
+        console.log("✅ Usuário cadastrado com sucesso!");
         res.status(201).json({ message: "Sucesso" });
     });
 });
@@ -50,6 +62,7 @@ app.post('/login', (req, res) => {
     });
 });
 
+// Garante que o index.html seja servido em qualquer outra rota
 app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
-app.listen(port, () => console.log(`🚀 Servidor na porta ${port}`));
+app.listen(port, () => console.log(`🚀 Servidor rodando na porta ${port}`));
