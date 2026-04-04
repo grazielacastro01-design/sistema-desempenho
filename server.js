@@ -6,8 +6,10 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Configurações essenciais para evitar erro de conexão
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '/')));
 
 // --- CONEXÃO RAILWAY ---
@@ -27,6 +29,22 @@ db.connect((err) => {
     console.log('✅ CONECTADO AO BANCO!');
 });
 
+// --- ROTA DE CADASTRO DE USUÁRIO (Sprint 5) ---
+app.post('/cadastrar-usuario', (req, res) => {
+    const { nome, login, senha } = req.body;
+    
+    // Alinhado com as colunas da sua tabela no Railway: nome, login, senha
+    const sql = "INSERT INTO tbUsuarios (nome, login, senha) VALUES (?, ?, ?)";
+    
+    db.query(sql, [nome, login, senha], (err, result) => {
+        if (err) {
+            console.error('Erro ao inserir no banco:', err);
+            return res.status(500).json({ error: "Erro ao salvar no banco de dados." });
+        }
+        res.status(201).json({ message: "Sucesso" });
+    });
+});
+
 // --- ROTA DE LOGIN ---
 app.post('/login', (req, res) => {
     const { login, senha } = req.body;
@@ -38,30 +56,6 @@ app.post('/login', (req, res) => {
         } else {
             res.status(401).json({ message: "Incorreto" });
         }
-    });
-});
-
-// --- ROTA DE CADASTRO DE USUÁRIO (Sprint 5) ---
-app.post('/cadastrar-usuario', (req, res) => {
-    const { nome, login, senha } = req.body;
-    const sql = "INSERT INTO tbUsuarios (nome, login, senha) VALUES (?, ?, ?)";
-    
-    db.query(sql, [nome, login, senha], (err, result) => {
-        if (err) {
-            console.error('Erro ao cadastrar:', err);
-            return res.status(500).json({ error: "Erro ao salvar usuário." });
-        }
-        res.status(201).json({ message: "Sucesso" });
-    });
-});
-
-// Rota para cadastrar pessoas/funcionários (Opcional para a Sprint 5, mas bom ter)
-app.post('/cadastrar-funcionario', (req, res) => {
-    const { nome, cpf, nascimento, telefone, pessoa_tipo_id } = req.body;
-    const sql = "INSERT INTO tbPessoas (nome, cpf, nascimento, telefone, pessoa_tipo_id) VALUES (?, ?, ?, ?, ?)";
-    db.query(sql, [nome, cpf, nascimento, telefone, pessoa_tipo_id], (err, result) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.status(201).json({ message: "Sucesso" });
     });
 });
 

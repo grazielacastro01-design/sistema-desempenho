@@ -6,41 +6,40 @@
   <title>Cadastro | Sistema de Desempenho</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="h-full bg-slate-50 flex items-center justify-center p-4">
 
   <div class="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8 border border-slate-100">
     <div class="text-center mb-8">
       <h2 class="text-2xl font-bold text-slate-800">Novo Usuário</h2>
-      <p class="text-slate-500 mt-2 text-sm">Crie uma conta para acessar o sistema.</p>
+      <p class="text-slate-500 mt-2 text-sm">Crie sua conta para acessar o sistema.</p>
     </div>
 
     <form id="cadastroForm" class="space-y-5">
       <div>
         <label class="block text-sm font-semibold text-slate-700 mb-1">Nome Completo</label>
-        <input type="text" id="nome" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+        <input type="text" id="nome" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-500 transition-all">
       </div>
 
       <div>
         <label class="block text-sm font-semibold text-slate-700 mb-1">Login (Usuário)</label>
-        <input type="text" id="login" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+        <input type="text" id="login" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all">
       </div>
       
       <div>
         <label class="block text-sm font-semibold text-slate-700 mb-1">Senha</label>
-        <input type="password" id="senha" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+        <input type="password" id="senha" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 transition-all">
       </div>
 
-      <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 shadow-lg shadow-green-500/20 transition transform active:scale-95">
+      <button type="submit" class="w-full bg-green-600 text-white py-3 rounded-lg font-bold hover:bg-green-700 shadow-lg transition active:scale-95">
         Finalizar Cadastro
       </button>
     </form>
 
-    <p id="mensagem" class="mt-4 text-center text-sm font-medium"></p>
-
-    <div class="mt-8 text-center">
-      <a href="/" class="text-sm text-blue-600 hover:underline transition">
-        Já tem uma conta? Faça login
+    <div class="mt-8 text-center pt-6 border-t border-slate-100">
+      <a href="index.html" class="text-sm text-blue-600 font-semibold hover:underline">
+        ← Voltar para o Início
       </a>
     </div>
   </div>
@@ -48,34 +47,29 @@
   <script>
     document.getElementById('cadastroForm').addEventListener('submit', async (e) => {
       e.preventDefault();
+      
       const nome = document.getElementById('nome').value;
       const login = document.getElementById('login').value;
       const senha = document.getElementById('senha').value;
-      const mensagem = document.getElementById('mensagem');
 
       try {
+        // Envia para o próprio servidor onde o site está hospedado
         const response = await fetch('/cadastrar-usuario', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ nome, login, senha })
         });
 
-        // Tenta ler o JSON se a resposta for ok, senão trata o erro
-        const data = await response.json();
-
         if (response.ok) {
-          mensagem.className = "mt-4 text-center text-sm font-medium text-green-500";
-          mensagem.innerText = "Usuário cadastrado! Redirecionando...";
-          // AJUSTE REALIZADO: Volta para a raiz após o cadastro
-          setTimeout(() => { window.location.href = '/'; }, 2000);
+          Swal.fire('Sucesso!', 'Usuário cadastrado no banco!', 'success')
+            .then(() => { window.location.href = 'index.html'; });
         } else {
-          mensagem.className = "mt-4 text-center text-sm font-medium text-red-500";
-          mensagem.innerText = data.error || "Erro ao cadastrar.";
+          Swal.fire('Erro!', 'Falha ao cadastrar. Verifique o servidor.', 'error');
         }
       } catch (error) {
-        mensagem.className = "mt-4 text-center text-sm font-medium text-red-500";
-        mensagem.innerText = "Erro ao conectar com o servidor.";
-        console.error("Erro no fetch:", error);
+        // Se cair aqui, é porque a rota /cadastrar-usuario não foi encontrada ou o server está fora
+        Swal.fire('Erro de Conexão!', 'Não foi possível falar com o servidor.', 'error');
+        console.error('Erro:', error);
       }
     });
   </script>
