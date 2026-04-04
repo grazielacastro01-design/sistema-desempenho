@@ -11,39 +11,45 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '/')));
 
-// --- CONEXÃO RAILWAY ---
-const db = mysql.createConnection({
+// --- CONFIGURAÇÃO DE CONEXÃO COM POOL (Mais estável para o Railway) ---
+const db = mysql.createPool({
     host: 'shuttle.proxy.rlwy.net',
     user: 'root',
     password: 'HMhYIbGRRSVOFiROAVJdwKynxQakxiIq',
     database: 'railway',
-    port: 30041 
+    port: 30041,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
-db.connect((err) => {
-    if (err) return console.error('❌ Erro Railway:', err.message);
-    console.log('✅ Banco de Dados Conectado!');
+// Teste de conexão do Pool para garantir que o banco está online
+db.getConnection((err, connection) => {
+    if (err) {
+        console.error('❌ Erro ao conectar ao Railway via Pool:', err.message);
+    } else {
+        console.log('✅ Banco de Dados Conectado via Pool com sucesso!');
+        connection.release(); // Libera a conexão de teste de volta para o pool
+    }
 });
 
-// --- ROTA DE CADASTRO (Sprint 5 Atualizada) ---
+// --- ROTA DE CADASTRO (Sprint 5) ---
 app.post('/cadastrar-usuario', (req, res) => {
     const { nome, login, senha } = req.body;
     
-    // Log para você ver no terminal do VS Code/Railway se os dados chegaram
     console.log("Recebendo tentativa de cadastro para o login:", login);
 
     const sql = "INSERT INTO tbUsuarios (nome, login, senha) VALUES (?, ?, ?)";
     
+    // O pool gerencia a query automaticamente
     db.query(sql, [nome, login, senha], (err, result) => {
         if (err) {
             console.error('ERRO DETALHADO NO BANCO:', err);
             
-            // Se o erro for de login duplicado (ER_DUP_ENTRY)
             if (err.code === 'ER_DUP_ENTRY') {
                 return res.status(409).json({ error: "Este login já existe!" });
             }
             
-            // Se for qualquer outro erro (coluna errada, conexão, etc)
             return res.status(500).json({ error: "Erro ao salvar no banco: " + err.message });
         }
         
@@ -56,13 +62,19 @@ app.post('/cadastrar-usuario', (req, res) => {
 app.post('/login', (req, res) => {
     const { login, senha } = req.body;
     const sql = "SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?";
+    
     db.query(sql, [login, senha], (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
-        results.length > 0 ? res.status(200).json({ message: "Sucesso" }) : res.status(401).json({ message: "Erro" });
+        
+        if (results.length > 0) {
+            res.status(200).json({ message: "Sucesso" });
+        } else {
+            res.status(401).json({ message: "Usuário ou senha incorretos" });
+        }
     });
 });
 
-// Garante que o index.html seja servido em qualquer outra rota
+// Serve o index.html para qualquer rota não encontrada
 app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
 app.listen(port, () => console.log(`🚀 Servidor rodando na porta ${port}`));
