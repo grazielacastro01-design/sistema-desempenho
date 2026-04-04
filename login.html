@@ -18,15 +18,15 @@
       <p class="text-slate-500 mt-2 text-sm">Insira suas credenciais para continuar.</p>
     </div>
 
-    <form class="space-y-5">
+    <form id="loginForm" class="space-y-5">
       <div>
-        <label class="block text-sm font-semibold text-slate-700 mb-1">E-mail Corporativo</label>
-        <input type="email" placeholder="exemplo@empresa.com" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all">
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Login</label>
+        <input type="text" id="login" placeholder="Seu usuário" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all">
       </div>
       
       <div>
         <label class="block text-sm font-semibold text-slate-700 mb-1">Senha</label>
-        <input type="password" placeholder="••••••••" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all">
+        <input type="password" id="senha" placeholder="••••••••" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all">
       </div>
 
       <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 shadow-lg shadow-blue-500/20 transition transform active:scale-95">
@@ -34,12 +34,14 @@
       </button>
     </form>
 
+    <p id="mensagem" class="mt-4 text-center text-sm font-medium"></p>
+
     <div class="relative my-8">
       <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200"></div></div>
       <div class="relative flex justify-center text-xs uppercase"><span class="bg-white px-2 text-slate-400">Novo por aqui?</span></div>
     </div>
 
-    <button class="w-full border-2 border-slate-200 text-slate-600 py-3 rounded-lg font-bold hover:bg-slate-50 transition active:scale-95 flex items-center justify-center gap-2">
+    <button onclick="window.location.href='cadastro.html'" class="w-full border-2 border-slate-200 text-slate-600 py-3 rounded-lg font-bold hover:bg-slate-50 transition active:scale-95 flex items-center justify-center gap-2">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
         <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
       </svg>
@@ -52,6 +54,41 @@
       </a>
     </div>
   </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault(); // Impede a página de recarregar
+      
+      const login = document.getElementById('login').value;
+      const senha = document.getElementById('senha').value;
+      const mensagem = document.getElementById('mensagem');
+
+      try {
+        // Envia os dados para o seu server.js
+        const response = await fetch('/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ login, senha })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          mensagem.classList.remove('text-red-500');
+          mensagem.classList.add('text-green-500');
+          mensagem.innerText = "Login realizado com sucesso! Redirecionando...";
+          // Redireciona para o dashboard após 1.5s
+          setTimeout(() => { window.location.href = 'dashboard.html'; }, 1500);
+        } else {
+          mensagem.classList.add('text-red-500');
+          mensagem.innerText = data.message || "Erro ao fazer login.";
+        }
+      } catch (error) {
+        console.error('Erro:', error);
+        mensagem.innerText = "Erro ao conectar com o servidor.";
+      }
+    });
+  </script>
 
 </body>
 </html>
