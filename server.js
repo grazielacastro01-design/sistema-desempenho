@@ -5,14 +5,14 @@ const bodyParser = require('body-parser');
 const path = require('path');
 
 const app = express();
-const port = process.env.PORT || 3000; // Ajuste para funcionar na Vercel e Local
+const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '/')));
 
-// --- CONEXÃO CONFIGURADA PARA O BANCO OFICIAL NO RAILWAY ---
+// --- CONEXÃO COM RAILWAY ---
 const db = mysql.createConnection({
     host: 'shuttle.proxy.rlwy.net',
     user: 'root',
@@ -26,48 +26,38 @@ db.connect((err) => {
         console.error('❌ Erro ao conectar no Railway:', err.message);
         return;
     }
-    console.log('✅ CONECTADO AO BANCO OFICIAL NA NUVEM!');
+    console.log('✅ CONECTADO AO BANCO NO RAILWAY!');
 });
 
-// --- ROTA DE LOGIN (4ª Sprint) ---
+// --- ROTA DE LOGIN (Sprint 4) ---
 app.post('/login', (req, res) => {
     const { login, senha } = req.body;
     const sql = "SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?";
-    
     db.query(sql, [login, senha], (err, results) => {
-        if (err) {
-            console.error('Erro na consulta:', err);
-            return res.status(500).json({ error: err.message });
-        }
-        
+        if (err) return res.status(500).json({ error: err.message });
         if (results.length > 0) {
             res.status(200).json({ message: "Sucesso", user: results[0] });
         } else {
-            res.status(401).json({ message: "Login ou senha incorretos" });
+            res.status(401).json({ message: "Incorreto" });
         }
     });
 });
 
-// --- ROTA DE CADASTRO DE USUÁRIO (5ª Sprint - NOVA!) ---
-app.post('/cadastrar-usuario', (req, res) => {
-    const { nome, login, senha } = req.body;
+// --- ROTA DE CADASTRO DE PESSOAS (Sprint 5) ---
+app.post('/cadastrar-funcionario', (req, res) => {
+    const { nome, cpf, nascimento, telefone, pessoa_tipo_id } = req.body;
 
-    if (!nome || !login || !senha) {
-        return res.status(400).json({ error: "Preencha todos os campos!" });
-    }
-
-    const sql = "INSERT INTO tbUsuarios (nome, login, senha) VALUES (?, ?, ?)";
+    const sql = "INSERT INTO tbPessoas (nome, cpf, nascimento, telefone, pessoa_tipo_id) VALUES (?, ?, ?, ?, ?)";
     
-    db.query(sql, [nome, login, senha], (err, result) => {
+    db.query(sql, [nome, cpf, nascimento, telefone, pessoa_tipo_id], (err, result) => {
         if (err) {
-            console.error('Erro ao cadastrar:', err);
-            return res.status(500).json({ error: "Erro ao cadastrar usuário no banco." });
+            console.error('Erro ao inserir:', err);
+            return res.status(500).send("Erro ao salvar no banco: " + err.message);
         }
-        res.status(201).json({ message: "Usuário cadastrado com sucesso!", id: result.insertId });
+        res.status(201).send("Sucesso");
     });
 });
 
-// Rota para carregar sua página principal
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
