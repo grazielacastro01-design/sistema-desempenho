@@ -3,56 +3,80 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Desempenho | Gestão Eficiente</title>
+  <title>Gestão de Equipe | Sistema de Desempenho</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .bg-hero { 
-      background: linear-gradient(rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.85)), 
-      url('https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'); 
-      background-size: cover; background-position: center; 
-    }
-    .feature-card { transition: all 0.3s ease; }
-    .feature-card:hover { transform: translateY(-8px); }
   </style>
 </head>
-<body class="h-full flex flex-col bg-slate-50">
+<body class="bg-slate-50 h-full">
 
-  <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
-          </svg>
-        </div>
-        <span class="text-xl font-bold text-slate-800 tracking-tight">Sistema de Desempenho</span>
-      </div>
-      <div class="flex items-center gap-6">
-        <a href="login.html" class="text-slate-600 font-semibold hover:text-blue-600">Entrar</a>
-        <a href="cadastrar.html" class="bg-blue-600 text-white px-6 py-2.5 rounded-full font-bold shadow-md shadow-blue-100">Criar Conta</a>
-      </div>
+  <nav class="bg-white border-b border-slate-200 p-4 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <a href="dashboard.html" class="text-blue-600 font-bold flex items-center gap-2 hover:text-blue-700 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+        </svg>
+        Voltar ao Painel
+      </a>
+      <h1 class="text-lg font-bold text-slate-800">Gestão de Colaboradores</h1>
+      <div class="w-24"></div> 
     </div>
   </nav>
 
-  <main class="flex-grow">
-    <section class="bg-hero h-[60vh] flex items-center justify-center text-center px-4">
-      <div class="max-w-3xl">
-        <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6">Gestão de Performance 2026</h1>
-        <p class="text-xl text-slate-300 mb-10">Transforme o potencial da sua equipe em resultados reais.</p>
+  <main class="max-w-7xl mx-auto px-4 py-10">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+      <div>
+        <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight">Equipe</h2>
+        <p class="text-slate-500">Gerenciamento de funcionários (Tabela: tbPessoas)</p>
       </div>
-    </section>
+      <button class="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition active:scale-95">
+        + Cadastrar Novo na Equipe
+      </button>
+    </div>
 
-    <section class="max-w-7xl mx-auto px-4 -mt-20 mb-20 grid grid-cols-1 md:grid-cols-3 gap-8">
-      <a href="colaboradores.html" class="feature-card block group">
-        <div class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 h-full">
-          <div class="text-blue-600 mb-4 text-3xl font-bold italic">01.</div>
-          <h3 class="text-xl font-bold text-slate-800 mb-2">Equipe e Colaboradores</h3>
-          <p class="text-slate-500">Visualize e gerencie todos os funcionários cadastrados.</p>
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead class="bg-slate-50 border-b border-slate-200">
+            <tr>
+              <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">ID</th>
+              <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Nome Completo</th>
+              <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">CPF</th>
+              <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Nascimento</th>
+              <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">Telefone</th>
+              <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider text-right">Ações</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr class="hover:bg-slate-50/50 transition">
+              <td class="px-6 py-4 text-sm font-medium text-slate-400">#1</td>
+              <td class="px-6 py-4 text-sm font-bold text-slate-700">Graziela Oliveira</td>
+              <td class="px-6 py-4 text-sm text-slate-500">000.000.000-00</td>
+              <td class="px-6 py-4 text-sm text-slate-500">01/01/2000</td>
+              <td class="px-6 py-4 text-sm text-slate-500">(85) 99999-9999</td>
+              <td class="px-6 py-4 text-right">
+                <div class="flex justify-end gap-3">
+                  <button class="text-blue-600 font-bold text-sm hover:underline">Editar</button>
+                  <button class="text-rose-500 font-bold text-sm hover:underline">Excluir</button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      
+      <div class="p-12 text-center border-t border-slate-100">
+        <div class="inline-flex items-center justify-center w-16 h-16 bg-slate-50 text-slate-300 rounded-full mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-2.533-4.656 9.353 9.353 0 00-4.213-.997 10.587 10.587 0 01-1.352 1.678c-.459.459-1.01.829-1.623 1.087L15 19.128zM6.75 7.354a.75.75 0 110-1.5.75.75 0 010 1.5zM4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75c0 .621-.504 1.125-1.125 1.125h-2.25A1.125 1.125 0 013 19.875v-6.75c0-.621.504-1.125 1.125-1.125z" />
+          </svg>
         </div>
-      </a>
-      </section>
+        <p class="text-slate-400 font-medium italic">Sua tabela tbPessoas está vazia no momento.</p>
+      </div>
+    </div>
   </main>
+
 </body>
 </html>
