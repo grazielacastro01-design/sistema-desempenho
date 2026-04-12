@@ -33,16 +33,22 @@ db.getConnection((err, connection) => {
     }
 });
 
-// --- ROTA DE LOGIN ---
+// --- ROTA DE LOGIN (Versão com .trim() para evitar erros) ---
 app.post('/login', (req, res) => {
-    const { login, senha } = req.body;
+    // Remove espaços extras do login e da senha
+    const login = req.body.login ? req.body.login.trim() : "";
+    const senha = req.body.senha ? req.body.senha.trim() : "";
+
     const sql = "SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?";
     
     db.query(sql, [login, senha], (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
+        
         if (results.length > 0) {
+            console.log("✅ Login realizado com sucesso para:", login);
             res.status(200).json({ message: "Sucesso" });
         } else {
+            console.log("❌ Falha no login. Digitado:", login, "Senha:", senha);
             res.status(401).json({ message: "Usuário ou senha incorretos" });
         }
     });
@@ -64,8 +70,7 @@ app.post('/cadastrar-usuario', (req, res) => {
     });
 });
 
-// ✅ COLOQUE AQUI (Antes do asterisco)
-// Rota para buscar os colaboradores da tbPessoas
+// ✅ ROTA DE COLABORADORES (Antes do asterisco)
 app.get('/api/colaboradores', (req, res) => {
     const sql = "SELECT * FROM tbPessoas ORDER BY nome ASC";
     
@@ -79,7 +84,6 @@ app.get('/api/colaboradores', (req, res) => {
 });
 
 // ❌ ESSA DEVE SER SEMPRE A ÚLTIMA LINHA DE ROTAS
-// Serve o index.html para qualquer rota não encontrada
 app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
 app.listen(port, () => console.log(`🚀 Servidor rodando na porta ${port}`));
