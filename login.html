@@ -21,27 +21,27 @@
         </svg>
       </div>
       <h2 class="text-2xl font-bold text-slate-800">Acessar Sistema</h2>
-      <p class="text-slate-500 mt-2 text-sm">Entre com suas credenciais.</p>
+      <p class="text-slate-500 mt-2 text-sm">Entre com suas credenciais para gerenciar a equipe.</p>
     </div>
 
     <form id="loginForm" class="space-y-5">
       <div>
         <label class="block text-sm font-semibold text-slate-700 mb-1">Login</label>
-        <input type="text" id="login" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+        <input type="text" id="login" required placeholder="Digite seu login" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all">
       </div>
       <div>
         <label class="block text-sm font-semibold text-slate-700 mb-1">Senha</label>
-        <input type="password" id="senha" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+        <input type="password" id="senha" required placeholder="••••••••" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all">
       </div>
       <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 shadow-lg transition active:scale-95">
-        Entrar
+        Entrar no Sistema
       </button>
     </form>
 
     <div class="mt-8 pt-6 border-t border-slate-100 text-center">
       <p class="text-sm text-slate-500 mb-4">Ainda não tem acesso?</p>
       <a href="cadastrar.html" class="inline-block w-full bg-slate-100 text-slate-700 py-3 rounded-lg font-bold hover:bg-slate-200 transition border border-slate-200">
-        Cadastrar Usuário
+        Cadastrar Novo Usuário
       </a>
     </div>
   </div>
@@ -49,28 +49,53 @@
   <script>
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const login = document.getElementById('login').value;
-      const senha = document.getElementById('senha').value;
+      
+      // Captura e limpa espaços vazios
+      const login = document.getElementById('login').value.trim();
+      const senha = document.getElementById('senha').value.trim();
+
+      // Mostra um loading no botão (opcional, mas profissional)
+      const btn = e.target.querySelector('button');
+      const originalText = btn.innerText;
+      btn.innerText = 'Verificando...';
+      btn.disabled = true;
+
       try {
         const response = await fetch('/login', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
           body: JSON.stringify({ login, senha })
         });
+
+        const data = await response.json();
+
         if (response.ok) {
           Swal.fire({
             title: 'Bem-vindo!',
             text: 'Login realizado com sucesso!',
             icon: 'success',
-            confirmButtonColor: '#2563eb'
+            timer: 1500,
+            showConfirmButton: false
           }).then(() => { 
             window.location.href = 'dashboard.html'; 
           });
         } else {
-          Swal.fire('Erro!', 'Usuário ou senha incorretos.', 'error');
+          Swal.fire({
+            title: 'Erro!',
+            text: data.message || 'Usuário ou senha incorretos.',
+            icon: 'error',
+            confirmButtonColor: '#2563eb'
+          });
         }
       } catch (error) {
-        Swal.fire('Erro!', 'Erro ao conectar com o servidor.', 'error');
+        console.error('Erro na requisição:', error);
+        Swal.fire('Erro!', 'Não foi possível conectar ao servidor.', 'error');
+      } finally {
+        btn.innerText = originalText;
+        btn.disabled = false;
       }
     });
   </script>
