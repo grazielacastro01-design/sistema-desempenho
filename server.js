@@ -33,35 +33,6 @@ db.getConnection((err, connection) => {
     }
 });
 
-// --- NOVA ROTA: BUSCAR COLABORADORES (Adicionada aqui) ---
-app.get('/api/colaboradores', (req, res) => {
-    const sql = "SELECT * FROM tbPessoas ORDER BY nome ASC";
-    
-    db.query(sql, (err, results) => {
-        if (err) {
-            console.error('Erro ao buscar colaboradores:', err);
-            return res.status(500).json({ error: "Erro no banco de dados" });
-        }
-        res.status(200).json(results);
-    });
-});
-
-// --- ROTA DE CADASTRO DE USUÁRIOS (Login do sistema) ---
-app.post('/cadastrar-usuario', (req, res) => {
-    const { nome, login, senha } = req.body;
-    const sql = "INSERT INTO tbUsuarios (nome, login, senha) VALUES (?, ?, ?)";
-    
-    db.query(sql, [nome, login, senha], (err, result) => {
-        if (err) {
-            if (err.code === 'ER_DUP_ENTRY') {
-                return res.status(409).json({ error: "Este login já existe!" });
-            }
-            return res.status(500).json({ error: "Erro ao salvar no banco" });
-        }
-        res.status(201).json({ message: "Sucesso" });
-    });
-});
-
 // --- ROTA DE LOGIN ---
 app.post('/login', (req, res) => {
     const { login, senha } = req.body;
@@ -77,7 +48,38 @@ app.post('/login', (req, res) => {
     });
 });
 
-// Serve o index.html para qualquer rota não encontrada (Manter por último!)
+// --- ROTA DE CADASTRO DE USUÁRIOS ---
+app.post('/cadastrar-usuario', (req, res) => {
+    const { nome, login, senha } = req.body;
+    const sql = "INSERT INTO tbUsuarios (nome, login, senha) VALUES (?, ?, ?)";
+    
+    db.query(sql, [nome, login, senha], (err, result) => {
+        if (err) {
+            if (err.code === 'ER_DUP_ENTRY') {
+                return res.status(409).json({ error: "Este login já existe!" });
+            }
+            return res.status(500).json({ error: "Erro ao salvar no banco" });
+        }
+        res.status(201).json({ message: "Sucesso" });
+    });
+});
+
+// ✅ COLOQUE AQUI (Antes do asterisco)
+// Rota para buscar os colaboradores da tbPessoas
+app.get('/api/colaboradores', (req, res) => {
+    const sql = "SELECT * FROM tbPessoas ORDER BY nome ASC";
+    
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error('Erro ao buscar colaboradores:', err);
+            return res.status(500).json({ error: "Erro no banco de dados: " + err.message });
+        }
+        res.status(200).json(results);
+    });
+});
+
+// ❌ ESSA DEVE SER SEMPRE A ÚLTIMA LINHA DE ROTAS
+// Serve o index.html para qualquer rota não encontrada
 app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 
 app.listen(port, () => console.log(`🚀 Servidor rodando na porta ${port}`));
