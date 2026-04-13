@@ -75,6 +75,7 @@ app.get('/api/colaboradores', (req, res) => {
 
 // --- REDIRECIONAMENTO FINAL ---
 // Se o usuário acessar a raiz "/" ou qualquer rota inexistente, manda para o login.html
+// Isso evita o erro 404 na Vercel
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'login.html'));
 });
