@@ -9,6 +9,8 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Serve arquivos estáticos da pasta raiz
 app.use(express.static(path.join(__dirname, '/')));
 
 // --- CONFIGURAÇÃO DE CONEXÃO COM POOL ---
@@ -33,22 +35,17 @@ db.getConnection((err, connection) => {
     }
 });
 
-// --- ROTA DE LOGIN (Versão com .trim() para evitar erros) ---
+// --- ROTA DE LOGIN ---
 app.post('/login', (req, res) => {
-    // Remove espaços extras do login e da senha
     const login = req.body.login ? req.body.login.trim() : "";
     const senha = req.body.senha ? req.body.senha.trim() : "";
 
     const sql = "SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?";
-    
     db.query(sql, [login, senha], (err, results) => {
         if (err) return res.status(500).json({ error: err.message });
-        
         if (results.length > 0) {
-            console.log("✅ Login realizado com sucesso para:", login);
             res.status(200).json({ message: "Sucesso" });
         } else {
-            console.log("❌ Falha no login. Digitado:", login, "Senha:", senha);
             res.status(401).json({ message: "Usuário ou senha incorretos" });
         }
     });
@@ -58,32 +55,28 @@ app.post('/login', (req, res) => {
 app.post('/cadastrar-usuario', (req, res) => {
     const { nome, login, senha } = req.body;
     const sql = "INSERT INTO tbUsuarios (nome, login, senha) VALUES (?, ?, ?)";
-    
     db.query(sql, [nome, login, senha], (err, result) => {
         if (err) {
-            if (err.code === 'ER_DUP_ENTRY') {
-                return res.status(409).json({ error: "Este login já existe!" });
-            }
+            if (err.code === 'ER_DUP_ENTRY') return res.status(409).json({ error: "Este login já existe!" });
             return res.status(500).json({ error: "Erro ao salvar no banco" });
         }
         res.status(201).json({ message: "Sucesso" });
     });
 });
 
-// ✅ ROTA DE COLABORADORES (Antes do asterisco)
+// ✅ ROTA DE COLABORADORES
 app.get('/api/colaboradores', (req, res) => {
     const sql = "SELECT * FROM tbPessoas ORDER BY nome ASC";
-    
     db.query(sql, (err, results) => {
-        if (err) {
-            console.error('Erro ao buscar colaboradores:', err);
-            return res.status(500).json({ error: "Erro no banco de dados: " + err.message });
-        }
+        if (err) return res.status(500).json({ error: err.message });
         res.status(200).json(results);
     });
 });
 
-// ❌ ESSA DEVE SER SEMPRE A ÚLTIMA LINHA DE ROTAS
-app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+// --- REDIRECIONAMENTO FINAL ---
+// Se o usuário acessar a raiz "/" ou qualquer rota inexistente, manda para o login.html
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'login.html'));
+});
 
 app.listen(port, () => console.log(`🚀 Servidor rodando na porta ${port}`));
