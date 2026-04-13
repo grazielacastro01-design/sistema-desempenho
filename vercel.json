@@ -1,27 +1,14 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "server.js",
-      "use": "@vercel/node"
-    }
+    { "src": "server.js", "use": "@vercel/node" },
+    { "src": "*.html", "use": "@vercel/static" }
   ],
   "routes": [
-    {
-      "src": "/login",
-      "dest": "server.js"
-    },
-    {
-      "src": "/cadastrar-usuario",
-      "dest": "server.js"
-    },
-    {
-      "src": "/api/(.*)",
-      "dest": "server.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "server.js"
-    }
+    { "src": "/login", "dest": "server.js" },
+    { "src": "/cadastrar-usuario", "dest": "server.js" },
+    { "src": "/api/(.*)", "dest": "server.js" },
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/login.html" }
   ]
 }

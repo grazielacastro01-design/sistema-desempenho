@@ -3,101 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login | Sistema de Desempenho</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%232563eb'><path stroke-linecap='round' stroke-linejoin='round' d='M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z' /></svg>">
+  <title>Dashboard | Sistema de Desempenho</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <style>
-    * { font-family: 'Plus Jakarta Sans', sans-serif; }
-  </style>
+  <style> * { font-family: 'Plus Jakarta Sans', sans-serif; } </style>
 </head>
-<body class="h-full bg-slate-50 flex items-center justify-center p-4">
-  <div class="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8 border border-slate-100">
-    <div class="text-center mb-8">
-      <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-sm">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-7 h-7">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
-        </svg>
-      </div>
-      <h2 class="text-2xl font-bold text-slate-800">Acessar Sistema</h2>
-      <p class="text-slate-500 mt-2 text-sm">Entre com suas credenciais para gerenciar a equipe.</p>
+<body class="h-full bg-slate-50 flex flex-col">
+  <header class="bg-slate-900 text-white shadow-xl">
+    <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+      <span class="font-bold text-lg">Painel de Gestão</span>
+      <a href="login.html" class="bg-slate-800 hover:bg-rose-600 px-4 py-2 rounded-lg text-sm font-bold transition-all">Sair</a>
     </div>
+  </header>
 
-    <form id="loginForm" class="space-y-5">
-      <div>
-        <label class="block text-sm font-semibold text-slate-700 mb-1">Login</label>
-        <input type="text" id="login" required placeholder="Digite seu login" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all">
-      </div>
-      <div>
-        <label class="block text-sm font-semibold text-slate-700 mb-1">Senha</label>
-        <input type="password" id="senha" required placeholder="••••••••" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all">
-      </div>
-      <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 shadow-lg transition active:scale-95">
-        Entrar no Sistema
-      </button>
-    </form>
-
-    <div class="mt-8 pt-6 border-t border-slate-100 text-center">
-      <p class="text-sm text-slate-500 mb-4">Ainda não tem acesso?</p>
-      <a href="cadastrar.html" class="inline-block w-full bg-slate-100 text-slate-700 py-3 rounded-lg font-bold hover:bg-slate-200 transition border border-slate-200">
-        Cadastrar Novo Usuário
+  <main class="max-w-7xl mx-auto px-4 py-12 w-full flex-grow">
+    <h2 class="text-3xl font-extrabold text-slate-800">Bem-vinda de volta!</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
+      <a href="#" class="bg-white p-8 rounded-2xl shadow-sm border hover:border-blue-500 transition-all">
+        <h3 class="text-xl font-bold text-slate-800">Colaboradores</h3>
       </a>
-    </div>
-  </div>
-
-  <script>
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      // Captura e limpa espaços vazios
-      const login = document.getElementById('login').value.trim();
-      const senha = document.getElementById('senha').value.trim();
-
-      // Mostra um loading no botão (opcional, mas profissional)
-      const btn = e.target.querySelector('button');
-      const originalText = btn.innerText;
-      btn.innerText = 'Verificando...';
-      btn.disabled = true;
-
-      try {
-        const response = await fetch('/login', {
-          method: 'POST',
-          headers: { 
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify({ login, senha })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          Swal.fire({
-            title: 'Bem-vindo!',
-            text: 'Login realizado com sucesso!',
-            icon: 'success',
-            timer: 1500,
-            showConfirmButton: false
-          }).then(() => { 
-            window.location.href = 'dashboard.html'; 
-          });
-        } else {
-          Swal.fire({
-            title: 'Erro!',
-            text: data.message || 'Usuário ou senha incorretos.',
-            icon: 'error',
-            confirmButtonColor: '#2563eb'
-          });
-        }
-      } catch (error) {
-        console.error('Erro na requisição:', error);
-        Swal.fire('Erro!', 'Não foi possível conectar ao servidor.', 'error');
-      } finally {
-        btn.innerText = originalText;
-        btn.disabled = false;
-      }
-    });
-  </script>
+      </div>
+  </main>
 </body>
 </html>
