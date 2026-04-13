@@ -43,7 +43,7 @@
     </form>
 
     <div class="mt-8 text-center pt-6 border-t border-slate-100">
-      <a href="index.html" class="text-sm text-blue-600 font-semibold hover:text-blue-800 transition">
+      <a href="login.html" class="text-sm text-blue-600 font-semibold hover:text-blue-800 transition">
           Já tem uma conta? Faça login
       </a>
     </div>
@@ -51,34 +51,47 @@
 
   <script>
     document.getElementById('cadastroForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const payload = {
-        nome: document.getElementById('nome').value,
-        login: document.getElementById('login').value,
-        senha: document.getElementById('senha').value
-      };
-      try {
-        const response = await fetch('/cadastrar-usuario', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        const data = await response.json();
-        if (response.ok) {
-          Swal.fire({
-            title: 'Sucesso!',
-            text: 'Usuário cadastrado com sucesso!',
-            icon: 'success',
-            confirmButtonColor: '#2563eb'
-          }).then(() => {
-            window.location.href = 'index.html';
-          });
-        } else {
-          Swal.fire('Atenção!', data.error || 'Erro ao processar cadastro.', 'warning');
+        e.preventDefault();
+        
+        const nome = document.getElementById('nome').value;
+        const login = document.getElementById('login').value.trim(); // Limpa espaços
+        const senha = document.getElementById('senha').value.trim();
+
+        try {
+            const response = await fetch('/cadastrar-usuario', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nome, login, senha })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                Swal.fire({
+                    title: 'Sucesso!',
+                    text: 'Usuário cadastrado com sucesso!',
+                    icon: 'success',
+                    confirmButtonColor: '#2563eb'
+                }).then(() => {
+                    window.location.href = 'login.html'; // Redireciona para login
+                });
+            } else {
+                Swal.fire({
+                    title: 'Erro!',
+                    text: data.error || 'Erro ao cadastrar.',
+                    icon: 'error',
+                    confirmButtonColor: '#2563eb'
+                });
+            }
+        } catch (error) {
+            console.error('Erro de conexão:', error);
+            Swal.fire({
+                title: 'Erro de Conexão!',
+                text: 'Não foi possível conectar ao servidor. Verifique se o deploy na Vercel terminou.',
+                icon: 'error',
+                confirmButtonColor: '#2563eb'
+            });
         }
-      } catch (error) {
-        Swal.fire('Erro de Conexão!', 'Não foi possível conectar ao servidor. Tente novamente.', 'error');
-      }
     });
   </script>
 </body>
