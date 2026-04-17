@@ -10,6 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '/')));
 
+// Configuração do Banco de Dados (Railway)
 const db = mysql.createPool({
     host: 'shuttle.proxy.rlwy.net',
     user: 'root',
@@ -21,14 +22,14 @@ const db = mysql.createPool({
     connectTimeout: 20000 
 });
 
-// ROTA DE LOGIN CORRIGIDA
+// --- ROTA DE LOGIN ---
 app.post('/login', (req, res) => {
     const login = String(req.body.login || "").trim();
     const senha = String(req.body.senha || "").trim();
 
     console.log(`Tentativa de login: Usuário [${login}]`); 
 
-    // Trocamos "id" por "usuario_id" para bater com a estrutura da sua tabela tbUsuarios
+    // Busca usando usuario_id para evitar erro de coluna inexistente
     const sql = "SELECT usuario_id, nome FROM tbUsuarios WHERE login = ? AND senha = ?";
     
     db.query(sql, [login, senha], (err, results) => {
@@ -47,7 +48,7 @@ app.post('/login', (req, res) => {
     });
 });
 
-// ROTA DE CADASTRO
+// --- ROTA DE CADASTRO ---
 app.post('/cadastrar-usuario', (req, res) => {
     const { nome, login, senha } = req.body;
     const sql = "INSERT INTO tbUsuarios (nome, login, senha) VALUES (?, ?, ?)";
@@ -57,11 +58,16 @@ app.post('/cadastrar-usuario', (req, res) => {
     });
 });
 
-// ROTA DE COLABORADORES
+// --- ROTA DE COLABORADORES ---
 app.get('/api/colaboradores', (req, res) => {
-    const sql = "SELECT * FROM tbPessoas ORDER BY nome ASC";
+    // Definimos as colunas exatas para evitar erros de processamento no front-end
+    const sql = "SELECT nome, cargo, area, gestor_nome FROM tbPessoas ORDER BY nome ASC";
+    
     db.query(sql, (err, results) => {
-        if (err) return res.status(500).json({ error: err.message });
+        if (err) {
+            console.error("Erro ao buscar colaboradores:", err);
+            return res.status(500).json({ error: err.message });
+        }
         res.status(200).json(results);
     });
 });
