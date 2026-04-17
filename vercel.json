@@ -2,13 +2,12 @@
   "version": 2,
   "builds": [
     { "src": "server.js", "use": "@vercel/node" },
-    { "src": "*.html", "use": "@vercel/static" },
-    { "src": "css/*.css", "use": "@vercel/static" }
+    { "src": "*.html", "use": "@vercel/static" }
   ],
   "routes": [
     { "src": "/login", "dest": "server.js" },
     { "src": "/cadastrar-usuario", "dest": "server.js" },
-    { "src": "/api/(.*)", "dest": "server.js" },
+    { "src": "/api/colaboradores", "dest": "server.js" },
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/login.html" }
   ]

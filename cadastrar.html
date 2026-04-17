@@ -1,54 +1,57 @@
 <!DOCTYPE html>
 <html lang="pt-BR" class="h-full">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cadastro | Sistema de Desempenho</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style> * { font-family: 'Plus Jakarta Sans', sans-serif; } </style>
+    <meta charset="UTF-8">
+    <title>Criar Conta | Sistema de Desempenho</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Plus Jakarta Sans', sans-serif; } </style>
 </head>
 <body class="h-full bg-slate-50 flex items-center justify-center p-4">
-  <div class="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8 border border-slate-100">
-    <div class="text-center mb-8">
-      <h2 class="text-2xl font-bold text-slate-800">Novo Usuário</h2>
+    <div class="max-w-md w-full bg-white p-8 rounded-3xl shadow-xl border border-slate-100 text-center">
+        <h2 class="text-3xl font-bold text-slate-800 mb-2">Criar Conta</h2>
+        <p class="text-slate-500 mb-8">Cadastre-se para acessar o painel</p>
+
+        <form id="cadastroForm" class="space-y-4 text-left">
+            <input type="text" id="nome" placeholder="Nome Completo" required class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 transition">
+            <input type="text" id="login" placeholder="Nome de Usuário" required class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 transition">
+            <input type="password" id="senha" placeholder="Senha" required class="w-full p-4 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-emerald-500 transition">
+            
+            <button type="submit" class="w-full bg-emerald-600 text-white py-4 rounded-xl font-bold hover:bg-emerald-700 transition shadow-lg shadow-emerald-200">Finalizar Cadastro</button>
+        </form>
+
+        <div class="mt-8 pt-6 border-t border-slate-100 space-y-3">
+            <p class="text-sm text-slate-600">Já possui acesso? <a href="login.html" class="text-emerald-600 font-bold hover:underline">Ir para Login</a></p>
+            <a href="index.html" class="inline-block text-xs font-bold text-slate-400 uppercase tracking-widest hover:text-slate-600 transition">← Voltar para a apresentação</a>
+        </div>
     </div>
 
-    <form id="cadastroForm" class="space-y-5">
-      <input type="text" id="nome" placeholder="Nome" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg">
-      <input type="text" id="login" placeholder="Login" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg">
-      <input type="password" id="senha" placeholder="Senha" required class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg">
-      <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition">Cadastrar</button>
-    </form>
+    <script>
+        document.getElementById('cadastroForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nome = document.getElementById('nome').value;
+            const login = document.getElementById('login').value;
+            const senha = document.getElementById('senha').value;
 
-    <div class="mt-8 text-center pt-6 border-t border-slate-100">
-      <a href="login.html" class="text-sm text-blue-600 font-semibold hover:text-blue-800">Já tem uma conta? Login</a>
-    </div>
-  </div>
+            try {
+                const response = await fetch('/cadastrar-usuario', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nome, login, senha })
+                });
 
-  <script>
-    document.getElementById('cadastroForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const nome = document.getElementById('nome').value;
-      const login = document.getElementById('login').value.trim();
-      const senha = document.getElementById('senha').value.trim();
-
-      try {
-        const response = await fetch('/cadastrar-usuario', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ nome, login, senha })
+                if (response.ok) {
+                    Swal.fire('Sucesso!', 'Conta criada com sucesso!', 'success').then(() => {
+                        window.location.href = 'login.html';
+                    });
+                } else {
+                    Swal.fire('Erro', 'Não foi possível criar a conta', 'error');
+                }
+            } catch (error) {
+                Swal.fire('Erro', 'Falha na conexão', 'error');
+            }
         });
-        if (response.ok) {
-          Swal.fire('Sucesso!', 'Usuário criado!', 'success').then(() => { window.location.href = 'login.html'; });
-        } else {
-          Swal.fire('Erro!', 'Erro ao cadastrar.', 'error');
-        }
-      } catch (error) {
-        Swal.fire('Erro!', 'Erro de conexão.', 'error');
-      }
-    });
-  </script>
+    </script>
 </body>
 </html>

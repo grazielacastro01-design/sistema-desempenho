@@ -1,129 +1,19 @@
-<!DOCTYPE html>
-<html lang="pt-BR" class="h-full">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestão de Colaboradores | Sistema de Desempenho</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * { font-family: 'Plus Jakarta Sans', sans-serif; }
-    </style>
-</head>
-<body class="h-full bg-slate-50 flex flex-col">
-
-    <nav class="bg-white border-b border-slate-200 h-20 flex items-center px-8 shrink-0">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                </svg>
-            </div>
-            <span class="text-xl font-bold text-slate-800 tracking-tight">Gestão de Equipe</span>
-        </div>
-        <div class="ml-auto">
-            <a href="index.html" class="text-slate-500 hover:text-slate-800 font-medium transition text-sm">Sair do Painel</a>
-        </div>
-    </nav>
-
-    <main class="flex-1 p-8 overflow-y-auto">
-        <div class="max-w-7xl mx-auto">
-            
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
-                <div>
-                    <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Colaboradores</h1>
-                    <p class="text-slate-500 mt-1">Visualize e gerencie as informações da sua equipe em tempo real.</p>
-                </div>
-                <button class="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition flex items-center gap-2 w-fit">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
-                    Cadastrar Novo na Equipe
-                </button>
-            </div>
-
-            <div class="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-slate-50/50 border-b border-slate-100">
-                            <th class="px-6 py-5 text-xs font-bold uppercase tracking-wider text-slate-400">ID</th>
-                            <th class="px-6 py-5 text-xs font-bold uppercase tracking-wider text-slate-400">Nome Completo</th>
-                            <th class="px-6 py-5 text-xs font-bold uppercase tracking-wider text-slate-400">CPF</th>
-                            <th class="px-6 py-5 text-xs font-bold uppercase tracking-wider text-slate-400">Nascimento</th>
-                            <th class="px-6 py-5 text-xs font-bold uppercase tracking-wider text-slate-400">Telefone</th>
-                            <th class="px-6 py-5 text-xs font-bold uppercase tracking-wider text-slate-400 text-right">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabela-corpo" class="divide-y divide-slate-100">
-                        <tr>
-                            <td colspan="6" class="p-12 text-center text-slate-400 italic">
-                                Carregando dados do banco...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </main>
-
-    <script>
-        async function carregarColaboradores() {
-            const corpoTabela = document.getElementById('tabela-corpo');
-            
-            try {
-                // Chama a rota que criamos no server.js
-                const resposta = await fetch('/api/colaboradores');
-                
-                if (!resposta.ok) throw new Error('Falha ao buscar dados');
-                
-                const colaboradores = await resposta.json();
-
-                // Se não houver dados
-                if (!colaboradores || colaboradores.length === 0) {
-                    corpoTabela.innerHTML = `
-                        <tr>
-                            <td colspan="6" class="p-16 text-center">
-                                <p class="text-slate-400 italic">Nenhum colaborador encontrado na tabela tbPessoas.</p>
-                            </td>
-                        </tr>`;
-                    return;
-                }
-
-                // Limpa a mensagem de carregando
-                corpoTabela.innerHTML = ''; 
-
-                // Preenche com os dados reais
-                colaboradores.forEach(pessoa => {
-                    const linha = `
-                        <tr class="hover:bg-slate-50/50 transition group">
-                            <td class="px-6 py-4 text-sm font-medium text-slate-400">#${pessoa.pessoa_id || pessoa.id}</td>
-                            <td class="px-6 py-4 text-sm font-bold text-slate-700">${pessoa.nome}</td>
-                            <td class="px-6 py-4 text-sm text-slate-600">${pessoa.cpf}</td>
-                            <td class="px-6 py-4 text-sm text-slate-500">${pessoa.nascimento || '---'}</td>
-                            <td class="px-6 py-4 text-sm text-slate-500">${pessoa.telefone || '---'}</td>
-                            <td class="px-6 py-4 text-right">
-                                <div class="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition">
-                                    <button class="text-blue-600 font-bold text-xs hover:underline uppercase tracking-tight">Editar</button>
-                                    <button class="text-rose-500 font-bold text-xs hover:underline uppercase tracking-tight">Excluir</button>
-                                </div>
-                            </td>
-                        </tr>
-                    `;
-                    corpoTabela.innerHTML += linha;
-                });
-            } catch (error) {
-                console.error('Erro na requisição:', error);
-                corpoTabela.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="p-12 text-center text-red-500 font-bold">
-                            ⚠️ Erro ao conectar com o banco de dados. Verifique o servidor.
-                        </td>
-                    </tr>`;
-            }
-        }
-
-        // Executa a função ao carregar a página
-        window.onload = carregarColaboradores;
-    </script>
-</body>
-</html>
+// Dentro da função carregarColaboradores(), mude a linha da tabela para:
+dados.forEach(pessoa => {
+    corpoTabela.innerHTML += `
+        <tr class="hover:bg-slate-50 transition-colors group">
+            <td class="px-6 py-4">
+                <div class="font-bold text-slate-800">${pessoa.nome}</div>
+                <div class="text-xs text-slate-500">${pessoa.cargo} | ${pessoa.area}</div>
+            </td>
+            <td class="px-6 py-4 text-sm text-slate-600">${pessoa.cpf}</td>
+            <td class="px-6 py-4 text-sm text-blue-600 font-medium">
+                ${pessoa.gestor_nome || 'Diretoria'}
+            </td>
+            <td class="px-6 py-4 text-right">
+                <button onclick="gerarPDI(${pessoa.id})" class="text-xs font-bold uppercase text-emerald-600 mr-4">PDI</button>
+                <button class="text-xs font-bold uppercase text-blue-600">Editar</button>
+            </td>
+        </tr>
+    `;
+});

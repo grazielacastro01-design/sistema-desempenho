@@ -2,71 +2,50 @@
 <html lang="pt-BR" class="h-full">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard | Sistema de Desempenho</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style> * { font-family: 'Plus Jakarta Sans', sans-serif; } </style>
 </head>
-<body class="h-full bg-slate-50 flex flex-col">
-
-  <header class="bg-slate-900 text-white shadow-xl">
-    <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <div class="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center text-white">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-5 h-5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
-          </svg>
-        </div>
-        <span class="font-bold text-white text-lg tracking-tight">Painel de Gestão</span>
-      </div>
-      <a href="index.html" class="bg-slate-800 hover:bg-rose-600 px-4 py-2 rounded-lg text-sm font-bold transition-all">Sair</a>
+<body class="bg-slate-50 h-full flex flex-col">
+  <header class="bg-slate-900 text-white p-5 shadow-lg">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <h1 class="font-bold text-xl tracking-tight">SD <span class="text-blue-500">Performance</span></h1>
+      <button onclick="logout()" class="bg-rose-600 px-4 py-2 rounded-lg text-sm font-bold hover:bg-rose-700 transition">Sair</button>
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-4 py-12 w-full flex-grow">
-    <div class="mb-10">
-      <h2 class="text-3xl font-extrabold text-slate-800">Bem-vinda de volta!</h2>
-      <p class="text-slate-500 mt-2 text-lg">O que deseja gerenciar hoje?</p>
-    </div>
-
+  <main class="max-w-7xl mx-auto p-10 w-full">
+    <h2 id="welcomeMsg" class="text-3xl font-bold text-slate-800 mb-10">Bem-vinda ao Sistema</h2>
+    
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      
-      <a href="colaboradores.html" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:border-blue-500 hover:shadow-xl transition-all flex flex-col items-start">
-        <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-6">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-          </svg>
-        </div>
-        <h3 class="text-xl font-bold text-slate-800">Colaboradores</h3>
-        <p class="text-slate-500 mt-2 text-sm italic">Cadastrar e gerenciar equipe.</p>
+      <a href="colaboradores.html" class="bg-white p-8 rounded-2xl border border-slate-200 hover:shadow-2xl transition transform hover:-translate-y-1">
+        <div class="text-3xl mb-4">👥</div>
+        <h3 class="font-bold text-xl mb-2">Colaboradores</h3>
+        <p class="text-slate-500">Gerir equipa, cargos e dados profissionais.</p>
       </a>
 
-      <a href="metas.html" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:border-emerald-500 hover:shadow-xl transition-all flex flex-col items-start">
-        <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-6">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-          </svg>
-        </div>
-        <h3 class="text-xl font-bold text-slate-800">Metas OKR</h3>
-        <p class="text-slate-500 mt-2 text-sm italic">Definir e alinhar objetivos.</p>
+      <a href="metas.html" class="bg-white p-8 rounded-2xl border border-slate-200 hover:shadow-2xl transition transform hover:-translate-y-1">
+        <div class="text-3xl mb-4">🎯</div>
+        <h3 class="font-bold text-xl mb-2">Metas OKR</h3>
+        <p class="text-slate-500">Definir objetivos e acompanhar KPIs.</p>
       </a>
 
-      <a href="relatorios.html" class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:border-rose-500 hover:shadow-xl transition-all flex flex-col items-start">
-        <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center mb-6">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-        </div>
-        <h3 class="text-xl font-bold text-slate-800">Relatórios BI</h3>
-        <p class="text-slate-500 mt-2 text-sm italic">Análise de desempenho global.</p>
+      <a href="avaliacoes.html" class="bg-white p-8 rounded-2xl border border-slate-200 hover:shadow-2xl transition transform hover:-translate-y-1">
+        <div class="text-3xl mb-4">📋</div>
+        <h3 class="font-bold text-xl mb-2">Avaliações</h3>
+        <p class="text-slate-500">Feedbacks periódicos e ciclos 360°.</p>
       </a>
-
     </div>
   </main>
 
-  <footer class="bg-white border-t border-slate-200 py-6 text-center text-slate-400 text-xs font-bold tracking-widest">
-    © 2026 SISTEMA DE DESEMPENHO PROFISSIONAL
-  </footer>
+  <script>
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) window.location.href = 'login.html';
+    else document.getElementById('welcomeMsg').innerText = `Bem-vinda, ${user.nome}`;
+
+    function logout() {
+        localStorage.clear();
+        window.location.href = 'login.html';
+    }
+  </script>
 </body>
 </html>
