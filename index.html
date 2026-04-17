@@ -3,91 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SD Performance | Gestão Estratégica</title>
+    <title>Sistema de Desempenho | Gestão</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); }
-        .gradient-text { background: linear-gradient(135deg, #1e40af, #2563eb); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* Imagem de fundo com overlay escuro para o texto aparecer */
+        .hero-bg {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                        url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+        }
     </style>
 </head>
-<body class="bg-white text-slate-900 antialiased">
+<body class="antialiased">
 
-    <nav class="fixed top-0 w-full z-50 glass border-b border-slate-100">
+    <nav class="fixed top-0 w-full z-50 glass-nav border-b border-slate-200">
         <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
-            <div class="text-2xl font-extrabold tracking-tight">SD <span class="text-blue-600">Performance</span></div>
-            
-            <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-600">
-                <a href="#" class="hover:text-blue-600 transition">Funcionalidades</a>
-                <a href="#" class="hover:text-blue-600 transition">Metodologia</a>
-                <a href="#" class="hover:text-blue-600 transition">Preços</a>
+            <div class="flex items-center gap-2">
+                <div class="bg-blue-600 p-1.5 rounded-lg text-white">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M3 13.125C3 12.5037 3.50371 12 4.125 12H6.375C6.99629 12 7.5 12.5037 7.5 13.125V20.25H3V13.125ZM10.5 7.875C10.5 7.25371 11.0037 6.75 11.625 6.75H13.875C14.4963 6.75 15 7.25371 15 7.875V20.25H10.5V7.875ZM18 4.125C18 3.50371 18.5037 3 19.125 3H21.375C21.9963 3 22.5 3.50371 22.5 4.125V20.25H18V4.125Z"/></svg>
+                </div>
+                <span class="text-xl font-bold text-slate-800 tracking-tight">Sistema de Desempenho</span>
             </div>
-
+            
             <div class="flex items-center gap-4">
-                <a href="login.html" class="text-sm font-bold text-slate-700 hover:text-blue-600 px-4 py-2">Entrar</a>
-                <a href="cadastrar.html" class="bg-slate-900 text-white px-6 py-3 rounded-xl text-sm font-bold hover:bg-blue-600 transition-all shadow-lg shadow-blue-100">Testar Grátis</a>
+                <a href="login.html" class="text-sm font-semibold text-slate-600 hover:text-blue-600 px-4 py-2 transition">Entrar</a>
+                <a href="cadastrar.html" class="bg-blue-600 text-white px-6 py-2.5 rounded-full text-sm font-bold hover:bg-blue-700 transition shadow-lg shadow-blue-200">Criar Conta Grátis</a>
             </div>
         </div>
     </nav>
 
-    <main class="pt-40 pb-20 px-6">
-        <div class="max-w-7xl mx-auto text-center">
-            <span class="inline-block py-2 px-4 rounded-full bg-blue-50 text-blue-600 text-xs font-bold uppercase tracking-widest mb-6">Plataforma de Gestão de Pessoas</span>
-            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-slate-900 mb-8 leading-[1.1]">
-                Sua equipe no <br> 
-                <span class="gradient-text">próximo nível.</span>
+    <main class="hero-bg min-h-screen flex items-center justify-center px-6 pt-20">
+        <div class="max-w-4xl mx-auto text-center text-white">
+            <span class="inline-block py-1.5 px-4 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-200 text-xs font-bold uppercase tracking-widest mb-6 backdrop-blur-md">Gestão de Performance 2026</span>
+            
+            <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-8 leading-tight">
+                Transforme o potencial da sua equipe em resultados reais.
             </h1>
-            <p class="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto mb-12 leading-relaxed">
-                Centralize avaliações de desempenho, feedbacks e metas OKR em um único lugar. A solução inteligente para RHs que buscam resultados reais.
+            
+            <p class="text-lg md:text-xl text-slate-200 max-w-2xl mx-auto mb-12 leading-relaxed opacity-90">
+                Uma plataforma completa para definir metas, realizar avaliações 360° e acompanhar o crescimento profissional de cada colaborador.
             </p>
             
-            <div class="flex flex-col md:flex-row justify-center items-center gap-4 mb-20">
-                <a href="cadastrar.html" class="w-full md:w-auto bg-blue-600 text-white px-10 py-5 rounded-2xl font-bold text-lg hover:scale-105 transition-all shadow-xl shadow-blue-200">Começar Agora</a>
-                <a href="#" class="w-full md:w-auto flex items-center justify-center gap-2 text-slate-600 font-bold px-10 py-5 hover:text-blue-600 transition">
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"/></svg>
-                    Ver Demonstração
-                </a>
+            <div class="flex flex-col md:flex-row justify-center items-center gap-4">
+                <a href="login.html" class="w-full md:w-auto bg-blue-500 text-white px-10 py-4 rounded-xl font-bold text-lg hover:bg-blue-400 transition-all shadow-xl">Acessar Painel Restrito</a>
             </div>
 
-            <div class="relative max-w-5xl mx-auto">
-                <div class="absolute -top-10 -left-10 w-64 h-64 bg-blue-400/20 blur-[100px] rounded-full"></div>
-                <div class="absolute -bottom-10 -right-10 w-64 h-64 bg-emerald-400/20 blur-[100px] rounded-full"></div>
-                
-                <div class="relative bg-white rounded-[2rem] shadow-2xl border border-slate-200 p-4 overflow-hidden">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 py-10 px-6">
-                        <div class="p-8 rounded-[2rem] bg-slate-50 text-left hover:bg-blue-50 transition group">
-                            <div class="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-6 group-hover:text-blue-600">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-                            </div>
-                            <h3 class="text-xl font-bold mb-3">Gestão OKR</h3>
-                            <p class="text-slate-500 text-sm">Acompanhe metas em tempo real com transparência e foco nos resultados.</p>
-                        </div>
-
-                        <div class="p-8 rounded-[2rem] bg-slate-50 text-left hover:bg-emerald-50 transition group">
-                            <div class="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-6 group-hover:text-emerald-600">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-                            </div>
-                            <h3 class="text-xl font-bold mb-3">PDI Dinâmico</h3>
-                            <p class="text-slate-500 text-sm">Planos de desenvolvimento individuais focados no crescimento de carreira.</p>
-                        </div>
-
-                        <div class="p-8 rounded-[2rem] bg-slate-50 text-left hover:bg-orange-50 transition group">
-                            <div class="w-12 h-12 bg-white rounded-2xl shadow-sm flex items-center justify-center mb-6 group-hover:text-orange-600">
-                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z"/></svg>
-                            </div>
-                            <h3 class="text-xl font-bold mb-3">Feedback 360°</h3>
-                            <p class="text-slate-500 text-sm">Cultura de feedback constante para alinhar expectativas e melhorar a performance.</p>
-                        </div>
-                    </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-20">
+                <div class="bg-white/95 backdrop-blur-sm p-6 rounded-2xl text-left border border-white/20 shadow-xl">
+                    <p class="text-blue-600 font-bold mb-1">01.</p>
+                    <h3 class="text-slate-900 font-extrabold mb-2">Metas OKR</h3>
+                    <p class="text-slate-500 text-xs leading-relaxed">Defina objetivos claros e acompanhe o progresso trimestral de forma visual.</p>
+                </div>
+                <div class="bg-white/95 backdrop-blur-sm p-6 rounded-2xl text-left border border-white/20 shadow-xl">
+                    <p class="text-blue-600 font-bold mb-1">02.</p>
+                    <h3 class="text-slate-900 font-extrabold mb-2">Avaliação 360°</h3>
+                    <p class="text-slate-500 text-xs leading-relaxed">Feedback contínuo entre gestores, pares e autoavaliação do colaborador.</p>
+                </div>
+                <div class="bg-white/95 backdrop-blur-sm p-6 rounded-2xl text-left border border-white/20 shadow-xl">
+                    <p class="text-blue-600 font-bold mb-1">03.</p>
+                    <h3 class="text-slate-900 font-extrabold mb-2">Relatórios BI</h3>
+                    <p class="text-slate-500 text-xs leading-relaxed">Visualize a distribuição de performance através de indicadores automáticos.</p>
                 </div>
             </div>
         </div>
     </main>
-
-    <footer class="py-10 border-t border-slate-100 text-center">
-        <p class="text-slate-400 text-sm">© 2026 SD Performance. Desenvolvido para equipes de alto impacto.</p>
-    </footer>
 
 </body>
 </html>
