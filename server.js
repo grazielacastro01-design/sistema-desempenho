@@ -18,34 +18,36 @@ const db = mysql.createPool({
     port: 30041,
     waitForConnections: true,
     connectionLimit: 10,
-    connectTimeout: 15000 
+    connectTimeout: 20000 
 });
 
-// ROTA DE LOGIN CORRIGIDA
 app.post('/login', (req, res) => {
-    // .trim() remove espaços antes e depois
     const login = req.body.login ? req.body.login.trim() : "";
     const senha = req.body.senha ? req.body.senha.trim() : "";
 
-    // LOWER(login) faz o banco ignorar se você digitou maiúsculo ou minúsculo
+    console.log(`Tentativa de login: Usuário [${login}]`); // Log para depurar
+
+    // Verificação sem distinguir maiúsculas/minúsculas no login
     const sql = "SELECT id, nome FROM tbUsuarios WHERE LOWER(login) = LOWER(?) AND senha = ?";
     
     db.query(sql, [login, senha], (err, results) => {
-        if (err) return res.status(500).json({ error: "Erro no banco" });
+        if (err) {
+            console.error("Erro no Banco:", err);
+            return res.status(500).json({ error: "Erro interno" });
+        }
         
         if (results.length > 0) {
+            console.log("Login bem-sucedido!");
             res.status(200).json({ message: "Sucesso", user: results[0] });
         } else {
+            console.log("Login falhou: Usuário ou senha não conferem.");
             res.status(401).json({ message: "Usuário ou senha incorretos" });
         }
     });
 });
 
-// ROTA DE CADASTRO CORRIGIDA
 app.post('/cadastrar-usuario', (req, res) => {
     const { nome, login, senha } = req.body;
-    
-    // Limpamos os dados antes de salvar no banco
     const sql = "INSERT INTO tbUsuarios (nome, login, senha) VALUES (?, ?, ?)";
     db.query(sql, [nome.trim(), login.trim(), senha.trim()], (err) => {
         if (err) return res.status(500).json({ error: err.message });
