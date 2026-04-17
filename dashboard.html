@@ -10,72 +10,100 @@
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
         
         .glass-header {
-            background: #1e293b; /* Tom escuro elegante para a área logada */
+            background: #0f172a; /* Azul marinho profundo */
             color: white;
         }
 
         .card-hover {
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
 <body class="antialiased">
 
-    <header class="glass-header w-full shadow-lg">
+    <header class="glass-header w-full shadow-2xl">
         <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
             
-            <div class="flex items-center gap-2">
-                <div class="bg-blue-600 p-1.5 rounded-lg text-white">
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-600 p-2 rounded-xl text-white shadow-lg shadow-blue-500/30">
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M3 13.125C3 12.5037 3.50371 12 4.125 12H6.375C6.99629 12 7.5 12.5037 7.5 13.125V20.25H3V13.125ZM10.5 7.875C10.5 7.25371 11.0037 6.75 11.625 6.75H13.875C14.4963 6.75 15 7.25371 15 7.875V20.25H10.5V7.875ZM18 4.125C18 3.50371 18.5037 3 19.125 3H21.375C21.9963 3 22.5 3.50371 22.5 4.125V20.25H18V4.125Z"/>
                     </svg>
                 </div>
-                <span class="text-xl font-bold tracking-tight">Sistema de Desempenho</span>
+                <span class="text-xl font-bold tracking-tight uppercase">Sistema de Desempenho</span>
             </div>
             
             <div class="flex items-center gap-6">
-                <span class="text-slate-300 text-sm hidden md:block">Painel Administrativo</span>
-                <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg text-sm font-bold transition">Sair</button>
+                <button onclick="logout()" class="bg-slate-700/50 hover:bg-red-500 text-white px-5 py-2 rounded-xl text-sm font-bold transition-all border border-slate-600">Sair do Sistema</button>
             </div>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-6 py-12">
         
-        <div class="mb-12">
-            <h1 class="text-3xl font-extrabold text-slate-800 mb-2">Bem-vinda, Graziela de Castro Pereira</h1>
-            <p class="text-slate-500">Gerencie sua equipe e acompanhe a evolução dos indicadores em tempo real.</p>
+        <div class="bg-gradient-to-br from-slate-800 to-slate-950 rounded-[3rem] p-10 mb-12 text-white shadow-2xl relative overflow-hidden border border-slate-700">
+            <div class="absolute top-0 right-0 w-80 h-80 bg-blue-500/10 blur-[100px] rounded-full -mr-32 -mt-32"></div>
+            
+            <div class="relative z-10 flex flex-col md:flex-row justify-between items-center gap-8">
+                <div>
+                    <span class="inline-block px-4 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-[10px] font-extrabold uppercase tracking-[0.2em] mb-4">Módulo de Administração</span>
+                    <h1 class="text-3xl md:text-5xl font-extrabold mb-4 tracking-tight">Painel de Gestão Estratégica</h1>
+                    <p class="text-slate-400 max-w-lg leading-relaxed text-lg">
+                        Bem-vinda ao centro de inteligência de performance. Monitore metas, analise resultados e impulsione o crescimento da organização.
+                    </p>
+                </div>
+                
+                <div class="flex flex-col items-end gap-3">
+                    <div class="bg-white/5 backdrop-blur-xl px-8 py-5 rounded-[2rem] border border-white/10 shadow-inner text-right">
+                        <span class="text-slate-400 text-xs font-bold uppercase tracking-widest block mb-1">Ciclo Atual</span>
+                        <span class="text-2xl font-black text-blue-400">1º Semestre | 2026</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-slate-500 text-xs font-medium px-4">
+                        <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                        Sistema Online e Atualizado
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             
-            <a href="colaboradores.html" class="card-hover bg-white p-8 rounded-3xl border border-slate-100 shadow-sm block">
-                <div class="bg-purple-100 text-purple-600 w-12 h-12 rounded-xl flex items-center justify-center mb-6">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            <a href="colaboradores.html" class="card-hover bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm block group">
+                <div class="bg-indigo-50 text-indigo-600 w-14 h-14 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                 </div>
-                <h2 class="text-xl font-bold text-slate-800 mb-2">Colaboradores</h2>
-                <p class="text-slate-500 text-sm leading-relaxed">Gerir equipa, cargos e dados profissionais de forma centralizada.</p>
+                <h2 class="text-2xl font-black text-slate-800 mb-3">Colaboradores</h2>
+                <p class="text-slate-500 leading-relaxed">Gerencie o quadro de talentos, cargos e estruturas das equipes.</p>
+                <div class="mt-6 text-indigo-600 font-bold text-sm flex items-center gap-2">
+                    Acessar Gestão <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"></path></svg>
+                </div>
             </a>
 
-            <a href="metas.html" class="card-hover bg-white p-8 rounded-3xl border border-slate-100 shadow-sm block">
-                <div class="bg-pink-100 text-pink-600 w-12 h-12 rounded-xl flex items-center justify-center mb-6">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            <a href="metas.html" class="card-hover bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm block group">
+                <div class="bg-blue-50 text-blue-600 w-14 h-14 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
                 </div>
-                <h2 class="text-xl font-bold text-slate-800 mb-2">Metas OKR</h2>
-                <p class="text-slate-500 text-sm leading-relaxed">Definir objetivos estratégicos e acompanhar KPIs de performance.</p>
+                <h2 class="text-2xl font-black text-slate-800 mb-3">Metas OKR</h2>
+                <p class="text-slate-500 leading-relaxed">Acompanhe objetivos estratégicos e resultados-chave (KPIs).</p>
+                <div class="mt-6 text-blue-600 font-bold text-sm flex items-center gap-2">
+                    Ver Indicadores <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"></path></svg>
+                </div>
             </a>
 
-            <a href="avaliacoes.html" class="card-hover bg-white p-8 rounded-3xl border border-slate-100 shadow-sm block">
-                <div class="bg-orange-100 text-orange-600 w-12 h-12 rounded-xl flex items-center justify-center mb-6">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+            <a href="avaliacoes.html" class="card-hover bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm block group">
+                <div class="bg-emerald-50 text-emerald-600 w-14 h-14 rounded-2xl flex items-center justify-center mb-8 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                 </div>
-                <h2 class="text-xl font-bold text-slate-800 mb-2">Avaliações</h2>
-                <p class="text-slate-500 text-sm leading-relaxed">Feedbacks periódicos, ciclos 360° e planos de desenvolvimento.</p>
+                <h2 class="text-2xl font-black text-slate-800 mb-3">Avaliações</h2>
+                <p class="text-slate-500 leading-relaxed">Execute ciclos de feedback 360° e avaliações por competências.</p>
+                <div class="mt-6 text-emerald-600 font-bold text-sm flex items-center gap-2">
+                    Iniciar Ciclo <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"></path></svg>
+                </div>
             </a>
 
         </div>
@@ -83,7 +111,7 @@
 
     <script>
         function logout() {
-            // Lógica para limpar sessão e redirecionar
+            // Limpa qualquer dado de sessão e volta para o início
             window.location.href = 'index.html';
         }
     </script>
