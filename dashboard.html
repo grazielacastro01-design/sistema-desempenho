@@ -1,51 +1,91 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="h-full">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Dashboard | Sistema de Desempenho</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Sistema de Desempenho</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8fafc; }
+        
+        .glass-header {
+            background: #1e293b; /* Tom escuro elegante para a área logada */
+            color: white;
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        }
+    </style>
 </head>
-<body class="bg-slate-50 h-full flex flex-col">
-  <header class="bg-slate-900 text-white p-5 shadow-lg">
-    <div class="max-w-7xl mx-auto flex justify-between items-center">
-      <h1 class="font-bold text-xl tracking-tight">SD <span class="text-blue-500">Performance</span></h1>
-      <button onclick="logout()" class="bg-rose-600 px-4 py-2 rounded-lg text-sm font-bold hover:bg-rose-700 transition">Sair</button>
-    </div>
-  </header>
+<body class="antialiased">
 
-  <main class="max-w-7xl mx-auto p-10 w-full">
-    <h2 id="welcomeMsg" class="text-3xl font-bold text-slate-800 mb-10">Bem-vinda ao Sistema</h2>
-    
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-      <a href="colaboradores.html" class="bg-white p-8 rounded-2xl border border-slate-200 hover:shadow-2xl transition transform hover:-translate-y-1">
-        <div class="text-3xl mb-4">👥</div>
-        <h3 class="font-bold text-xl mb-2">Colaboradores</h3>
-        <p class="text-slate-500">Gerir equipa, cargos e dados profissionais.</p>
-      </a>
+    <header class="glass-header w-full shadow-lg">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            
+            <div class="flex items-center gap-2">
+                <div class="bg-blue-600 p-1.5 rounded-lg text-white">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M3 13.125C3 12.5037 3.50371 12 4.125 12H6.375C6.99629 12 7.5 12.5037 7.5 13.125V20.25H3V13.125ZM10.5 7.875C10.5 7.25371 11.0037 6.75 11.625 6.75H13.875C14.4963 6.75 15 7.25371 15 7.875V20.25H10.5V7.875ZM18 4.125C18 3.50371 18.5037 3 19.125 3H21.375C21.9963 3 22.5 3.50371 22.5 4.125V20.25H18V4.125Z"/>
+                    </svg>
+                </div>
+                <span class="text-xl font-bold tracking-tight">Sistema de Desempenho</span>
+            </div>
+            
+            <div class="flex items-center gap-6">
+                <span class="text-slate-300 text-sm hidden md:block">Painel Administrativo</span>
+                <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg text-sm font-bold transition">Sair</button>
+            </div>
+        </div>
+    </header>
 
-      <a href="metas.html" class="bg-white p-8 rounded-2xl border border-slate-200 hover:shadow-2xl transition transform hover:-translate-y-1">
-        <div class="text-3xl mb-4">🎯</div>
-        <h3 class="font-bold text-xl mb-2">Metas OKR</h3>
-        <p class="text-slate-500">Definir objetivos e acompanhar KPIs.</p>
-      </a>
+    <main class="max-w-7xl mx-auto px-6 py-12">
+        
+        <div class="mb-12">
+            <h1 class="text-3xl font-extrabold text-slate-800 mb-2">Bem-vinda, Graziela de Castro Pereira</h1>
+            <p class="text-slate-500">Gerencie sua equipe e acompanhe a evolução dos indicadores em tempo real.</p>
+        </div>
 
-      <a href="avaliacoes.html" class="bg-white p-8 rounded-2xl border border-slate-200 hover:shadow-2xl transition transform hover:-translate-y-1">
-        <div class="text-3xl mb-4">📋</div>
-        <h3 class="font-bold text-xl mb-2">Avaliações</h3>
-        <p class="text-slate-500">Feedbacks periódicos e ciclos 360°.</p>
-      </a>
-    </div>
-  </main>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <a href="colaboradores.html" class="card-hover bg-white p-8 rounded-3xl border border-slate-100 shadow-sm block">
+                <div class="bg-purple-100 text-purple-600 w-12 h-12 rounded-xl flex items-center justify-center mb-6">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                </div>
+                <h2 class="text-xl font-bold text-slate-800 mb-2">Colaboradores</h2>
+                <p class="text-slate-500 text-sm leading-relaxed">Gerir equipa, cargos e dados profissionais de forma centralizada.</p>
+            </a>
 
-  <script>
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (!user) window.location.href = 'login.html';
-    else document.getElementById('welcomeMsg').innerText = `Bem-vinda, ${user.nome}`;
+            <a href="metas.html" class="card-hover bg-white p-8 rounded-3xl border border-slate-100 shadow-sm block">
+                <div class="bg-pink-100 text-pink-600 w-12 h-12 rounded-xl flex items-center justify-center mb-6">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <h2 class="text-xl font-bold text-slate-800 mb-2">Metas OKR</h2>
+                <p class="text-slate-500 text-sm leading-relaxed">Definir objetivos estratégicos e acompanhar KPIs de performance.</p>
+            </a>
 
-    function logout() {
-        localStorage.clear();
-        window.location.href = 'login.html';
-    }
-  </script>
+            <a href="avaliacoes.html" class="card-hover bg-white p-8 rounded-3xl border border-slate-100 shadow-sm block">
+                <div class="bg-orange-100 text-orange-600 w-12 h-12 rounded-xl flex items-center justify-center mb-6">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                </div>
+                <h2 class="text-xl font-bold text-slate-800 mb-2">Avaliações</h2>
+                <p class="text-slate-500 text-sm leading-relaxed">Feedbacks periódicos, ciclos 360° e planos de desenvolvimento.</p>
+            </a>
+
+        </div>
+    </main>
+
+    <script>
+        function logout() {
+            // Lógica para limpar sessão e redirecionar
+            window.location.href = 'index.html';
+        }
+    </script>
 </body>
 </html>
