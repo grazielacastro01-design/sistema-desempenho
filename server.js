@@ -1,75 +1,59 @@
 const express = require('express');
 const mysql = require('mysql2');
+const bodyParser = require('body-parser');
 const cors = require('cors');
-const path = require('path');
 
 const app = express();
-
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '/')));
+app.use(bodyParser.json());
 
-// Configuração do Banco de Dados (Railway)
-const db = mysql.createPool({
-    host: 'shuttle.proxy.rlwy.net',
-    user: 'root',
-    password: 'HMhYIbGRRSVOFiROAVJdwKynxQakxiIq',
-    database: 'railway',
-    port: 30041,
-    waitForConnections: true,
-    connectionLimit: 10,
-    connectTimeout: 20000 
+// Configuração da conexão com o seu banco MySQL
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root', 
+    password: '',     
+    database: 'seu_banco_de_dados' // <--- COLOQUE O NOME DO SEU BANCO AQUI
 });
 
-// --- ROTA DE LOGIN ---
-app.post('/login', (req, res) => {
-    const login = String(req.body.login || "").trim();
-    const senha = String(req.body.senha || "").trim();
+db.connect(err => {
+    if (err) throw err;
+    console.log('Conectado ao banco de dados MySQL!');
+});
 
-    console.log(`Tentativa de login: Usuário [${login}]`); 
+// ROTA 1: Buscar dados do colaborador (tbPessoas)
+// Ajustado para 'pessoa_id' conforme sua imagem do MySQL
+app.get('/colaborador/:id', (req, res) => {
+    const id = req.params.id;
+    const sql = "SELECT * FROM tbPessoas WHERE pessoa_id = ?"; 
+    db.query(sql, [id], (err, result) => {
+        if (err) return res.status(500).send(err);
+        res.send(result[0]);
+    });
+});
 
-    // Busca usando usuario_id para evitar erro de coluna inexistente
-    const sql = "SELECT usuario_id, nome FROM tbUsuarios WHERE login = ? AND senha = ?";
+// ROTA 2: Salvar Feedback/Avaliação (tbAvaliacacao)
+app.post('/registrar-avaliacao', (req, res) => {
+    const { nota, comentario, idPessoa, idStatus } = req.body;
     
-    db.query(sql, [login, senha], (err, results) => {
-        if (err) {
-            console.error("Erro no Banco:", err); 
-            return res.status(500).json({ error: "Erro interno no servidor" });
-        }
-        
-        if (results && results.length > 0) {
-            console.log("Login bem-sucedido!");
-            res.status(200).json({ message: "Sucesso", user: results[0] });
-        } else {
-            console.log("Login falhou: Usuário ou senha não conferem.");
-            res.status(401).json({ message: "Usuário ou senha incorretos" });
-        }
-    });
-});
-
-// --- ROTA DE CADASTRO ---
-app.post('/cadastrar-usuario', (req, res) => {
-    const { nome, login, senha } = req.body;
-    const sql = "INSERT INTO tbUsuarios (nome, login, senha) VALUES (?, ?, ?)";
-    db.query(sql, [nome.trim(), login.trim(), senha.trim()], (err) => {
-        if (err) return res.status(500).json({ error: err.message });
-        res.status(201).json({ message: "Sucesso" });
-    });
-});
-
-// --- ROTA DE COLABORADORES ---
-app.get('/api/colaboradores', (req, res) => {
-    // Definimos as colunas exatas para evitar erros de processamento no front-end
-    const sql = "SELECT nome, cargo, area, gestor_nome FROM tbPessoas ORDER BY nome ASC";
+    // Ajuste as colunas se necessário, mas mantendo a lógica do seu diagrama
+    const sql = "INSERT INTO tbAvaliacacao (nota, comentario, pessoa_id, idAvaliacaoStatus) VALUES (?, ?, ?, ?)";
     
-    db.query(sql, (err, results) => {
-        if (err) {
-            console.error("Erro ao buscar colaboradores:", err);
-            return res.status(500).json({ error: err.message });
-        }
-        res.status(200).json(results);
+    db.query(sql, [nota, comentario, idPessoa, idStatus], (err, result) => {
+        if (err) return res.status(500).send(err);
+        res.send({ message: "Avaliação salva com sucesso!", id: result.insertId });
     });
 });
 
-module.exports = app;
+// ROTA 3: Buscar feedbacks para a lista
+app.get('/feedbacks/:id', (req, res) => {
+    const id = req.params.id;
+    const sql = "SELECT * FROM tbAvaliacacao WHERE pessoa_id = ? ORDER BY idAvaliacacao DESC";
+    db.query(sql, [id], (err, result) => {
+        if (err) return res.status(500).send(err);
+        res.send(result);
+    });
+});
+
+app.listen(3000, () => {
+    console.log('Servidor rodando na porta 3000');
+});
