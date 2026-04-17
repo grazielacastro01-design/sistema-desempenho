@@ -21,7 +21,7 @@ const db = mysql.createPool({
     queueLimit: 0
 });
 
-// Rota para buscar dados do colaborador
+// Rota para o seu site buscar os dados do perfil (HTML chama essa rota)
 app.get('/colaborador/:id', (req, res) => {
     const id = req.params.id;
     const sql = 'SELECT pessoa_id, nome FROM tbPessoas WHERE pessoa_id = ?';
@@ -36,10 +36,9 @@ app.get('/colaborador/:id', (req, res) => {
     });
 });
 
-// Rota para buscar feedbacks
+// Rota para buscar os feedbacks (usada na aba de feedbacks)
 app.get('/feedbacks/:id', (req, res) => {
     const id = req.params.id;
-    // Ajuste os nomes das colunas conforme sua tabela real
     const sql = 'SELECT idAvaliacacao, comentario, nota FROM tbAvaliacao WHERE idPessoa = ?';
     
     db.query(sql, [id], (err, result) => {
@@ -48,7 +47,7 @@ app.get('/feedbacks/:id', (req, res) => {
     });
 });
 
-// Rota para registrar avaliação
+// Rota para salvar um novo feedback no MySQL
 app.post('/registrar-avaliacao', (req, res) => {
     const { nota, comentario, idPessoa, idStatus } = req.body;
     const sql = 'INSERT INTO tbAvaliacao (nota, comentario, idPessoa, idStatus) VALUES (?, ?, ?, ?)';
@@ -59,13 +58,13 @@ app.post('/registrar-avaliacao', (req, res) => {
     });
 });
 
-// Rota de teste para ver se o servidor está vivo
+// Rota de teste (Abra o link do Railway no navegador para ver isso)
 app.get('/', (req, res) => {
-    res.send('Servidor da Grazi está online no Railway!');
+    res.send('API do Sistema de Desempenho está ONLINE!');
 });
 
-// PORTA DINÂMICA (Obrigatório para o Railway não dar Crash)
+// PORTA DINÂMICA (Obrigatório para o Railway funcionar)
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
+    console.log(`Servidor rodando com sucesso na porta ${PORT}`);
 });
