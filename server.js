@@ -21,22 +21,23 @@ const db = mysql.createPool({
     connectTimeout: 20000 
 });
 
+// ROTA DE LOGIN CORRIGIDA
 app.post('/login', (req, res) => {
-    const login = req.body.login ? req.body.login.trim() : "";
-    const senha = req.body.senha ? req.body.senha.trim() : "";
+    const login = String(req.body.login || "").trim();
+    const senha = String(req.body.senha || "").trim();
 
-    console.log(`Tentativa de login: Usuário [${login}]`); // Log para depurar
+    console.log(`Tentativa de login: Usuário [${login}]`); 
 
-    // Verificação sem distinguir maiúsculas/minúsculas no login
-    const sql = "SELECT id, nome FROM tbUsuarios WHERE LOWER(login) = LOWER(?) AND senha = ?";
+    // Trocamos "id" por "usuario_id" para bater com a estrutura da sua tabela tbUsuarios
+    const sql = "SELECT usuario_id, nome FROM tbUsuarios WHERE login = ? AND senha = ?";
     
     db.query(sql, [login, senha], (err, results) => {
         if (err) {
-            console.error("Erro no Banco:", err);
-            return res.status(500).json({ error: "Erro interno" });
+            console.error("Erro no Banco:", err); 
+            return res.status(500).json({ error: "Erro interno no servidor" });
         }
         
-        if (results.length > 0) {
+        if (results && results.length > 0) {
             console.log("Login bem-sucedido!");
             res.status(200).json({ message: "Sucesso", user: results[0] });
         } else {
@@ -46,12 +47,22 @@ app.post('/login', (req, res) => {
     });
 });
 
+// ROTA DE CADASTRO
 app.post('/cadastrar-usuario', (req, res) => {
     const { nome, login, senha } = req.body;
     const sql = "INSERT INTO tbUsuarios (nome, login, senha) VALUES (?, ?, ?)";
     db.query(sql, [nome.trim(), login.trim(), senha.trim()], (err) => {
         if (err) return res.status(500).json({ error: err.message });
         res.status(201).json({ message: "Sucesso" });
+    });
+});
+
+// ROTA DE COLABORADORES
+app.get('/api/colaboradores', (req, res) => {
+    const sql = "SELECT * FROM tbPessoas ORDER BY nome ASC";
+    db.query(sql, (err, results) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.status(200).json(results);
     });
 });
 
