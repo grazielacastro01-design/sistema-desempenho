@@ -36,33 +36,44 @@
             const senhaValue = document.getElementById('senhaInput').value;
 
             try {
-                // Caminho atualizado para apontar diretamente para a pasta api da Vercel
-                const response = await fetch('/api/index.js', { 
+                // Rota configurada via vercel.json para apontar para /api/index.js
+                const response = await fetch('/login', { 
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ login: loginValue, senha: senhaValue })
                 });
 
-                // Tentativa segura de ler o JSON para evitar o erro "Unexpected end of JSON"
-                const text = await response.text();
+                // Lendo a resposta como texto primeiro para evitar erro de sintaxe
+                const responseText = await response.text();
                 let data;
+                
                 try {
-                    data = JSON.parse(text);
-                } catch (err) {
-                    console.error("Resposta não é um JSON:", text);
-                    throw new Error("Erro de resposta do servidor.");
+                    data = JSON.parse(responseText);
+                } catch (parseError) {
+                    console.error("Servidor não retornou JSON válido:", responseText);
+                    throw new Error("Erro na resposta do servidor.");
                 }
 
                 if (response.ok) {
+                    // Sucesso: Salva o usuário e vai para o dashboard
                     localStorage.setItem('user', JSON.stringify(data.user));
                     window.location.href = 'dashboard.html';
                 } else {
-                    Swal.fire('Erro', data.message || 'Usuário ou senha inválidos', 'error');
+                    // Erro retornado pelo banco (ex: senha errada)
+                    Swal.fire('Erro', data.message || 'Falha no login', 'error');
                 }
             } catch (error) {
                 console.error('Erro na requisição:', error);
-                Swal.fire('Erro', 'Não foi possível conectar ao servidor. Verifique se o arquivo está na pasta api.', 'error');
+                Swal.fire({
+                    title: 'Erro de Conexão',
+                    text: 'Não foi possível conectar ao servidor. Verifique se o seu backend no Railway não está "Crashed".',
+                    icon: 'error'
+                });
             }
+        });
+    </script>
+</body>
+</html>
         });
     </script>
 </body>
