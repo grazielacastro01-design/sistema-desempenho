@@ -7,13 +7,13 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// --- CONFIGURAÇÃO DO BANCO DE DADOS (CORRIGIDA PARA RAILWAY) ---
+// --- CONFIGURAÇÃO DO BANCO DE DADOS ATUALIZADA ---
 const db = mysql.createPool({
-    host: process.env.MYSQLHOST,     // O Railway preenche isso sozinho
-    user: process.env.MYSQLUSER,     // O Railway preenche isso sozinho
-    password: process.env.MYSQLPASSWORD, // O Railway preenche isso sozinho
-    database: process.env.MYSQLDATABASE, // O Railway preenche isso sozinho
-    port: process.env.MYSQLPORT || 3306,
+    host: process.env.MYSQLHOST,
+    user: process.env.MYSQLUSER,
+    password: process.env.MYSQLPASSWORD,
+    database: process.env.MYSQLDATABASE,
+    port: process.env.MYSQLPORT || 3306, // Ele vai ler os 30041 que você colocar no Railway
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
