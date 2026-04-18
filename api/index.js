@@ -6,9 +6,8 @@ const bodyParser = require('body-parser');
 const app = express();
 
 // --- CONFIGURAÇÃO DE SEGURANÇA (CORS) ---
-// Isso resolve o erro de "Access-Control-Allow-Origin" que apareceu no console
 app.use(cors({
-    origin: '*', // Permite que a Vercel acesse o Railway
+    origin: '*', 
     methods: ['GET', 'POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type']
 }));
@@ -22,7 +21,7 @@ const db = mysql.createPool({
     password: process.env.MYSQLPASSWORD,
     database: process.env.MYSQLDATABASE,
     port: process.env.MYSQLPORT || 30041,
-    ssl: { rejectUnauthorized: false }, // Necessário para conexões externas
+    ssl: { rejectUnauthorized: false }, 
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
@@ -42,12 +41,12 @@ db.getConnection((err, connection) => {
 // --- ROTA DE LOGIN ---
 app.post('/login', (req, res) => {
     const { login, senha } = req.body;
-    // Usando tbUsuarios conforme seu banco
     const sql = 'SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?';
     
     db.query(sql, [login, senha], (err, result) => {
         if (err) return res.status(500).json({ error: err.message });
         if (result.length > 0) {
+            // Retorna o usuário encontrado para salvar no localStorage
             res.json({ message: "Login realizado!", user: result[0] });
         } else {
             res.status(401).json({ message: "Usuário ou senha incorretos" });
@@ -55,28 +54,29 @@ app.post('/login', (req, res) => {
     });
 });
 
-// --- ROTA DO DASHBOARD ---
+// --- ROTA DO DASHBOARD (COLABORADOR) ---
 app.get('/colaborador/:id', (req, res) => {
-    const id = req.params.id;
-    // AJUSTADO: Usando o nome correto da tabela 'tbPessoas' que vimos na imagem
-    const query = 'SELECT * FROM tbPessoas WHERE pessoa_id = ?';
+    const { id } = req.params;
     
-    db.query(query, [id], (err, result) => {
+    // Usando db.query (Pool) e garantindo que o nome da tabela seja tbPessoas
+    db.query('SELECT * FROM tbPessoas WHERE pessoa_id = ?', [id], (err, results) => {
         if (err) {
             console.error("Erro no Banco:", err);
-            return res.status(500).json({ message: 'Erro interno no servidor' });
+            return res.status(500).json({ error: "Erro interno no servidor", details: err });
         }
-        if (result.length === 0) {
-            return res.status(404).json({ message: 'Colaborador não encontrado' });
+        
+        if (results.length === 0) {
+            return res.status(404).json({ message: "Colaborador não encontrado" });
         }
-        res.json(result[0]);
+        
+        // Retorna os dados do colaborador (nome, cargo, etc)
+        res.json(results[0]);
     });
 });
 
-// Rota de teste para ver no navegador
+// Rota de teste
 app.get('/', (req, res) => res.send('API SD PERFORMANCE RODANDO!'));
 
-// Exportação para a Vercel/Railway
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
 
