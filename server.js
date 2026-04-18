@@ -19,15 +19,12 @@ const db = mysql.createPool({
     queueLimit: 0
 });
 
-// --- ROTA DE LOGIN CORRIGIDA ---
+// --- ROTA DE LOGIN ---
 app.post('/login', (req, res) => {
-    // Recebendo 'login' e 'senha' do frontend
     const { login, senha } = req.body; 
     
-    // Log para depuração na Vercel
     console.log(`Tentativa de login - Usuário enviado: ${login}, Senha enviada: ${senha}`);
 
-    // Consulta SQL usando a coluna 'login' da sua tbUsuarios
     const sql = 'SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?';
     
     db.query(sql, [login, senha], (err, result) => {
@@ -39,20 +36,21 @@ app.post('/login', (req, res) => {
         console.log("Resultado da busca no banco:", result);
 
         if (result.length > 0) {
-            // Login com sucesso
             res.json({ message: "Login realizado!", user: result[0] });
         } else {
-            // Usuário ou senha não encontrados
             res.status(401).json({ message: "Usuário ou senha incorretos" });
         }
     });
 });
 
-// Rota para buscar dados do perfil do colaborador
+// --- ROTA DE PERFIL (Utilizada pelo Dashboard) ---
 app.get('/colaborador/:id', (req, res) => {
     const id = req.params.id;
     db.query('SELECT * FROM tbPessoas WHERE pessoa_id = ?', [id], (err, result) => {
-        if (err) return res.status(500).send(err);
+        if (err) {
+            console.error("Erro ao buscar colaborador:", err);
+            return res.status(500).send(err);
+        }
         res.json(result[0]);
     });
 });

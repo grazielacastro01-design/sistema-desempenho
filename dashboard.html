@@ -41,12 +41,9 @@
     </main>
 
     <script>
-        // Função para carregar os dados assim que a página abrir
         async function carregarDashboard() {
-            // 1. Recuperar o usuário do localStorage
             const userStr = localStorage.getItem('user');
             
-            // 2. Proteção de Rota
             if (!userStr) {
                 window.location.href = 'login.html';
                 return;
@@ -54,17 +51,16 @@
 
             const user = JSON.parse(userStr);
 
-            // 3. Buscar dados detalhados do servidor (usando a rota que já criamos)
             try {
-                const response = await fetch(`/colaborador/${user.pessoa_id}`);
+                // CORREÇÃO: Usando caminho relativo para funcionar na Vercel
+                const response = await fetch(`./colaborador/${user.pessoa_id}`);
                 
                 if (!response.ok) throw new Error('Erro ao buscar dados');
 
                 const dados = await response.json();
 
-                // 4. Preencher o HTML com os dados reais do Banco de Dados
-                document.getElementById('nomeUsuarioNav').innerText = dados.nome;
-                document.getElementById('saudacao').innerText = `Olá, ${dados.nome}!`;
+                document.getElementById('nomeUsuarioNav').innerText = dados.nome || 'Usuário';
+                document.getElementById('saudacao').innerText = `Olá, ${dados.nome || 'Colaborador'}!`;
                 document.getElementById('cargoColaborador').innerText = dados.cargo || 'Não informado';
                 document.getElementById('idColaborador').innerText = `#${dados.pessoa_id}`;
 
@@ -74,13 +70,11 @@
             }
         }
 
-        // Função para deslogar
         function logout() {
             localStorage.removeItem('user');
             window.location.href = 'login.html';
         }
 
-        // Iniciar
         carregarDashboard();
     </script>
 </body>
