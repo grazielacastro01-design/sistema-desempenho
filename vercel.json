@@ -1,8 +1,13 @@
 {
+  "version": 2,
   "rewrites": [
     {
-      "source": "/(login|colaborador/.*)",
-      "destination": "/server.js"
+      "source": "/login",
+      "destination": "/api/server.js"
+    },
+    {
+      "source": "/colaborador/:id",
+      "destination": "/api/server.js"
     }
   ]
 }
