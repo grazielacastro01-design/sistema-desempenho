@@ -1,76 +1,27 @@
-<!DOCTYPE html>
-<html lang="pt-BR" class="h-full">
-<head>
-    <meta charset="UTF-8">
-    <title>Acesso | SD Performance</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700&display=swap" rel="stylesheet">
-</head>
-<body class="h-full bg-slate-50 flex items-center justify-center p-6">
-    <div class="max-w-md w-full bg-white p-10 rounded-[2.5rem] shadow-2xl border border-slate-100 text-center">
-        <h2 class="text-3xl font-extrabold text-slate-900 mb-2">Entrar</h2>
-        <p class="text-slate-500 mb-8 font-medium">Acesse sua conta para continuar</p>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const loginValue = document.getElementById('loginInput').value;
+        const senhaValue = document.getElementById('senhaInput').value;
 
-        <form id="loginForm" class="space-y-4 text-left">
-            <input type="text" id="loginInput" placeholder="Seu usuário" required class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 transition">
-            <input type="password" id="senhaInput" placeholder="Sua senha" required class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:ring-2 focus:ring-blue-600 transition">
-            
-            <div class="text-right">
-                <a href="#" onclick="Swal.fire('Esqueci a Senha', 'Contate o RH para recuperar seu acesso.', 'info')" class="text-xs font-bold text-blue-600 hover:underline">Esqueceu a senha?</a>
-            </div>
+        try {
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ login: loginValue, senha: senhaValue })
+            });
 
-            <button type="submit" class="w-full bg-slate-900 text-white py-4 rounded-2xl font-bold hover:bg-black transition shadow-lg shadow-slate-200">Acessar Painel</button>
-        </form>
-
-        <div class="mt-8 pt-6 border-t border-slate-100 space-y-4">
-            <p class="text-sm text-slate-600">Ainda não tem acesso? <a href="cadastrar.html" class="text-blue-600 font-bold hover:underline">Criar conta</a></p>
-            <a href="index.html" class="inline-block text-xs font-bold text-slate-400 uppercase tracking-widest hover:text-slate-600 transition">← Voltar para a apresentação</a>
-        </div>
-    </div>
-
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const loginValue = document.getElementById('loginInput').value;
-            const senhaValue = document.getElementById('senhaInput').value;
-
-            try {
-                // Requisição para a rota /login configurada no vercel.json
-                const response = await fetch('/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ login: loginValue, senha: senhaValue })
-                });
-
-                // Lendo a resposta primeiro como texto para evitar erro de Syntax caso o servidor retorne HTML
-                const responseText = await response.text();
-                let data;
-                
-                try {
-                    data = JSON.parse(responseText);
-                } catch (parseError) {
-                    console.error("Erro ao converter resposta para JSON:", responseText);
-                    throw new Error("Resposta inválida do servidor.");
-                }
-
-                if (response.ok) {
-                    // Salva os dados do usuário e redireciona
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    window.location.href = 'dashboard.html';
-                } else {
-                    // Exibe mensagem de erro vinda do servidor (ex: Usuário ou senha incorretos)
-                    Swal.fire('Erro', data.message || 'Falha no login', 'error');
-                }
-            } catch (error) {
-                console.error('Erro na requisição:', error);
-                Swal.fire({
-                    title: 'Erro de Conexão',
-                    text: 'Não foi possível conectar ao servidor. Verifique o vercel.json e o deploy da API.',
-                    icon: 'error'
-                });
+            if (response.ok) {
+                const data = await response.json();
+                localStorage.setItem('user', JSON.stringify(data.user));
+                window.location.href = 'dashboard.html';
+            } else {
+                const errorData = await response.json();
+                Swal.fire('Erro', errorData.message || 'Usuário ou senha inválidos', 'error');
             }
-        });
-    </script>
-</body>
-</html>
+        } catch (error) {
+            console.error('Erro:', error);
+            Swal.fire('Erro', 'Não foi possível conectar ao servidor.', 'error');
+        }
+    });
+</script>
