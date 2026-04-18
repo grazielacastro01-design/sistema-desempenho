@@ -1,10 +1,17 @@
 {
   "version": 2,
   "builds": [
-    { "src": "api/index.js", "use": "@vercel/node" }
+    {
+      "src": "api/index.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "*.html",
+      "use": "@vercel/static"
+    }
   ],
   "rewrites": [
-    { "source": "/login", "destination": "api/index.js" },
-    { "source": "/colaborador/:id", "destination": "api/index.js" }
+    { "source": "/login", "destination": "/api/index.js" },
+    { "source": "/colaborador/:id", "destination": "/api/index.js" }
   ]
 }
