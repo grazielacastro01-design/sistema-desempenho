@@ -4,8 +4,7 @@ const mysql = require('mysql2/promise');
 
 const app = express();
 
-// --- CONFIGURAÇÃO DO CORS ---
-// Permite que sua página na Vercel acesse este servidor no Railway
+// --- CONFIGURAÇÃO DE SEGURANÇA (CORS) ---
 app.use(cors({
     origin: '*', 
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -14,7 +13,7 @@ app.use(cors({
 
 app.use(express.json());
 
-// --- CONFIGURAÇÃO DO BANCO DE DADOS ---
+// --- CONEXÃO COM O BANCO (Railway) ---
 const db = mysql.createPool({
     host: process.env.MYSQLHOST,
     user: process.env.MYSQLUSER,
@@ -26,12 +25,12 @@ const db = mysql.createPool({
     queueLimit: 0
 });
 
-// Verificação de conexão nos Logs do Railway
+// Teste de conexão nos logs
 db.getConnection()
-    .then(() => console.log("✅ Banco conectado com sucesso!"))
-    .catch(err => console.error("❌ Erro ao conectar no banco:", err));
+    .then(() => console.log("✅ Conectado ao MySQL com sucesso!"))
+    .catch(err => console.error("❌ Erro de conexão:", err));
 
-// --- ROTA DE LOGIN ---
+// --- ROTA: LOGIN ---
 app.post('/login', async (req, res) => {
     const { login, senha } = req.body;
     try {
@@ -39,37 +38,43 @@ app.post('/login', async (req, res) => {
             'SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?',
             [login, senha]
         );
-
         if (rows.length > 0) {
             res.json({ success: true, user: rows[0] });
         } else {
             res.status(401).json({ success: false, message: 'Usuário ou senha inválidos' });
         }
     } catch (error) {
-        console.error("Erro no servidor:", error);
-        res.status(500).json({ error: 'Erro interno no servidor' });
+        res.status(500).json({ error: 'Erro no servidor' });
     }
 });
 
-// --- ROTA DE LISTAGEM ---
+// --- ROTA: LISTAR COLABORADORES ---
 app.get('/colaboradores', async (req, res) => {
     try {
-        const [rows] = await db.execute('SELECT pessoa_id, nome, cargo FROM tbPessoas');
+        // Buscando apenas o que existe na sua tbPessoas
+        const [rows] = await db.execute('SELECT pessoa_id, nome FROM tbPessoas ORDER BY pessoa_id DESC');
         res.json(rows);
     } catch (error) {
-        res.status(500).json({ error: 'Erro ao buscar colaboradores' });
+        res.status(500).json({ error: 'Erro ao listar' });
     }
 });
 
-// --- ROTA DE CADASTRO ---
+// --- ROTA: CADASTRAR COLABORADOR ---
 app.post('/colaborador', async (req, res) => {
-    const { nome, cargo } = req.body;
+    const { nome } = req.body;
     try {
-        const sql = 'INSERT INTO tbPessoas (nome, cargo, pessoa_tipo_id) VALUES (?, ?, 5)';
-        const [result] = await db.execute(sql, [nome, cargo]);
-        res.status(201).json({ id: result.insertId, message: 'Cadastrado com sucesso!' });
+        // Inserindo dados obrigatórios para evitar Erro 500 (CPF e Nascimento)
+        const sql = 'INSERT INTO tbPessoas (nome, cpf, nascimento, pessoa_tipo_id) VALUES (?, ?, ?, ?)';
+        const [result] = await db.execute(sql, [
+            nome, 
+            '000.000.000-00', // CPF padrão
+            '2000-01-01',     // Data padrão
+            1                 // pessoa_tipo_id conforme seu banco
+        ]);
+        res.status(201).json({ id: result.insertId, message: 'Sucesso!' });
     } catch (error) {
-        res.status(500).json({ error: 'Erro ao salvar no banco' });
+        console.error("Erro no Banco:", error);
+        res.status(500).json({ error: error.message });
     }
 });
 
