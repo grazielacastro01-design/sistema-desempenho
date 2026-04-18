@@ -4,18 +4,31 @@ const mysql = require('mysql2/promise');
 
 const app = express();
 
-// Ativa o CORS para permitir que a Vercel acesse o Railway
-app.use(cors());
+// 1. CONFIGURAÇÃO DO CORS (Adicionado aqui no topo)
+app.use(cors({
+    origin: '*', // Permite que qualquer site (Vercel ou localhost) acesse
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 
-// Configuração da conexão com o banco de dados (Railway)
+// 2. CONFIGURAÇÃO DO BANCO DE DADOS (Usando variáveis de ambiente)
 const db = mysql.createPool({
-    host: process.env.MYSQLHOST || 'seu_host_aqui',
-    user: process.env.MYSQLUSER || 'seu_usuario_aqui',
-    password: process.env.MYSQLPASSWORD || 'sua_senha_aqui',
-    database: process.env.MYSQLDATABASE || 'sua_base_aqui',
-    port: process.env.MYSQLPORT || 3306
+    host: process.env.MYSQLHOST,
+    user: process.env.MYSQLUSER,
+    password: process.env.MYSQLPASSWORD,
+    database: process.env.MYSQLDATABASE,
+    port: process.env.MYSQLPORT || 3306,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
+
+// Teste de conexão para ver nos Logs do Railway
+db.getConnection()
+    .then(() => console.log("✅ Conectado ao MySQL com sucesso!"))
+    .catch(err => console.error("❌ Erro de conexão no banco:", err));
 
 // --- ROTA DE LOGIN ---
 app.post('/login', async (req, res) => {
@@ -32,14 +45,14 @@ app.post('/login', async (req, res) => {
             res.status(401).json({ success: false, message: 'Usuário ou senha inválidos' });
         }
     } catch (error) {
-        res.status(500).json({ error: 'Erro no servidor' });
+        console.error(error);
+        res.status(500).json({ error: 'Erro interno no servidor de login' });
     }
 });
 
-// --- ROTA DE LISTAGEM (O que faz a tabela aparecer) ---
+// --- ROTA DE LISTAGEM DE COLABORADORES ---
 app.get('/colaboradores', async (req, res) => {
     try {
-        // Buscando da tabela tbPessoas que vimos no seu banco
         const [rows] = await db.execute('SELECT pessoa_id, nome, cargo FROM tbPessoas');
         res.json(rows);
     } catch (error) {
@@ -48,22 +61,22 @@ app.get('/colaboradores', async (req, res) => {
     }
 });
 
-// --- ROTA DE CADASTRO (CRUD) ---
+// --- ROTA DE CADASTRO DE COLABORADOR ---
 app.post('/colaborador', async (req, res) => {
     const { nome, cargo } = req.body;
     try {
-        // pessoa_tipo_id = 5 (padrão que você usa para colaborador)
+        // pessoa_tipo_id = 5 é o padrão para colaborador no seu banco
         const sql = 'INSERT INTO tbPessoas (nome, cargo, pessoa_tipo_id) VALUES (?, ?, 5)';
         const [result] = await db.execute(sql, [nome, cargo]);
         res.status(201).json({ id: result.insertId, message: 'Cadastrado com sucesso!' });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Erro ao salvar no banco' });
+        res.status(500).json({ error: 'Erro ao salvar colaborador no banco' });
     }
 });
 
-// Iniciar o servidor
+// 3. INICIALIZAÇÃO DO SERVIDOR
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`);
+app.listen(port, '0.0.0.0', () => {
+    console.log(`🚀 Servidor rodando na porta ${port}`);
 });
