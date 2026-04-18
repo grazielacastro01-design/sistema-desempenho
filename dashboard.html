@@ -52,8 +52,8 @@
             const user = JSON.parse(userStr);
 
             try {
-                // CORREÇÃO: Usando caminho relativo para funcionar na Vercel
-                const response = await fetch(`./colaborador/${user.pessoa_id}`);
+                // FETCH ATUALIZADO: Usando o caminho que o vercel.json vai redirecionar
+                const response = await fetch(`/colaborador/${user.pessoa_id}`);
                 
                 if (!response.ok) throw new Error('Erro ao buscar dados');
 
