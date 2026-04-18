@@ -52,18 +52,18 @@
             const user = JSON.parse(userStr);
 
             try {
-                // Busca o ID do colaborador (usando pessoa_id ou id como reserva)
-                const idPessoa = user.pessoa_id || user.id || (user.user && user.user.pessoa_id);
+                // Captura o ID de qualquer formato (pessoa_id, usuario_id ou id)
+                const idPessoa = user.pessoa_id || user.usuario_id || user.id || (user.user && user.user.pessoa_id);
 
                 if (!idPessoa) throw new Error('ID não encontrado no navegador.');
 
                 const response = await fetch(`https://sistema-desempenho-production.up.railway.app/colaborador/${idPessoa}`);
                 
-                if (!response.ok) throw new Error('Erro na resposta do servidor Railway');
+                if (!response.ok) throw new Error('Colaborador não encontrado no servidor.');
 
                 const dados = await response.json();
 
-                // --- ATUALIZAÇÃO DOS CAMPOS NA TELA ---
+                // Atualiza a interface
                 if (document.getElementById('nomeUsuarioNav')) {
                     document.getElementById('nomeUsuarioNav').innerText = dados.nome || 'Usuário';
                 }
@@ -82,22 +82,20 @@
                 }
 
             } catch (error) {
-                console.error("Erro ao preencher tela:", error);
+                console.error("Erro no Dashboard:", error);
                 Swal.fire({
-                    title: 'Erro',
-                    text: 'Não foi possível carregar seus dados. Tente logar novamente.',
+                    title: 'Erro de Sincronização',
+                    text: 'Não encontramos seus dados de colaborador. Verifique se seu ID no banco é o mesmo do login.',
                     icon: 'error'
                 });
             }
         }
 
-        // Função para limpar o acesso e voltar para o login
         function logout() {
             localStorage.removeItem('user');
             window.location.href = 'login.html';
         }
 
-        // Chama a função automaticamente quando o navegador terminar de carregar o HTML
         window.onload = carregarDashboard;
     </script>
 </body>
