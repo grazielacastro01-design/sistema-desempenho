@@ -57,4 +57,17 @@
                     localStorage.setItem('user', JSON.stringify(data.user));
                     window.location.href = 'dashboard.html';
                 } else {
-                    Swal.fire('Erro', data.message || 'Falha no login',
+                    Swal.fire('Erro', data.message || 'Falha no login', 'error');
+                }
+            } catch (error) {
+                console.error('Erro na requisição:', error);
+                Swal.fire({
+                    title: 'Erro de Conexão',
+                    text: 'Não foi possível conectar ao servidor. Verifique se o seu vercel.json está correto e se o arquivo index.js está dentro da pasta api.',
+                    icon: 'error'
+                });
+            }
+        });
+    </script>
+</body>
+</html>
