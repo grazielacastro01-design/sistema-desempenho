@@ -56,19 +56,22 @@
                             <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Ações</th>
                         </tr>
                     </thead>
-                    <tbody id="tabelaCorpo">
-                        </tbody>
+                    <tbody id="tabelaCorpo"></tbody>
                 </table>
             </div>
         </section>
     </main>
 
     <script>
+        // Carrega a lista do servidor Railway
         async function carregarColaboradores() {
             try {
                 const response = await fetch('https://sistema-desempenho-production.up.railway.app/colaboradores');
-                const colaboradores = await response.json();
                 
+                // Se a resposta não for JSON (erro 404), isso evita o erro de "Unexpected token <"
+                if (!response.ok) throw new Error("Erro na rota do servidor");
+                
+                const colaboradores = await response.json();
                 const tbody = document.getElementById('tabelaCorpo');
                 tbody.innerHTML = '';
 
@@ -97,7 +100,7 @@
             let input = document.getElementById("buscaColaborador").value.toUpperCase();
             let tr = document.getElementById("tabelaCorpo").getElementsByTagName("tr");
             for (let i = 0; i < tr.length; i++) {
-                let td = tr[i].getElementsByTagName("td")[1]; // Coluna do Nome
+                let td = tr[i].getElementsByTagName("td")[1];
                 if (td) {
                     let txtValue = td.textContent || td.innerText;
                     tr[i].style.display = txtValue.toUpperCase().indexOf(input) > -1 ? "" : "none";
@@ -105,24 +108,59 @@
             }
         }
 
+        // Função para Cadastrar enviando para o Railway
         function abrirModalCadastro() {
             Swal.fire({
-                title: 'Cadastrar Novo Colaborador',
+                title: 'CADASTRAR NOVO COLABORADOR',
                 html: `
                     <input id="swal-nome" class="swal2-input" placeholder="Nome Completo">
                     <input id="swal-cargo" class="swal2-input" placeholder="Cargo">
                 `,
-                confirmButtonText: 'Salvar Colaborador',
+                confirmButtonText: 'SALVAR NO BANCO',
                 showCancelButton: true,
-                confirmButtonColor: '#1e40af'
-            }).then((result) => {
+                confirmButtonColor: '#1e40af',
+                cancelButtonText: 'CANCELAR',
+                preConfirm: () => {
+                    const nome = document.getElementById('swal-nome').value;
+                    const cargo = document.getElementById('swal-cargo').value;
+                    if (!nome || !cargo) {
+                        Swal.showValidationMessage('Por favor, preencha todos os campos');
+                    }
+                    return { nome, cargo };
+                }
+            }).then(async (result) => {
                 if (result.isConfirmed) {
-                    // Aqui faremos o POST para o Railway no próximo passo
-                    Swal.fire('Sucesso!', 'Colaborador enviado para o banco.', 'success');
+                    try {
+                        const response = await fetch('https://sistema-desempenho-production.up.railway.app/colaborador', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(result.value)
+                        });
+
+                        if (response.ok) {
+                            Swal.fire('Sucesso!', 'Colaborador cadastrado.', 'success');
+                            carregarColaboradores(); // Recarrega a tabela
+                        } else {
+                            throw new Error();
+                        }
+                    } catch (error) {
+                        Swal.fire('Erro', 'Não foi possível salvar o colaborador.', 'error');
+                    }
                 }
             });
         }
 
+        // Função para o botão PDF
+        function gerarPDF() {
+            Swal.fire({
+                title: 'Relatório PDF',
+                text: "A função de exportar PDF será implementada no próximo Sprint!",
+                icon: 'info',
+                confirmButtonColor: '#1e40af'
+            });
+        }
+
+        // Inicializa a tabela
         window.onload = carregarColaboradores;
     </script>
 </body>

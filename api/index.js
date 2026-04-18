@@ -55,29 +55,25 @@ app.post('/login', (req, res) => {
 });
 
 // --- ROTA DO DASHBOARD (COLABORADOR) ---
-app.get('/colaborador/:id', (req, res) => {
-    const { id } = req.params;
-    
-    // Usando db.query (Pool) e garantindo que o nome da tabela seja tbPessoas
-    db.query('SELECT * FROM tbPessoas WHERE pessoa_id = ?', [id], (err, results) => {
-        if (err) {
-            console.error("Erro no Banco:", err);
-            return res.status(500).json({ error: "Erro interno no servidor", details: err });
-        }
-        
-        if (results.length === 0) {
-            return res.status(404).json({ message: "Colaborador não encontrado" });
-        }
-        
-        // Retorna os dados do colaborador (nome, cargo, etc)
-        res.json(results[0]);
-    });
+// Rota para LISTAR (GET)
+app.get('/colaboradores', async (req, res) => {
+    try {
+        const [rows] = await db.execute('SELECT pessoa_id, nome, cargo FROM tbPessoas');
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ error: "Erro ao buscar dados" });
+    }
 });
 
-// Rota de teste
-app.get('/', (req, res) => res.send('API SD PERFORMANCE RODANDO!'));
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
-
-module.exports = app;
+// Rota para CADASTRAR (POST)
+app.post('/colaborador', async (req, res) => {
+    const { nome, cargo } = req.body;
+    try {
+        // Importante:pessoa_tipo_id 5 é o padrão para colaborador no seu banco
+        const sql = 'INSERT INTO tbPessoas (nome, cargo, pessoa_tipo_id) VALUES (?, ?, 5)';
+        await db.execute(sql, [nome, cargo]);
+        res.status(201).json({ message: "Cadastrado com sucesso!" });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
