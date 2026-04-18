@@ -47,15 +47,18 @@ app.post('/login', (req, res) => {
 
 app.get('/colaborador/:id', (req, res) => {
     const id = req.params.id;
-    db.query('SELECT * FROM tbPessoas WHERE pessoa_id = ?', [id], (err, result) => {
-        if (err) return res.status(500).send(err);
+    // Ajustado para o nome real da sua tabela: tbPessoas
+    const query = 'SELECT * FROM tbPessoas WHERE pessoa_id = ?';
+    
+    db.query(query, [id], (err, result) => {
+        if (err) {
+            console.error("Erro no Banco:", err);
+            return res.status(500).json({ message: 'Erro interno no servidor' });
+        }
+        if (result.length === 0) {
+            return res.status(404).json({ message: 'Colaborador não encontrado' });
+        }
+        // Retorna o resultado encontrado no banco
         res.json(result[0]);
     });
 });
-
-app.get('/', (req, res) => res.send('API FUNCIONANDO'));
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Rodando na porta ${PORT}`));
-
-module.exports = app;
