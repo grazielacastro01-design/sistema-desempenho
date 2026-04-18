@@ -30,7 +30,6 @@
                         <tr class="bg-slate-50/50 border-b border-slate-100">
                             <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">ID</th>
                             <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nome Completo</th>
-                            <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
                             <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Ações</th>
                         </tr>
                     </thead>
@@ -43,11 +42,10 @@
     <script>
         const API_URL = 'https://sistema-desempenho-production.up.railway.app';
 
-        // Função que carrega a lista do servidor Railway
         async function carregarColaboradores() {
             try {
                 const response = await fetch(`${API_URL}/colaboradores`);
-                if (!response.ok) throw new Error("Erro na rota");
+                if (!response.ok) throw new Error("Erro ao buscar");
                 
                 const colaboradores = await response.json();
                 const tbody = document.getElementById('tabelaCorpo');
@@ -58,18 +56,16 @@
                         <tr class="border-b border-slate-50 hover:bg-blue-50/30 transition-all">
                             <td class="p-6 text-sm font-bold text-slate-400">#${colab.pessoa_id}</td>
                             <td class="p-6 text-sm font-black text-slate-800">${colab.nome}</td>
-                            <td class="p-6 text-[10px] text-blue-600 font-bold uppercase">Ativo</td>
                             <td class="p-6 text-center">
                                 <button class="text-slate-400 hover:text-red-600 transition"><i class="fas fa-trash"></i></button>
                             </td>
                         </tr>`;
                 });
             } catch (error) {
-                console.error("Erro ao listar colaboradores:", error);
+                console.error("Erro ao listar:", error);
             }
         }
 
-        // Função para abrir o modal de novo cadastro
         function abrirModalCadastro() {
             Swal.fire({
                 title: 'Novo Colaborador',
@@ -92,26 +88,20 @@
                         });
 
                         if (response.ok) {
-                            Swal.fire({
-                                title: 'Sucesso!',
-                                text: 'Cadastrado com sucesso.',
-                                icon: 'success',
-                                timer: 1500,
-                                showConfirmButton: false
-                            });
+                            Swal.fire({ title: 'Sucesso!', icon: 'success', timer: 1500, showConfirmButton: false });
                             carregarColaboradores();
                         } else {
                             throw new Error();
                         }
                     } catch (error) {
-                        Swal.fire('Erro', 'Não foi possível salvar o colaborador.', 'error');
+                        Swal.fire('Erro', 'O banco de dados não permitiu o cadastro. Tente novamente.', 'error');
                     }
                 }
             });
         }
 
         function gerarPDF() {
-            Swal.fire('Em breve', 'A função de exportação está em desenvolvimento.', 'info');
+            Swal.fire('Aviso', 'Função de PDF em breve.', 'info');
         }
 
         window.onload = carregarColaboradores;
