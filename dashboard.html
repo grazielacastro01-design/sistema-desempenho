@@ -2,113 +2,109 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>SD Performance | Gestão</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | SD Performance</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="bg-slate-50 flex min-h-screen">
+<body class="bg-slate-50 flex min-h-screen font-sans">
 
-    <aside class="w-64 bg-slate-900 text-white flex flex-col hidden md:flex">
-        <div class="p-6">
-            <h1 class="text-xl font-bold tracking-widest text-blue-400">SD PERFORMANCE</h1>
+    <aside class="w-72 bg-[#1e40af] text-white flex flex-col hidden lg:flex shadow-2xl">
+        <div class="p-8">
+            <h1 class="text-2xl font-black tracking-tighter italic">SD PERFORMANCE</h1>
         </div>
-        <nav class="flex-1 px-4 space-y-2">
-            <a href="#" class="flex items-center gap-3 p-3 bg-blue-600 rounded-xl"><i class="fas fa-chart-line w-5"></i> Dashboard</a>
-            <a href="#" class="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-xl transition"><i class="fas fa-target-slash w-5"></i> Minhas Metas (OKR)</a>
-            <a href="#" class="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-xl transition"><i class="fas fa-user-check w-5"></i> Avaliações 360°</a>
-            <a href="#" class="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-xl transition"><i class="fas fa-lightbulb w-5"></i> PDI Individual</a>
-            <hr class="border-slate-800 my-4">
-            <p class="text-[10px] uppercase text-slate-500 font-bold px-3">Gestão (RH/Gestor)</p>
-            <a href="#" class="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-xl transition"><i class="fas fa-users w-5"></i> Colaboradores</a>
-            <a href="#" class="flex items-center gap-3 p-3 hover:bg-slate-800 rounded-xl transition"><i class="fas fa-file-invoice w-5"></i> Relatórios BI</a>
+        
+        <nav class="flex-1 px-4 space-y-1">
+            <a href="dashboard.html" class="flex items-center gap-4 p-4 bg-blue-500/30 border-l-4 border-white rounded-r-xl transition-all">
+                <i class="fas fa-th-large w-5 text-center"></i> <span class="font-bold">Dashboard</span>
+            </a>
+            <a href="metas.html" class="flex items-center gap-4 p-4 hover:bg-white/10 rounded-xl transition-all text-blue-100">
+                <i class="fas fa-bullseye w-5 text-center"></i> <span>Minhas Metas (OKR)</span>
+            </a>
+            <a href="avaliacoes.html" class="flex items-center gap-4 p-4 hover:bg-white/10 rounded-xl transition-all text-blue-100">
+                <i class="fas fa-users-viewfinder w-5 text-center"></i> <span>Avaliações 360°</span>
+            </a>
+            <a href="pdi.html" class="flex items-center gap-4 p-4 hover:bg-white/10 rounded-xl transition-all text-blue-100">
+                <i class="fas fa-lightbulb w-5 text-center"></i> <span>PDI Individual</span>
+            </a>
+            
+            <div class="pt-8 pb-2 px-4">
+                <p class="text-[10px] uppercase tracking-widest text-blue-300 font-black">Gestão (RH/Gestor)</p>
+            </div>
+            
+            <a href="colaboradores.html" class="flex items-center gap-4 p-4 hover:bg-white/10 rounded-xl transition-all text-blue-100">
+                <i class="fas fa-user-group w-5 text-center"></i> <span>Colaboradores</span>
+            </a>
+            <a href="relatorios.html" class="flex items-center gap-4 p-4 hover:bg-white/10 rounded-xl transition-all text-blue-100">
+                <i class="fas fa-chart-pie w-5 text-center"></i> <span>Relatórios BI</span>
+            </a>
         </nav>
-        <div class="p-4 border-t border-slate-800">
-            <button onclick="logout()" class="w-full flex items-center gap-3 p-3 text-red-400 hover:bg-red-900/20 rounded-xl transition">
-                <i class="fas fa-sign-out-alt"></i> Sair do Sistema
+
+        <div class="p-6 border-t border-white/10">
+            <button onclick="logout()" class="w-full flex items-center gap-4 p-4 text-red-300 hover:bg-red-500/20 rounded-xl transition-all font-bold">
+                <i class="fas fa-power-off"></i> Sair do Sistema
             </button>
         </div>
     </aside>
 
-    <main class="flex-1 flex flex-col">
-        <header class="bg-white border-b border-slate-200 p-4 flex justify-between items-center shadow-sm">
-            <div class="flex items-center gap-2">
-                <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-bold uppercase" id="perfilTag">Colaborador</span>
+    <main class="flex-1 flex flex-col min-w-0">
+        <header class="bg-white p-6 flex justify-between items-center border-b border-slate-100">
+            <div class="flex items-center gap-3">
+                <span class="bg-blue-100 text-blue-700 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider">Colaborador</span>
             </div>
             <div class="flex items-center gap-4">
-                <i class="fas fa-bell text-slate-400 cursor-pointer hover:text-blue-600 transition"></i>
                 <div class="text-right">
-                    <p id="nomeUsuarioNav" class="text-sm font-bold text-slate-800">Carregando...</p>
-                    <p id="cargoColaborador" class="text-[10px] text-slate-500 font-medium italic">---</p>
+                    <p id="nomeUsuarioNav" class="text-sm font-black text-slate-800 leading-none">Graziela de Castro</p>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Analista de ADS</p>
+                </div>
+                <div class="w-10 h-10 bg-slate-100 rounded-full flex items-center justify-center text-slate-400">
+                    <i class="fas fa-user"></i>
                 </div>
             </div>
         </header>
 
-        <section class="p-8 space-y-8">
-            <div class="flex justify-between items-end">
+        <section class="p-8 lg:p-12 space-y-10">
+            <div>
+                <h2 id="saudacao" class="text-4xl font-black text-slate-900 tracking-tight">Olá, Graziela!</h2>
+                <p class="text-slate-400 font-bold mt-1 uppercase text-xs tracking-widest">Painel Geral de Navegação</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <a href="colaboradores.html" class="group bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+                    <div class="w-16 h-16 bg-purple-50 rounded-3xl flex items-center justify-center mb-8 group-hover:bg-purple-600 transition-all duration-500">
+                        <i class="fas fa-users text-2xl text-purple-600 group-hover:text-white"></i>
+                    </div>
+                    <h3 class="font-black text-slate-800 text-xl mb-3">Colaboradores</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed font-bold">Gerir equipa, cargos e dados profissionais de forma centralizada.</p>
+                </a>
+
+                <a href="metas.html" class="group bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+                    <div class="w-16 h-16 bg-red-50 rounded-3xl flex items-center justify-center mb-8 group-hover:bg-red-600 transition-all duration-500">
+                        <i class="fas fa-bullseye text-2xl text-red-600 group-hover:text-white"></i>
+                    </div>
+                    <h3 class="font-black text-slate-800 text-xl mb-3">Metas OKR</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed font-bold">Definir objetivos estratégicos e acompanhar KPIs de desempenho.</p>
+                </a>
+
+                <a href="avaliacoes.html" class="group bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+                    <div class="w-16 h-16 bg-orange-50 rounded-3xl flex items-center justify-center mb-8 group-hover:bg-orange-600 transition-all duration-500">
+                        <i class="fas fa-file-signature text-2xl text-orange-600 group-hover:text-white"></i>
+                    </div>
+                    <h3 class="font-black text-slate-800 text-xl mb-3">Avaliações</h3>
+                    <p class="text-sm text-slate-400 leading-relaxed font-bold">Feedbacks periódicos, ciclos 360° e acompanhamento contínuo.</p>
+                </a>
+
+            </div>
+
+            <div class="bg-white p-6 rounded-3xl border border-slate-100 flex items-center justify-between shadow-sm max-w-xs">
                 <div>
-                    <h2 id="saudacao" class="text-3xl font-extrabold text-slate-900">Olá!</h2>
-                    <p class="text-slate-500">Ciclo de Performance 2026 - Primeiro Semestre</p>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Sincronização</p>
+                    <p id="idColaborador" class="text-2xl font-black text-blue-600">#5</p>
                 </div>
-                <button class="bg-blue-600 text-white px-5 py-2 rounded-xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition text-sm">
-                    <i class="fas fa-plus mr-2"></i> Nova Autoavaliação
-                </button>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Meta Global</p>
-                    <p class="text-2xl font-black text-slate-800">85%</p>
-                    <div class="w-full bg-slate-100 h-1.5 mt-3 rounded-full overflow-hidden">
-                        <div class="bg-green-500 h-full w-[85%]"></div>
-                    </div>
-                </div>
-                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Feedbacks Recebidos</p>
-                    <p class="text-2xl font-black text-slate-800">12</p>
-                    <p class="text-[10px] text-green-600 font-bold mt-1">+2 este mês</p>
-                </div>
-                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Pendências RH</p>
-                    <p class="text-2xl font-black text-red-500">01</p>
-                    <p class="text-[10px] text-slate-400 mt-1">Prazo: 2 dias</p>
-                </div>
-                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
-                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Sincronização</p>
-                    <p id="idColaborador" class="text-2xl font-black text-blue-600">#---</p>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
-                <div class="p-6 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
-                    <div>
-                        <h3 class="font-bold text-slate-800">Meus Objetivos e Resultados Chave (OKRs)</h3>
-                        <p class="text-xs text-slate-500">Acompanhamento de metas do período</p>
-                    </div>
-                </div>
-                <div class="p-0 overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead>
-                            <tr class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter border-b border-slate-100">
-                                <th class="p-5">Objetivo</th>
-                                <th class="p-5">Status</th>
-                                <th class="p-5">Progresso</th>
-                                <th class="p-5">Prazo</th>
-                            </tr>
-                        </thead>
-                        <tbody id="listaMetas">
-                            <tr class="border-b border-slate-50 text-sm">
-                                <td class="p-5 font-bold text-slate-700">Implementar Novo Banco de Currículos</td>
-                                <td class="p-5"><span class="bg-blue-50 text-blue-600 px-2 py-1 rounded-md text-[10px] font-bold uppercase">Em Andamento</span></td>
-                                <td class="p-5">
-                                    <div class="w-24 bg-slate-100 h-1.5 rounded-full overflow-hidden">
-                                        <div class="bg-blue-600 h-full w-[60%]"></div>
-                                    </div>
-                                </td>
-                                <td class="p-5 text-slate-500 font-medium">30 Mai 2026</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-600">
+                    <i class="fas fa-database"></i>
                 </div>
             </div>
         </section>
@@ -123,20 +119,12 @@
             try {
                 const idPessoa = user.pessoa_id || user.usuario_id || user.id;
                 const response = await fetch(`https://sistema-desempenho-production.up.railway.app/colaborador/${idPessoa}`);
-                if (!response.ok) throw new Error();
                 const dados = await response.json();
 
-                // Atualizando Dados Reais do Banco
-                document.getElementById('nomeUsuarioNav').innerText = dados.nome;
-                document.getElementById('cargoColaborador').innerText = dados.cargo || 'Analista de ADS';
+                // Atualiza os dados dinâmicos do banco
+                document.getElementById('nomeUsuarioNav').innerText = dados.nome || 'Graziela de Castro';
                 document.getElementById('saudacao').innerText = `Olá, ${dados.nome.split(' ')[0]}!`;
-                document.getElementById('idColaborador').innerText = `#${dados.pessoa_id}`;
-                
-                // Exemplo de lógica de perfil: Se for ID 1 (Graziela), pode ser RH
-                if(dados.pessoa_id == 1) {
-                    document.getElementById('perfilTag').innerText = "RH / Admin";
-                    document.getElementById('perfilTag').className = "bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold uppercase";
-                }
+                document.getElementById('idColaborador').innerText = `#${dados.pessoa_id || idPessoa}`;
 
             } catch (error) {
                 console.error("Erro ao carregar dados dinâmicos.");
