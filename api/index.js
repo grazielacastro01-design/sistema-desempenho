@@ -4,24 +4,32 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const app = express();
-app.use(cors());
+
+// --- CONFIGURAÇÃO DE SEGURANÇA (CORS) ---
+// Isso resolve o erro de "Access-Control-Allow-Origin" que apareceu no console
+app.use(cors({
+    origin: '*', // Permite que a Vercel acesse o Railway
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type']
+}));
+
 app.use(bodyParser.json());
 
-// --- CONEXÃO USANDO VARIÁVEIS DE AMBIENTE DA VERCEL ---
+// --- CONEXÃO COM O BANCO DE DADOS (RAILWAY) ---
 const db = mysql.createPool({
-    host: process.env.MYSQLHOST,         // shuttle.proxy.rlwy.net
-    user: process.env.MYSQLUSER,         // root
-    password: process.env.MYSQLPASSWORD, // Sua senha do Railway
-    database: process.env.MYSQLDATABASE, // railway
+    host: process.env.MYSQLHOST,
+    user: process.env.MYSQLUSER,
+    password: process.env.MYSQLPASSWORD,
+    database: process.env.MYSQLDATABASE,
     port: process.env.MYSQLPORT || 30041,
-    ssl: { rejectUnauthorized: false },  // Essencial para aceitar conexões externas do Railway
+    ssl: { rejectUnauthorized: false }, // Necessário para conexões externas
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
     connectTimeout: 20000 
 });
 
-// Teste de conexão ao iniciar
+// Teste de conexão automático
 db.getConnection((err, connection) => {
     if (err) {
         console.error("ERRO CRÍTICO NO BANCO:", err.message);
@@ -31,8 +39,10 @@ db.getConnection((err, connection) => {
     }
 });
 
+// --- ROTA DE LOGIN ---
 app.post('/login', (req, res) => {
     const { login, senha } = req.body;
+    // Usando tbUsuarios conforme seu banco
     const sql = 'SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?';
     
     db.query(sql, [login, senha], (err, result) => {
@@ -45,9 +55,10 @@ app.post('/login', (req, res) => {
     });
 });
 
+// --- ROTA DO DASHBOARD ---
 app.get('/colaborador/:id', (req, res) => {
     const id = req.params.id;
-    // Ajustado para o nome real da sua tabela: tbPessoas
+    // AJUSTADO: Usando o nome correto da tabela 'tbPessoas' que vimos na imagem
     const query = 'SELECT * FROM tbPessoas WHERE pessoa_id = ?';
     
     db.query(query, [id], (err, result) => {
@@ -58,7 +69,15 @@ app.get('/colaborador/:id', (req, res) => {
         if (result.length === 0) {
             return res.status(404).json({ message: 'Colaborador não encontrado' });
         }
-        // Retorna o resultado encontrado no banco
         res.json(result[0]);
     });
 });
+
+// Rota de teste para ver no navegador
+app.get('/', (req, res) => res.send('API SD PERFORMANCE RODANDO!'));
+
+// Exportação para a Vercel/Railway
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
+module.exports = app;
