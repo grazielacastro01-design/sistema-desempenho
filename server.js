@@ -61,3 +61,6 @@ app.get('/', (req, res) => res.send('API SISTEMA DE DESEMPENHO ONLINE'));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
+// --- ESSENCIAL PARA FUNCIONAR NA VERCEL ---
+module.exports = app;
