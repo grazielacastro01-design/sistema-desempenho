@@ -4,20 +4,37 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const app = express();
-
-// Configure o CORS para aceitar qualquer origem durante os testes
 app.use(cors());
 app.use(bodyParser.json());
 
-// ... restante do seu código de banco de dados e rotas ...
+// --- CONFIGURAÇÃO DO BANCO DE DADOS (RAILWAY) ---
+const db = mysql.createPool({
+    host: process.env.MYSQLHOST || 'shuttle.proxy.rlwy.net',
+    user: process.env.MYSQLUSER || 'root',
+    password: process.env.MYSQLPASSWORD || 'HMhYiBGRRSVOFiROAVJdwKynxQakxiiQ',
+    database: process.env.MYSQLDATABASE || 'railway',
+    port: process.env.MYSQLPORT || 30041,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+});
 
 // Rota de Login
 app.post('/login', (req, res) => {
-    const { login, senha } = req.body;
-    console.log(`Login recebido: ${login}`);
+    const { login, senha } = req.body; 
+    
+    console.log(`Tentativa de login - Usuário enviado: ${login}, Senha enviada: ${senha}`);
+
     const sql = 'SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?';
+    
     db.query(sql, [login, senha], (err, result) => {
-        if (err) return res.status(500).json(err);
+        if (err) {
+            console.error("Erro na consulta SQL:", err);
+            return res.status(500).json(err);
+        }
+        
+        console.log("Resultado da busca no banco:", result);
+
         if (result.length > 0) {
             res.json({ message: "Login realizado!", user: result[0] });
         } else {
@@ -26,13 +43,19 @@ app.post('/login', (req, res) => {
     });
 });
 
-// Rota de Colaborador
+// Rota de Perfil do Colaborador
 app.get('/colaborador/:id', (req, res) => {
     const id = req.params.id;
     db.query('SELECT * FROM tbPessoas WHERE pessoa_id = ?', [id], (err, result) => {
-        if (err) return res.status(500).send(err);
+        if (err) {
+            console.error("Erro ao buscar colaborador:", err);
+            return res.status(500).send(err);
+        }
         res.json(result[0]);
     });
 });
 
-module.exports = app; // Importante para a Vercel
+app.get('/', (req, res) => res.send('API SISTEMA DE DESEMPENHO ONLINE'));
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
