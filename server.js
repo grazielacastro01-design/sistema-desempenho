@@ -7,64 +7,54 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// --- CONFIGURAÇÃO DO BANCO DE DADOS (RAILWAY) ---
-// Adicionamos os valores diretos após o || para garantir a conexão
+// --- CONEXÃO DIRETA (SEM DEPENDER DE VARIÁVEIS DA VERCEL) ---
 const db = mysql.createPool({
-    host: process.env.MYSQLHOST || 'shuttle.proxy.rlwy.net',
-    user: process.env.MYSQLUSER || 'root',
-    password: process.env.MYSQLPASSWORD || 'HMhYiBGRRSVOFiROAVJdwKynxQakxiiQ', 
-    database: process.env.MYSQLDATABASE || 'railway',
-    port: process.env.MYSQLPORT || 30041,
+    host: 'shuttle.proxy.rlwy.net',
+    user: 'root',
+    password: 'HMhYiBGRRSVOFiROAVJdwKynxQakxiiQ', 
+    database: 'railway',
+    port: 30041,
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
+    queueLimit: 0,
+    connectTimeout: 20000 // 20 segundos para evitar timeout
 });
 
-// --- ROTA DE LOGIN CORRIGIDA ---
-app.post('/login', (req, res) => {
-    // Recebendo 'login' e 'senha' do frontend
-    const { login, senha } = req.body; 
-    
-    // Log para depuração na Vercel
-    console.log(`Tentativa de login - Usuário enviado: ${login}, Senha enviada: ${senha}`);
+// Teste de conexão ao iniciar
+db.getConnection((err, connection) => {
+    if (err) {
+        console.error("ERRO CRÍTICO NO BANCO:", err.message);
+    } else {
+        console.log("CONECTADO AO RAILWAY COM SUCESSO!");
+        connection.release();
+    }
+});
 
-    // Consulta SQL usando a coluna 'login' da sua tbUsuarios
+app.post('/login', (req, res) => {
+    const { login, senha } = req.body;
     const sql = 'SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?';
     
     db.query(sql, [login, senha], (err, result) => {
-        if (err) {
-            console.error("Erro na consulta SQL:", err);
-            return res.status(500).json(err);
-        }
-        
-        console.log("Resultado da busca no banco:", result);
-
+        if (err) return res.status(500).json({ error: err.message });
         if (result.length > 0) {
-            // Login com sucesso
             res.json({ message: "Login realizado!", user: result[0] });
         } else {
-            // Usuário ou senha não encontrados
             res.status(401).json({ message: "Usuário ou senha incorretos" });
         }
     });
 });
 
-// Rota para buscar dados do perfil do colaborador
 app.get('/colaborador/:id', (req, res) => {
     const id = req.params.id;
     db.query('SELECT * FROM tbPessoas WHERE pessoa_id = ?', [id], (err, result) => {
-        if (err) {
-            console.error("Erro ao buscar colaborador:", err);
-            return res.status(500).send(err);
-        }
+        if (err) return res.status(500).send(err);
         res.json(result[0]);
     });
 });
 
-app.get('/', (req, res) => res.send('API SISTEMA DE DESEMPENHO ONLINE'));
+app.get('/', (req, res) => res.send('API FUNCIONANDO'));
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+app.listen(PORT, () => console.log(`Rodando na porta ${PORT}`));
 
-// --- ESSENCIAL PARA FUNCIONAR NA VERCEL ---
 module.exports = app;
