@@ -1,13 +1,13 @@
 {
   "version": 2,
-  "rewrites": [
+  "builds": [
     {
-      "source": "/login",
-      "destination": "/server.js"
-    },
-    {
-      "source": "/colaborador/:id",
-      "destination": "/server.js"
+      "src": "server.js",
+      "use": "@vercel/node"
     }
+  ],
+  "rewrites": [
+    { "source": "/login", "destination": "/server.js" },
+    { "source": "/colaborador/:id", "destination": "/server.js" }
   ]
 }

@@ -36,24 +36,39 @@
             const senhaValue = document.getElementById('senhaInput').value;
 
             try {
-                // Certifique-se de que a URL aqui aponta para o seu servidor (ex: /login)
+                // Requisição para a rota /login configurada no vercel.json
                 const response = await fetch('/login', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ login: loginValue, senha: senhaValue })
                 });
 
+                // Lendo a resposta primeiro como texto para evitar erro de Syntax caso o servidor retorne HTML
+                const responseText = await response.text();
+                let data;
+                
+                try {
+                    data = JSON.parse(responseText);
+                } catch (parseError) {
+                    console.error("Erro ao converter resposta para JSON:", responseText);
+                    throw new Error("Resposta inválida do servidor.");
+                }
+
                 if (response.ok) {
-                    const data = await response.json();
+                    // Salva os dados do usuário e redireciona
                     localStorage.setItem('user', JSON.stringify(data.user));
                     window.location.href = 'dashboard.html';
                 } else {
-                    const errorData = await response.json();
-                    Swal.fire('Erro', errorData.message || 'Usuário ou senha inválidos', 'error');
+                    // Exibe mensagem de erro vinda do servidor (ex: Usuário ou senha incorretos)
+                    Swal.fire('Erro', data.message || 'Falha no login', 'error');
                 }
             } catch (error) {
                 console.error('Erro na requisição:', error);
-                Swal.fire('Erro', 'Não foi possível conectar ao servidor.', 'error');
+                Swal.fire({
+                    title: 'Erro de Conexão',
+                    text: 'Não foi possível conectar ao servidor. Verifique o vercel.json e o deploy da API.',
+                    icon: 'error'
+                });
             }
         });
     </script>

@@ -22,18 +22,11 @@ const db = mysql.createPool({
 // Rota de Login
 app.post('/login', (req, res) => {
     const { login, senha } = req.body; 
-    
-    console.log(`Tentativa de login - Usuário enviado: ${login}, Senha enviada: ${senha}`);
+    console.log(`Tentativa de login: ${login}`);
 
     const sql = 'SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?';
-    
     db.query(sql, [login, senha], (err, result) => {
-        if (err) {
-            console.error("Erro na consulta SQL:", err);
-            return res.status(500).json(err);
-        }
-        
-        console.log("Resultado da busca no banco:", result);
+        if (err) return res.status(500).json({ message: "Erro no banco", error: err });
 
         if (result.length > 0) {
             res.json({ message: "Login realizado!", user: result[0] });
@@ -43,19 +36,22 @@ app.post('/login', (req, res) => {
     });
 });
 
-// Rota de Perfil do Colaborador
+// Rota de Perfil
 app.get('/colaborador/:id', (req, res) => {
     const id = req.params.id;
     db.query('SELECT * FROM tbPessoas WHERE pessoa_id = ?', [id], (err, result) => {
-        if (err) {
-            console.error("Erro ao buscar colaborador:", err);
-            return res.status(500).send(err);
-        }
+        if (err) return res.status(500).json(err);
         res.json(result[0]);
     });
 });
 
 app.get('/', (req, res) => res.send('API SISTEMA DE DESEMPENHO ONLINE'));
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+// Necessário para rodar localmente
+if (process.env.NODE_ENV !== 'production') {
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+}
+
+// ESSENCIAL PARA VERCEL FUNCIONAR
+module.exports = app;
