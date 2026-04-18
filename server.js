@@ -7,12 +7,12 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// CONFIGURAÇÃO DO BANCO DE DADOS
+// --- CONFIGURAÇÃO DO BANCO DE DADOS (CORRIGIDA PARA RAILWAY) ---
 const db = mysql.createPool({
-    host: process.env.MYSQLHOST || 'localhost',
-    user: process.env.MYSQLUSER || 'root',
-    password: process.env.MYSQLPASSWORD || '',
-    database: process.env.MYSQLDATABASE || 'railway',
+    host: process.env.MYSQLHOST,     // O Railway preenche isso sozinho
+    user: process.env.MYSQLUSER,     // O Railway preenche isso sozinho
+    password: process.env.MYSQLPASSWORD, // O Railway preenche isso sozinho
+    database: process.env.MYSQLDATABASE, // O Railway preenche isso sozinho
     port: process.env.MYSQLPORT || 3306,
     waitForConnections: true,
     connectionLimit: 10,
@@ -21,10 +21,9 @@ const db = mysql.createPool({
 
 // --- ROTA DE LOGIN DEFINITIVA COM LOGS DE DEPURAÇÃO ---
 app.post('/login', (req, res) => {
-    // Pegamos o que vem do site (usuario e senha)
     const { usuario, senha } = req.body; 
     
-    // Log para ver no Railway o que o site está enviando
+    // Log para ver no painel do Railway o que o site está enviando
     console.log(`Tentativa de login - Usuário enviado: ${usuario}, Senha enviada: ${senha}`);
 
     // Comparamos com as colunas reais do seu banco (login e senha)
@@ -36,14 +35,12 @@ app.post('/login', (req, res) => {
             return res.status(500).json(err);
         }
         
-        // Log para ver o que o banco de dados encontrou
+        // Log para conferir se o banco encontrou o usuário
         console.log("Resultado da busca no banco:", result);
 
         if (result.length > 0) {
-            // Se achou o usuário, retorna os dados
             res.json({ message: "Login realizado!", user: result[0] });
         } else {
-            // Se não achou, retorna erro 401
             res.status(401).json({ message: "Usuário ou senha incorretos" });
         }
     });
