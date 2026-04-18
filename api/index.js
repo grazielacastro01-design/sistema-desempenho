@@ -4,16 +4,18 @@ const mysql = require('mysql2/promise');
 
 const app = express();
 
-// 1. CONFIGURAÇÃO DO CORS (Adicionado aqui no topo)
+// --- 1. CONFIGURAÇÃO DO CORS ---
+// Isso resolve o erro "blocked by CORS policy" que aparece no seu console
 app.use(cors({
-    origin: '*', // Permite que qualquer site (Vercel ou localhost) acesse
+    origin: '*', // Permite acesso da Vercel e outros domínios
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 app.use(express.json());
 
-// 2. CONFIGURAÇÃO DO BANCO DE DADOS (Usando variáveis de ambiente)
+// --- 2. CONEXÃO COM O BANCO DE DADOS ---
+// Usando variáveis de ambiente (process.env) para o Railway injetar os dados reais
 const db = mysql.createPool({
     host: process.env.MYSQLHOST,
     user: process.env.MYSQLUSER,
@@ -25,12 +27,14 @@ const db = mysql.createPool({
     queueLimit: 0
 });
 
-// Teste de conexão para ver nos Logs do Railway
+// Teste de conexão (verifique o log do Railway para ver o "✅")
 db.getConnection()
     .then(() => console.log("✅ Conectado ao MySQL com sucesso!"))
     .catch(err => console.error("❌ Erro de conexão no banco:", err));
 
-// --- ROTA DE LOGIN ---
+// --- 3. ROTAS DO SISTEMA ---
+
+// ROTA DE LOGIN
 app.post('/login', async (req, res) => {
     const { login, senha } = req.body;
     try {
@@ -45,37 +49,36 @@ app.post('/login', async (req, res) => {
             res.status(401).json({ success: false, message: 'Usuário ou senha inválidos' });
         }
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro interno no servidor de login' });
+        console.error("Erro no Login:", error);
+        res.status(500).json({ error: 'Erro interno no servidor' });
     }
 });
 
-// --- ROTA DE LISTAGEM DE COLABORADORES ---
+// ROTA DE LISTAGEM DE COLABORADORES
 app.get('/colaboradores', async (req, res) => {
     try {
         const [rows] = await db.execute('SELECT pessoa_id, nome, cargo FROM tbPessoas');
         res.json(rows);
     } catch (error) {
-        console.error(error);
+        console.error("Erro ao listar:", error);
         res.status(500).json({ error: 'Erro ao buscar colaboradores' });
     }
 });
 
-// --- ROTA DE CADASTRO DE COLABORADOR ---
+// ROTA DE CADASTRO DE COLABORADOR
 app.post('/colaborador', async (req, res) => {
     const { nome, cargo } = req.body;
     try {
-        // pessoa_tipo_id = 5 é o padrão para colaborador no seu banco
         const sql = 'INSERT INTO tbPessoas (nome, cargo, pessoa_tipo_id) VALUES (?, ?, 5)';
         const [result] = await db.execute(sql, [nome, cargo]);
         res.status(201).json({ id: result.insertId, message: 'Cadastrado com sucesso!' });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao salvar colaborador no banco' });
+        console.error("Erro ao salvar:", error);
+        res.status(500).json({ error: 'Erro ao salvar colaborador' });
     }
 });
 
-// 3. INICIALIZAÇÃO DO SERVIDOR
+// --- 4. INICIALIZAÇÃO ---
 const port = process.env.PORT || 3000;
 app.listen(port, '0.0.0.0', () => {
     console.log(`🚀 Servidor rodando na porta ${port}`);
