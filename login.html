@@ -54,9 +54,25 @@
                 }
 
                 if (response.ok) {
-                    // Salva os dados do usuário e redireciona
-                    localStorage.setItem('user', JSON.stringify(data.user));
-                    window.location.href = 'dashboard.html';
+                    // GARANTIA: Se o banco retornar 'id' ou 'pessoa_id', salvamos como 'pessoa_id'
+                    // Isso sincroniza os dados para o Dashboard ler sem erros
+                    const usuarioParaSalvar = {
+                        ...data.user,
+                        pessoa_id: data.user.pessoa_id || data.user.id 
+                    };
+
+                    // Salva os dados corrigidos no navegador
+                    localStorage.setItem('user', JSON.stringify(usuarioParaSalvar));
+                    
+                    Swal.fire({
+                        title: 'Sucesso!',
+                        text: 'Redirecionando para o dashboard...',
+                        icon: 'success',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = 'dashboard.html';
+                    });
                 } else {
                     Swal.fire('Erro', data.message || 'Falha no login', 'error');
                 }
