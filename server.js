@@ -19,24 +19,31 @@ const db = mysql.createPool({
     queueLimit: 0
 });
 
-// --- ROTA DE LOGIN DEFINITIVA ---
+// --- ROTA DE LOGIN DEFINITIVA COM LOGS DE DEPURAÇÃO ---
 app.post('/login', (req, res) => {
     // Pegamos o que vem do site (usuario e senha)
     const { usuario, senha } = req.body; 
     
+    // Log para ver no Railway o que o site está enviando
+    console.log(`Tentativa de login - Usuário enviado: ${usuario}, Senha enviada: ${senha}`);
+
     // Comparamos com as colunas reais do seu banco (login e senha)
     const sql = 'SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?';
     
     db.query(sql, [usuario, senha], (err, result) => {
         if (err) {
-            console.error("Erro no banco:", err);
+            console.error("Erro na consulta SQL:", err);
             return res.status(500).json(err);
         }
         
+        // Log para ver o que o banco de dados encontrou
+        console.log("Resultado da busca no banco:", result);
+
         if (result.length > 0) {
-            // Se achou o 'teste' com a senha '123', ele loga!
+            // Se achou o usuário, retorna os dados
             res.json({ message: "Login realizado!", user: result[0] });
         } else {
+            // Se não achou, retorna erro 401
             res.status(401).json({ message: "Usuário ou senha incorretos" });
         }
     });
