@@ -63,12 +63,10 @@
     </main>
 
     <script>
-        // Carrega a lista do servidor Railway
+        // 1. Carrega a lista do servidor Railway
         async function carregarColaboradores() {
             try {
                 const response = await fetch('https://sistema-desempenho-production.up.railway.app/colaboradores');
-                
-                // Se a resposta não for JSON (erro 404), isso evita o erro de "Unexpected token <"
                 if (!response.ok) throw new Error("Erro na rota do servidor");
                 
                 const colaboradores = await response.json();
@@ -96,6 +94,7 @@
             }
         }
 
+        // 2. Filtro de busca na tabela
         function filtrarTabela() {
             let input = document.getElementById("buscaColaborador").value.toUpperCase();
             let tr = document.getElementById("tabelaCorpo").getElementsByTagName("tr");
@@ -108,7 +107,7 @@
             }
         }
 
-        // Função para Cadastrar enviando para o Railway
+        // 3. Função para abrir o modal e salvar no banco
         function abrirModalCadastro() {
             Swal.fire({
                 title: 'CADASTRAR NOVO COLABORADOR',
@@ -139,7 +138,7 @@
 
                         if (response.ok) {
                             Swal.fire('Sucesso!', 'Colaborador cadastrado.', 'success');
-                            carregarColaboradores(); // Recarrega a tabela
+                            carregarColaboradores(); 
                         } else {
                             throw new Error();
                         }
@@ -150,7 +149,7 @@
             });
         }
 
-        // Função para o botão PDF
+        // 4. Função para exportar PDF (Aviso de Sprint)
         function gerarPDF() {
             Swal.fire({
                 title: 'Relatório PDF',
@@ -160,7 +159,7 @@
             });
         }
 
-        // Inicializa a tabela
+        // 5. Inicializa ao carregar
         window.onload = carregarColaboradores;
     </script>
 </body>
