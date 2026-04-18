@@ -7,17 +7,18 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// --- CONEXÃO DIRETA (SEM DEPENDER DE VARIÁVEIS DA VERCEL) ---
+// --- CONEXÃO USANDO VARIÁVEIS DE AMBIENTE DA VERCEL ---
 const db = mysql.createPool({
-    host: 'shuttle.proxy.rlwy.net',
-    user: 'root',
-    password: 'HMhYiBGRRSVOFiROAVJdwKynxQakxiiQ', 
-    database: 'railway',
-    port: 30041,
+    host: process.env.MYSQLHOST,         // shuttle.proxy.rlwy.net
+    user: process.env.MYSQLUSER,         // root
+    password: process.env.MYSQLPASSWORD, // Sua senha do Railway
+    database: process.env.MYSQLDATABASE, // railway
+    port: process.env.MYSQLPORT || 30041,
+    ssl: { rejectUnauthorized: false },  // Essencial para aceitar conexões externas do Railway
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
-    connectTimeout: 20000 // 20 segundos para evitar timeout
+    connectTimeout: 20000 
 });
 
 // Teste de conexão ao iniciar
