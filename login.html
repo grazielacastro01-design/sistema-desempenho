@@ -36,24 +36,32 @@
             const senhaValue = document.getElementById('senhaInput').value;
 
             try {
-                // Certifique-se de que a URL aqui aponta para o seu servidor (ex: /login)
-                const response = await fetch('/login', {
+                // Caminho atualizado para apontar diretamente para a pasta api da Vercel
+                const response = await fetch('/api/index.js', { 
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ login: loginValue, senha: senhaValue })
                 });
 
+                // Tentativa segura de ler o JSON para evitar o erro "Unexpected end of JSON"
+                const text = await response.text();
+                let data;
+                try {
+                    data = JSON.parse(text);
+                } catch (err) {
+                    console.error("Resposta não é um JSON:", text);
+                    throw new Error("Erro de resposta do servidor.");
+                }
+
                 if (response.ok) {
-                    const data = await response.json();
                     localStorage.setItem('user', JSON.stringify(data.user));
                     window.location.href = 'dashboard.html';
                 } else {
-                    const errorData = await response.json();
-                    Swal.fire('Erro', errorData.message || 'Usuário ou senha inválidos', 'error');
+                    Swal.fire('Erro', data.message || 'Usuário ou senha inválidos', 'error');
                 }
             } catch (error) {
                 console.error('Erro na requisição:', error);
-                Swal.fire('Erro', 'Não foi possível conectar ao servidor.', 'error');
+                Swal.fire('Erro', 'Não foi possível conectar ao servidor. Verifique se o arquivo está na pasta api.', 'error');
             }
         });
     </script>
