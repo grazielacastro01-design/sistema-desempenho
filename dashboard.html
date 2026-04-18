@@ -18,8 +18,8 @@
         </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto p-6">
-        <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 mb-6">
+    <main class="max-w-7xl mx-auto p-6 space-y-8">
+        <div class="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
             <h2 id="saudacao" class="text-2xl font-extrabold text-slate-900">Olá!</h2>
             <p class="text-slate-500 font-medium">Bem-vindo ao seu painel de desempenho.</p>
         </div>
@@ -38,56 +38,74 @@
                 <span class="bg-green-100 text-green-700 text-xs px-2 py-1 rounded font-bold">Ativo</span>
             </div>
         </div>
+
+        <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+            <div class="p-6 border-b border-slate-50 flex justify-between items-center">
+                <h3 class="font-bold text-slate-800 text-lg">Equipe de Colaboradores</h3>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-slate-50">
+                        <tr>
+                            <th class="p-4 text-xs font-bold text-slate-400 uppercase">Nome</th>
+                            <th class="p-4 text-xs font-bold text-slate-400 uppercase">Cargo</th>
+                            <th class="p-4 text-xs font-bold text-slate-400 uppercase">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaColaboradores">
+                        <tr><td colspan="3" class="p-4 text-center text-slate-400">Carregando lista...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </main>
 
     <script>
         async function carregarDashboard() {
             const userStr = localStorage.getItem('user');
-            
-            if (!userStr) {
-                window.location.href = 'login.html';
-                return;
-            }
-
+            if (!userStr) { window.location.href = 'login.html'; return; }
             const user = JSON.parse(userStr);
 
             try {
-                // Captura o ID de qualquer formato (pessoa_id, usuario_id ou id)
-                const idPessoa = user.pessoa_id || user.usuario_id || user.id || (user.user && user.user.pessoa_id);
+                const idPessoa = user.pessoa_id || user.usuario_id || user.id;
 
-                if (!idPessoa) throw new Error('ID não encontrado no navegador.');
+                // 1. Busca dados do perfil
+                const respPerfil = await fetch(`https://sistema-desempenho-production.up.railway.app/colaborador/${idPessoa}`);
+                const dados = await respPerfil.json();
 
-                const response = await fetch(`https://sistema-desempenho-production.up.railway.app/colaborador/${idPessoa}`);
-                
-                if (!response.ok) throw new Error('Colaborador não encontrado no servidor.');
+                // Preenche o topo
+                document.getElementById('nomeUsuarioNav').innerText = dados.nome;
+                document.getElementById('saudacao').innerText = `Olá, ${dados.nome.split(' ')[0]}!`;
+                document.getElementById('cargoColaborador').innerText = dados.cargo || 'Membro';
+                document.getElementById('idColaborador').innerText = `#${dados.pessoa_id}`;
 
-                const dados = await response.json();
-
-                // Atualiza a interface
-                if (document.getElementById('nomeUsuarioNav')) {
-                    document.getElementById('nomeUsuarioNav').innerText = dados.nome || 'Usuário';
-                }
-                
-                if (document.getElementById('saudacao')) {
-                    const primeiroNome = dados.nome ? dados.nome.split(' ')[0] : 'Colaborador';
-                    document.getElementById('saudacao').innerText = `Olá, ${primeiroNome}!`;
-                }
-                
-                if (document.getElementById('cargoColaborador')) {
-                    document.getElementById('cargoColaborador').innerText = dados.cargo || 'Não informado';
-                }
-                
-                if (document.getElementById('idColaborador')) {
-                    document.getElementById('idColaborador').innerText = `#${dados.pessoa_id || idPessoa}`;
-                }
+                // 2. Busca lista de todos os colaboradores (Exemplo de nova função)
+                carregarListaColaboradores();
 
             } catch (error) {
-                console.error("Erro no Dashboard:", error);
-                Swal.fire({
-                    title: 'Erro de Sincronização',
-                    text: 'Não encontramos seus dados de colaborador. Verifique se seu ID no banco é o mesmo do login.',
-                    icon: 'error'
+                console.error("Erro:", error);
+            }
+        }
+
+        async function carregarListaColaboradores() {
+            try {
+                const response = await fetch('https://sistema-desempenho-production.up.railway.app/colaboradores');
+                const colaboradores = await response.json();
+                
+                const tbody = document.getElementById('tabelaColaboradores');
+                tbody.innerHTML = ''; // Limpa o "carregando"
+
+                colaboradores.forEach(colab => {
+                    tbody.innerHTML += `
+                        <tr class="border-t border-slate-50 hover:bg-slate-50 transition">
+                            <td class="p-4 font-medium text-slate-700">${colab.nome}</td>
+                            <td class="p-4 text-slate-500">${colab.cargo || 'ASD'}</td>
+                            <td class="p-4"><span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-1 rounded-full font-bold uppercase">Ativo</span></td>
+                        </tr>
+                    `;
                 });
+            } catch (err) {
+                document.getElementById('tabelaColaboradores').innerHTML = '<tr><td colspan="3" class="p-4 text-center text-red-500">Erro ao carregar lista.</td></tr>';
             }
         }
 
