@@ -8,12 +8,13 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // --- CONFIGURAÇÃO DO BANCO DE DADOS (RAILWAY) ---
+// Adicionamos os valores diretos após o || para garantir a conexão
 const db = mysql.createPool({
-    host: process.env.MYSQLHOST,
-    user: process.env.MYSQLUSER,
-    password: process.env.MYSQLPASSWORD,
-    database: process.env.MYSQLDATABASE,
-    port: process.env.MYSQLPORT || 3306,
+    host: process.env.MYSQLHOST || 'shuttle.proxy.rlwy.net',
+    user: process.env.MYSQLUSER || 'root',
+    password: process.env.MYSQLPASSWORD || 'HMhYiBGRRSVOFiROAVJdwKynxQakxiiQ', 
+    database: process.env.MYSQLDATABASE || 'railway',
+    port: process.env.MYSQLPORT || 30041,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
@@ -52,7 +53,10 @@ app.post('/login', (req, res) => {
 app.get('/colaborador/:id', (req, res) => {
     const id = req.params.id;
     db.query('SELECT * FROM tbPessoas WHERE pessoa_id = ?', [id], (err, result) => {
-        if (err) return res.status(500).send(err);
+        if (err) {
+            console.error("Erro ao buscar colaborador:", err);
+            return res.status(500).send(err);
+        }
         res.json(result[0]);
     });
 });
