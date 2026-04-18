@@ -41,47 +41,64 @@
     </main>
 
     <script>
-         async function carregarDashboard() {
-    const userStr = localStorage.getItem('user');
-    
-    if (!userStr) {
-        window.location.href = 'login.html';
-        return;
-    }
+        async function carregarDashboard() {
+            const userStr = localStorage.getItem('user');
+            
+            if (!userStr) {
+                window.location.href = 'login.html';
+                return;
+            }
 
-    const user = JSON.parse(userStr);
+            const user = JSON.parse(userStr);
 
-    try {
-        // Busca o ID em qualquer camada do objeto
-        const idPessoa = user.pessoa_id || user.id || (user.user && user.user.pessoa_id);
+            try {
+                // Busca o ID do colaborador (usando pessoa_id ou id como reserva)
+                const idPessoa = user.pessoa_id || user.id || (user.user && user.user.pessoa_id);
 
-        if (!idPessoa) throw new Error('ID não encontrado');
+                if (!idPessoa) throw new Error('ID não encontrado no navegador.');
 
-        const response = await fetch(`https://sistema-desempenho-production.up.railway.app/colaborador/${idPessoa}`);
-        if (!response.ok) throw new Error('Erro na resposta do servidor');
+                const response = await fetch(`https://sistema-desempenho-production.up.railway.app/colaborador/${idPessoa}`);
+                
+                if (!response.ok) throw new Error('Erro na resposta do servidor Railway');
 
-        const dados = await response.json();
+                const dados = await response.json();
 
-        // --- ATUALIZAÇÃO DOS CAMPOS NA TELA ---
-        // Verifique se os IDs abaixo são EXATAMENTE iguais aos do seu HTML
-        
-        if (document.getElementById('nomeUsuarioNav')) {
-            document.getElementById('nomeUsuarioNav').innerText = dados.nome || 'Usuário';
+                // --- ATUALIZAÇÃO DOS CAMPOS NA TELA ---
+                if (document.getElementById('nomeUsuarioNav')) {
+                    document.getElementById('nomeUsuarioNav').innerText = dados.nome || 'Usuário';
+                }
+                
+                if (document.getElementById('saudacao')) {
+                    const primeiroNome = dados.nome ? dados.nome.split(' ')[0] : 'Colaborador';
+                    document.getElementById('saudacao').innerText = `Olá, ${primeiroNome}!`;
+                }
+                
+                if (document.getElementById('cargoColaborador')) {
+                    document.getElementById('cargoColaborador').innerText = dados.cargo || 'Não informado';
+                }
+                
+                if (document.getElementById('idColaborador')) {
+                    document.getElementById('idColaborador').innerText = `#${dados.pessoa_id || idPessoa}`;
+                }
+
+            } catch (error) {
+                console.error("Erro ao preencher tela:", error);
+                Swal.fire({
+                    title: 'Erro',
+                    text: 'Não foi possível carregar seus dados. Tente logar novamente.',
+                    icon: 'error'
+                });
+            }
         }
-        
-        if (document.getElementById('saudacao')) {
-            document.getElementById('saudacao').innerText = `Olá, ${dados.nome.split(' ')[0] || 'Colaborador'}!`;
-        }
-        
-        if (document.getElementById('cargoColaborador')) {
-            document.getElementById('cargoColaborador').innerText = dados.cargo || 'Não informado';
-        }
-        
-        if (document.getElementById('idColaborador')) {
-            document.getElementById('idColaborador').innerText = `#${dados.pessoa_id || idPessoa}`;
+
+        // Função para limpar o acesso e voltar para o login
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
         }
 
-    } catch (error) {
-        console.error("Erro ao preencher tela:", error);
-    }
-}
+        // Chama a função automaticamente quando o navegador terminar de carregar o HTML
+        window.onload = carregarDashboard;
+    </script>
+</body>
+</html>
