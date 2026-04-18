@@ -7,40 +7,42 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// --- CONFIGURAÇÃO DO BANCO DE DADOS ATUALIZADA ---
+// --- CONFIGURAÇÃO DO BANCO DE DADOS (RAILWAY) ---
 const db = mysql.createPool({
     host: process.env.MYSQLHOST,
     user: process.env.MYSQLUSER,
     password: process.env.MYSQLPASSWORD,
     database: process.env.MYSQLDATABASE,
-    port: process.env.MYSQLPORT || 3306, // Ele vai ler os 30041 que você colocar no Railway
+    port: process.env.MYSQLPORT || 3306,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
 });
 
-// --- ROTA DE LOGIN DEFINITIVA COM LOGS DE DEPURAÇÃO ---
+// --- ROTA DE LOGIN CORRIGIDA ---
 app.post('/login', (req, res) => {
-    const { usuario, senha } = req.body; 
+    // Recebendo 'login' e 'senha' do frontend
+    const { login, senha } = req.body; 
     
-    // Log para ver no painel do Railway o que o site está enviando
-    console.log(`Tentativa de login - Usuário enviado: ${usuario}, Senha enviada: ${senha}`);
+    // Log para depuração na Vercel
+    console.log(`Tentativa de login - Usuário enviado: ${login}, Senha enviada: ${senha}`);
 
-    // Comparamos com as colunas reais do seu banco (login e senha)
+    // Consulta SQL usando a coluna 'login' da sua tbUsuarios
     const sql = 'SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?';
     
-    db.query(sql, [usuario, senha], (err, result) => {
+    db.query(sql, [login, senha], (err, result) => {
         if (err) {
             console.error("Erro na consulta SQL:", err);
             return res.status(500).json(err);
         }
         
-        // Log para conferir se o banco encontrou o usuário
         console.log("Resultado da busca no banco:", result);
 
         if (result.length > 0) {
+            // Login com sucesso
             res.json({ message: "Login realizado!", user: result[0] });
         } else {
+            // Usuário ou senha não encontrados
             res.status(401).json({ message: "Usuário ou senha incorretos" });
         }
     });
@@ -55,9 +57,7 @@ app.get('/colaborador/:id', (req, res) => {
     });
 });
 
-// Rota de teste para verificar se o Railway está ativo
 app.get('/', (req, res) => res.send('API SISTEMA DE DESEMPENHO ONLINE'));
 
-// PORTA DINÂMICA PARA O RAILWAY
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));

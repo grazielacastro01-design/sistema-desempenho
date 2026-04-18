@@ -32,21 +32,28 @@
     <script>
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const login = document.getElementById('loginInput').value;
-            const senha = document.getElementById('senhaInput').value;
+            const loginValue = document.getElementById('loginInput').value;
+            const senhaValue = document.getElementById('senhaInput').value;
 
-            const response = await fetch('/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ login, senha })
-            });
+            try {
+                // Certifique-se de que a URL aqui aponta para o seu servidor (ex: /login)
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ login: loginValue, senha: senhaValue })
+                });
 
-            if (response.ok) {
-                const data = await response.json();
-                localStorage.setItem('user', JSON.stringify(data.user));
-                window.location.href = 'dashboard.html';
-            } else {
-                Swal.fire('Erro', 'Usuário ou senha inválidos', 'error');
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    window.location.href = 'dashboard.html';
+                } else {
+                    const errorData = await response.json();
+                    Swal.fire('Erro', errorData.message || 'Usuário ou senha inválidos', 'error');
+                }
+            } catch (error) {
+                console.error('Erro na requisição:', error);
+                Swal.fire('Erro', 'Não foi possível conectar ao servidor.', 'error');
             }
         });
     </script>
