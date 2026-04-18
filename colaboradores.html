@@ -43,9 +43,12 @@
     <script>
         const API_URL = 'https://sistema-desempenho-production.up.railway.app';
 
+        // Função que carrega a lista do servidor Railway
         async function carregarColaboradores() {
             try {
                 const response = await fetch(`${API_URL}/colaboradores`);
+                if (!response.ok) throw new Error("Erro na rota");
+                
                 const colaboradores = await response.json();
                 const tbody = document.getElementById('tabelaCorpo');
                 tbody.innerHTML = '';
@@ -62,21 +65,21 @@
                         </tr>`;
                 });
             } catch (error) {
-                console.error("Erro ao carregar:", error);
+                console.error("Erro ao listar colaboradores:", error);
             }
         }
 
+        // Função para abrir o modal de novo cadastro
         function abrirModalCadastro() {
             Swal.fire({
                 title: 'Novo Colaborador',
                 input: 'text',
                 inputLabel: 'Nome Completo',
-                inputPlaceholder: 'Digite o nome...',
                 showCancelButton: true,
-                confirmButtonColor: '#1e40af',
-                confirmButtonText: 'Salvar no Banco',
+                confirmButtonText: 'Salvar',
+                confirmButtonColor: '#2563eb',
                 preConfirm: (value) => {
-                    if (!value) return Swal.showValidationMessage('Nome é obrigatório');
+                    if (!value) return Swal.showValidationMessage('O nome é obrigatório');
                     return value;
                 }
             }).then(async (result) => {
@@ -89,20 +92,26 @@
                         });
 
                         if (response.ok) {
-                            Swal.fire('Sucesso!', 'Colaborador cadastrado.', 'success');
+                            Swal.fire({
+                                title: 'Sucesso!',
+                                text: 'Cadastrado com sucesso.',
+                                icon: 'success',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
                             carregarColaboradores();
                         } else {
                             throw new Error();
                         }
                     } catch (error) {
-                        Swal.fire('Erro', 'O banco de dados rejeitou o cadastro.', 'error');
+                        Swal.fire('Erro', 'Não foi possível salvar o colaborador.', 'error');
                     }
                 }
             });
         }
 
         function gerarPDF() {
-            Swal.fire('Em breve', 'Função de PDF sendo desenvolvida.', 'info');
+            Swal.fire('Em breve', 'A função de exportação está em desenvolvimento.', 'info');
         }
 
         window.onload = carregarColaboradores;
