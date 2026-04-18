@@ -54,37 +54,31 @@
                 }
 
                 if (response.ok) {
-                    // GARANTIA: Se o banco retornar 'id' ou 'pessoa_id', salvamos como 'pessoa_id'
-                    // Isso sincroniza os dados para o Dashboard ler sem erros
-                    const usuarioParaSalvar = {
-                        ...data.user,
-                        pessoa_id: data.user.pessoa_id || data.user.id 
-                    };
+    // Tenta encontrar o usuário dentro de data.user ou no próprio data
+    const userRoot = data.user || data; 
+    
+    // Tenta encontrar o ID em qualquer lugar possível
+    const finalId = userRoot.pessoa_id || userRoot.id || (data.user && data.user.id);
 
-                    // Salva os dados corrigidos no navegador
-                    localStorage.setItem('user', JSON.stringify(usuarioParaSalvar));
-                    
-                    Swal.fire({
-                        title: 'Sucesso!',
-                        text: 'Redirecionando para o dashboard...',
-                        icon: 'success',
-                        timer: 1500,
-                        showConfirmButton: false
-                    }).then(() => {
-                        window.location.href = 'dashboard.html';
-                    });
-                } else {
-                    Swal.fire('Erro', data.message || 'Falha no login', 'error');
-                }
-            } catch (error) {
-                console.error('Erro na requisição:', error);
-                Swal.fire({
-                    title: 'Erro de Conexão',
-                    text: 'Não foi possível conectar ao servidor do Railway. Verifique sua internet ou se o servidor está ativo.',
-                    icon: 'error'
-                });
-            }
-        });
-    </script>
-</body>
-</html>
+    if (!finalId) {
+        console.error("Dados recebidos do servidor:", data);
+        throw new Error("O servidor não enviou um ID de usuário válido.");
+    }
+
+    const usuarioParaSalvar = {
+        ...userRoot,
+        pessoa_id: finalId
+    };
+
+    localStorage.setItem('user', JSON.stringify(usuarioParaSalvar));
+    
+    Swal.fire({
+        title: 'Sucesso!',
+        text: 'Redirecionando...',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false
+    }).then(() => {
+        window.location.href = 'dashboard.html';
+    });
+}
