@@ -56,10 +56,18 @@ app.post('/colaborador', async (req, res) => {
 app.delete('/colaborador/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        await db.execute('DELETE FROM tbPessoas WHERE pessoa_id = ?', [id]);
-        res.json({ success: true, message: 'Excluído' });
-    } catch (error) { res.status(500).json({ error: 'Erro ao excluir' }); }
+        // Log para você ver no Railway se o comando chegou
+        console.log(`Tentando excluir o ID: ${id}`); 
+        
+        const [result] = await db.execute('DELETE FROM tbPessoas WHERE pessoa_id = ?', [id]);
+        
+        if (result.affectedRows > 0) {
+            res.json({ success: true, message: 'Excluído com sucesso' });
+        } else {
+            res.status(404).json({ error: 'ID não encontrado no banco' });
+        }
+    } catch (error) {
+        console.error("ERRO NO BANCO:", error);
+        res.status(500).json({ error: error.message });
+    }
 });
-
-const port = process.env.PORT || 3000;
-app.listen(port, '0.0.0.0', () => console.log(`🚀 Porta: ${port}`));
