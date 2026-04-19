@@ -47,17 +47,17 @@
                 const tbody = document.getElementById('tabelaCorpo');
                 tbody.innerHTML = '';
                 dados.forEach(colab => {
-                    // Lógica para mostrar o nome do perfil baseado no ID do seu diagrama
-                    const perfil = colab.pessoa_tipo_id == 2 ? 'Gestor' : 'Colaborador';
-                    
+                    const perfilNome = colab.pessoa_tipo_id == 2 ? 'Gestor' : 'Colaborador';
+                    const corBadge = colab.pessoa_tipo_id == 2 ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700';
+
                     tbody.innerHTML += `
                         <tr class="border-b border-slate-50 hover:bg-blue-50/30 transition-all">
                             <td class="p-6 text-sm font-bold text-slate-400">#${colab.pessoa_id}</td>
                             <td class="p-6 text-sm font-black text-slate-800">${colab.nome}</td>
                             <td class="p-6 text-sm text-slate-500">${colab.telefone || '---'}</td>
-                            <td class="p-6 text-sm">
-                                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase ${colab.pessoa_tipo_id == 2 ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}">
-                                    ${perfil}
+                            <td class="p-6">
+                                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase ${corBadge}">
+                                    ${perfilNome}
                                 </span>
                             </td>
                             <td class="p-6 text-center">
@@ -77,13 +77,10 @@
                     `<div class="flex flex-col gap-3 text-left">
                         <label class="text-xs font-bold text-slate-400 uppercase">Nome Completo</label>
                         <input id="swal-input1" class="swal2-input m-0 w-full" placeholder="Nome">
-                        
                         <label class="text-xs font-bold text-slate-400 uppercase">Telefone</label>
                         <input id="swal-input2" class="swal2-input m-0 w-full" placeholder="(00) 00000-0000">
-                        
                         <label class="text-xs font-bold text-slate-400 uppercase">Data de Nascimento</label>
                         <input id="swal-input3" type="date" class="swal2-input m-0 w-full">
-                        
                         <label class="text-xs font-bold text-slate-400 uppercase">Tipo de Perfil</label>
                         <select id="swal-input4" class="swal2-input m-0 w-full">
                             <option value="1">Colaborador</option>
@@ -104,23 +101,12 @@
             });
 
             if (formValues) {
-                if (!formValues.nome || !formValues.nascimento) {
-                    return Swal.fire('Erro', 'Nome e Data são obrigatórios!', 'error');
-                }
-
-                try {
-                    const res = await fetch(`${API_URL}/colaborador`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(formValues)
-                    });
-                    if (res.ok) {
-                        Swal.fire('Salvo!', 'Cadastrado com sucesso.', 'success');
-                        carregarColaboradores();
-                    }
-                } catch (e) {
-                    Swal.fire('Erro', 'Falha ao conectar.', 'error');
-                }
+                const res = await fetch(`${API_URL}/colaborador`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formValues)
+                });
+                if (res.ok) { carregarColaboradores(); Swal.fire('Salvo!', '', 'success'); }
             }
         }
 
@@ -129,10 +115,8 @@
                 title: 'Deletar?',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#ef4444',
-                confirmButtonText: 'Sim, excluir'
+                confirmButtonColor: '#ef4444'
             });
-
             if (result.isConfirmed) {
                 const res = await fetch(`${API_URL}/colaborador/${id}`, { method: 'DELETE' });
                 if (res.ok) { carregarColaboradores(); Swal.fire('Removido!', '', 'success'); }
