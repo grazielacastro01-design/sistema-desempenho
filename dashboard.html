@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | SD Performance</title>
+    <title>Início | Sistema de Desempenho</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
         .sidebar { width: 260px; height: 100vh; position: fixed; left: 0; top: 0; background-color: #0f172a; color: white; }
-        .main-content { margin-left: 260px; padding: 40px; background-color: #f8fafc; min-h-screen: 100vh; }
-        .nav-item { display: flex; items-center: center; gap: 12px; padding: 12px 24px; color: #94a3b8; transition: all 0.3s; cursor: pointer; }
+        .main-content { margin-left: 260px; padding: 40px; background-color: #f8fafc; min-height: 100vh; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 24px; color: #94a3b8; transition: all 0.3s; cursor: pointer; }
         .nav-item:hover { background-color: #1e293b; color: white; }
         .nav-item.active { color: white; border-left: 4px solid #3b82f6; background-color: #1e293b; }
     </style>
@@ -18,22 +18,26 @@
 <body class="bg-slate-50">
 
     <aside class="sidebar shadow-2xl">
-        <div class="p-8">
-            <h1 class="text-xl font-extrabold italic tracking-tighter uppercase">SD PERFORMANCE</h1>
+        <div class="p-8 flex items-center gap-2">
+            <div class="bg-blue-600 p-1 rounded text-white">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M3 13.125C3 12.5037 3.50371 12 4.125 12H6.375C6.99629 12 7.5 12.5037 7.5 13.125V20.25H3V13.125ZM10.5 7.875C10.5 7.25371 11.0037 6.75 11.625 6.75H13.875C14.4963 6.75 15 7.25371 15 7.875V20.25H10.5V7.875ZM18 4.125C18 3.50371 18.5037 3 19.125 3H21.375C21.9963 3 22.5 3.50371 22.5 4.125V20.25H18V4.125Z"/></svg>
+            </div>
+            <h1 class="text-sm font-extrabold italic tracking-tighter uppercase">Sistema de Desempenho</h1>
         </div>
         
         <nav class="mt-4">
-            <div class="px-6 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Dashboard</div>
+            <div class="px-6 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">DASHBOARD</div>
             <div class="nav-item active">
-                <span>🏠</span> Dashboard
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg> 
+                Início
             </div>
             
-            <div class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Gestão de Ciclo</div>
+            <div class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">GESTÃO DE CICLO</div>
             <div class="nav-item"><span>🎯</span> Minhas Metas (OKR)</div>
             <div class="nav-item"><span>🔄</span> Avaliações 360°</div>
             <div class="nav-item"><span>📈</span> PDI Individual</div>
 
-            <div class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Edição (Instrutor)</div>
+            <div class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">EDIÇÃO (INSTRUTOR)</div>
             <div onclick="window.location.href='avaliar.html'" class="nav-item"><span>👥</span> Colaboradores</div>
             <div onclick="window.location.href='avaliacoes.html'" class="nav-item"><span>📝</span> Relatórios BI</div>
         </nav>
@@ -49,7 +53,7 @@
         <header class="flex justify-between items-center mb-12">
             <div>
                 <h2 class="text-4xl font-extrabold text-slate-900 tracking-tight">Olá, Graziela!</h2>
-                <p class="text-slate-500 font-medium mt-1">PAINEL GERAL DE NAVEGAÇÃO</p>
+                <p class="text-slate-500 font-medium mt-1 uppercase text-xs tracking-widest">Painel Geral de Navegação</p>
             </div>
             <div class="text-right">
                 <p class="font-bold text-slate-800">Graziela de Castro</p>
@@ -58,34 +62,36 @@
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            
             <div onclick="window.location.href='avaliar.html'" class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100 cursor-pointer hover:shadow-xl transition-all">
-                <div class="text-4xl mb-6">👥</div>
+                <div class="text-3xl mb-6">👥</div>
                 <h3 class="text-xl font-bold text-slate-900 mb-2">Colaboradores</h3>
                 <p class="text-slate-500 text-sm leading-relaxed">Gerencie equipes, cargos e dados profissionais de forma centralizada.</p>
             </div>
 
-            <div class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100 cursor-pointer hover:shadow-xl transition-all">
-                <div class="text-4xl mb-6">🎯</div>
+            <div onclick="window.location.href='#'" class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100 cursor-pointer hover:shadow-xl transition-all">
+                <div class="text-3xl mb-6">🎯</div>
                 <h3 class="text-xl font-bold text-slate-900 mb-2">Metas OKR</h3>
                 <p class="text-slate-500 text-sm leading-relaxed">Defina objetivos estratégicos e acompanhe KPIs de desempenho.</p>
             </div>
 
             <div onclick="window.location.href='avaliacoes.html'" class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100 cursor-pointer hover:shadow-xl transition-all">
-                <div class="text-4xl mb-6">📈</div>
+                <div class="text-3xl mb-6">📈</div>
                 <h3 class="text-xl font-bold text-slate-900 mb-2">Avaliações</h3>
                 <p class="text-slate-500 text-sm leading-relaxed">Feedbacks periódicos, ciclos 360° e acompanhamento contínuo.</p>
             </div>
-
         </div>
 
         <div class="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
-            <h4 class="text-blue-600 font-black uppercase text-xs tracking-widest mb-6">Estrutura do Sistema</h4>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-sm">
-                <p><b class="text-slate-900">Colaborador:</b> registra metas e feedbacks.</p>
-                <p><b class="text-slate-900">Gestor:</b> avalia e dá feedback contínuo.</p>
-                <p><b class="text-slate-900">RH:</b> configura políticas e indicadores.</p>
-                <p><b class="text-slate-900">Adm:</b> gerencia usuários e ciclos.</p>
+            <h4 class="text-blue-600 font-black uppercase text-[10px] tracking-widest mb-6">ESTRUTURA DO SISTEMA</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
+                <div>
+                    <p class="mb-4"><b class="text-slate-900">Colaborador:</b> <span class="text-slate-500">registra metas e feedbacks.</span></p>
+                    <p><b class="text-slate-900">Gestor:</b> <span class="text-slate-500">avalia e dá feedback contínuo.</span></p>
+                </div>
+                <div>
+                    <p class="mb-4"><b class="text-slate-900">RH:</b> <span class="text-slate-500">configura políticas e indicadores.</span></p>
+                    <p><b class="text-slate-900">Adm:</b> <span class="text-slate-500">gerencia usuários e ciclos.</span></p>
+                </div>
             </div>
         </div>
     </main>
