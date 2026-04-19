@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Histórico | SD Performance</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="bg-slate-50 min-h-screen">
     <header class="bg-white p-6 flex justify-between items-center border-b border-slate-100 shadow-sm">
@@ -15,16 +16,16 @@
 
     <div class="p-8">
         <div class="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
-            <table class="w-full text-left border-collapse">
-                <thead class="bg-slate-50 border-b border-slate-100">
+            <table class="w-full text-left">
+                <thead class="bg-slate-50">
                     <tr>
                         <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Data</th>
                         <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Colaborador</th>
                         <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Observação</th>
+                        <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Ações</th>
                     </tr>
                 </thead>
-                <tbody id="tabela-corpo">
-                    </tbody>
+                <tbody id="tabela-corpo"></tbody>
             </table>
         </div>
     </div>
@@ -36,27 +37,48 @@
             try {
                 const res = await fetch(`${API_URL}/listar-avaliacoes`);
                 const dados = await res.json();
-                
                 const tbody = document.getElementById('tabela-corpo');
                 tbody.innerHTML = ''; 
 
-                if (!dados || dados.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="3" class="p-10 text-center text-slate-400">Nenhuma avaliação encontrada.</td></tr>';
+                if (dados.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="p-10 text-center text-slate-400">Vazio.</td></tr>';
                     return;
                 }
 
                 dados.forEach(a => {
-                    const dataFormatada = new Date(a.data).toLocaleDateString('pt-BR');
+                    const dataF = new Date(a.data).toLocaleDateString('pt-BR');
                     tbody.innerHTML += `
-                        <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
-                            <td class="p-6 text-sm text-slate-500 font-medium text-center">${dataFormatada}</td>
+                        <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-all">
+                            <td class="p-6 text-sm text-slate-500 text-center">${dataF}</td>
                             <td class="p-6 text-sm font-black text-slate-800">${a.nome_colaborador}</td>
-                            <td class="p-6 text-sm text-slate-600 leading-relaxed">${a.observacao}</td>
+                            <td class="p-6 text-sm text-slate-600">${a.observacao}</td>
+                            <td class="p-6 text-right">
+                                <button onclick="excluir(${a.avaliacao_id})" class="text-red-500 hover:text-red-700 font-bold uppercase text-[10px]">Excluir</button>
+                            </td>
                         </tr>`;
                 });
-            } catch (error) {
-                console.error('Erro ao carregar:', error);
-                document.getElementById('tabela-corpo').innerHTML = '<tr><td colspan="3" class="p-10 text-center text-red-500 font-bold">Erro ao carregar dados do servidor.</td></tr>';
+            } catch (e) { console.error(e); }
+        }
+
+        async function excluir(id) {
+            const confirmacao = await Swal.fire({
+                title: 'Confirmar exclusão?',
+                text: "Esta ação não pode ser desfeita!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sim, excluir!'
+            });
+
+            if (confirmacao.isConfirmed) {
+                try {
+                    const res = await fetch(`${API_URL}/avaliacao/${id}`, { method: 'DELETE' });
+                    if (res.ok) {
+                        Swal.fire('Eliminado!', 'A avaliação foi removida.', 'success');
+                        carregarHistorico();
+                    }
+                } catch (e) { Swal.fire('Erro', 'Não foi possível excluir', 'error'); }
             }
         }
 
