@@ -87,7 +87,7 @@
                 const res = await fetch(`${API_URL}/dashboard-resumo`);
                 const dados = await res.json();
                 
-                // Preenche os números dentro dos parênteses
+                // Substitui os "--" pelos números reais vindos do seu index.js
                 document.getElementById('cont-colaboradores').textContent = dados.colaboradores;
                 document.getElementById('cont-avaliacoes').textContent = dados.avaliacoes;
                 document.getElementById('cont-metas').textContent = dados.metas;
@@ -96,6 +96,7 @@
             }
         }
 
+        // Executa a função assim que a página carregar
         window.onload = carregarResumo;
     </script>
 
