@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="bg-slate-50 flex min-h-screen font-sans">
-
     <main class="flex-1 flex flex-col min-w-0">
         <header class="bg-white p-6 flex justify-between items-center border-b border-slate-100">
             <h2 class="text-xl font-black text-slate-800 uppercase tracking-tighter">Gestão de Colaboradores</h2>
@@ -23,9 +22,9 @@
             </div>
         </header>
 
-        <section class="p-8 space-y-6">
+        <section class="p-8">
             <div class="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
-                <table class="w-full text-left border-collapse">
+                <table class="w-full text-left">
                     <thead>
                         <tr class="bg-slate-50/50 border-b border-slate-100">
                             <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">ID</th>
@@ -61,13 +60,13 @@
                             </td>
                         </tr>`;
                 });
-            } catch (error) { console.error(error); }
+            } catch (error) { console.error('Erro ao carregar:', error); }
         }
 
         async function excluirColaborador(id) {
             const result = await Swal.fire({
-                title: 'Excluir?',
-                text: "Você não poderá reverter isso!",
+                title: 'Tem certeza?',
+                text: "O colaborador será removido permanentemente!",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#2563eb',
@@ -79,33 +78,43 @@
                 try {
                     const res = await fetch(`${API_URL}/colaborador/${id}`, { method: 'DELETE' });
                     if (res.ok) {
-                        Swal.fire('Deletado!', 'Registro removido.', 'success');
+                        Swal.fire('Deletado!', 'O colaborador foi removido.', 'success');
                         carregarColaboradores();
                     }
-                } catch (error) { Swal.fire('Erro', 'Falha ao excluir.', 'error'); }
+                } catch (error) {
+                    Swal.fire('Erro', 'Não foi possível excluir.', 'error');
+                }
             }
         }
 
-        function abrirModalCadastro() {
-            Swal.fire({
-                title: 'Novo Colaborador',
+        async function abrirModalCadastro() {
+            const { value: nome } = await Swal.fire({
+                title: 'Cadastrar Colaborador',
                 input: 'text',
-                confirmButtonColor: '#2563eb',
+                inputLabel: 'Nome Completo',
+                inputPlaceholder: 'Digite o nome aqui...',
                 showCancelButton: true,
-                preConfirm: (v) => v || Swal.showValidationMessage('Nome obrigatório')
-            }).then(async (r) => {
-                if (r.isConfirmed) {
+                confirmButtonColor: '#2563eb'
+            });
+
+            if (nome) {
+                try {
                     const res = await fetch(`${API_URL}/colaborador`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ nome: r.value })
+                        body: JSON.stringify({ nome })
                     });
-                    if (res.ok) { carregarColaboradores(); Swal.fire('Sucesso!', '', 'success'); }
+                    if (res.ok) {
+                        Swal.fire('Sucesso!', 'Colaborador cadastrado.', 'success');
+                        carregarColaboradores();
+                    }
+                } catch (error) {
+                    Swal.fire('Erro', 'Falha ao cadastrar.', 'error');
                 }
-            });
+            }
         }
 
-        function gerarPDF() { Swal.fire('Em breve', 'Função em desenvolvimento', 'info'); }
+        function gerarPDF() { Swal.fire('Aguarde', 'Esta função faz parte da Sprint de Junho.', 'info'); }
 
         window.onload = carregarColaboradores;
     </script>
