@@ -3,84 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Gestão | SD Performance</title>
+    <title>Dashboard | SD Performance</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .sidebar { width: 260px; height: 100vh; position: fixed; left: 0; top: 0; background-color: #0f172a; color: white; }
+        .main-content { margin-left: 260px; padding: 40px; background-color: #f8fafc; min-h-screen: 100vh; }
+        .nav-item { display: flex; items-center: center; gap: 12px; padding: 12px 24px; color: #94a3b8; transition: all 0.3s; cursor: pointer; }
+        .nav-item:hover { background-color: #1e293b; color: white; }
+        .nav-item.active { color: white; border-left: 4px solid #3b82f6; background-color: #1e293b; }
+    </style>
 </head>
-<body class="bg-slate-50 min-h-screen antialiased">
+<body class="bg-slate-50">
 
-    <nav class="bg-white border-b border-slate-200 px-6 h-20 flex justify-between items-center sticky top-0 z-50">
-        <div class="flex items-center gap-2">
-            <div class="bg-blue-600 p-1.5 rounded-lg text-white">
-                <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M3 13.125C3 12.5037 3.50371 12 4.125 12H6.375C6.99629 12 7.5 12.5037 7.5 13.125V20.25H3V13.125ZM10.5 7.875C10.5 7.25371 11.0037 6.75 11.625 6.75H13.875C14.4963 6.75 15 7.25371 15 7.875V20.25H10.5V7.875ZM18 4.125C18 3.50371 18.5037 3 19.125 3H21.375C21.9963 3 22.5 3.50371 22.5 4.125V20.25H18V4.125Z"/></svg>
-            </div>
-            <span class="text-xl font-bold text-slate-800 tracking-tight italic uppercase">SD Performance</span>
+    <aside class="sidebar shadow-2xl">
+        <div class="p-8">
+            <h1 class="text-xl font-extrabold italic tracking-tighter uppercase">SD PERFORMANCE</h1>
         </div>
-        <button onclick="window.location.href='index.html'" class="text-sm font-bold text-red-500 hover:bg-red-50 px-4 py-2 rounded-lg transition">SAIR</button>
-    </nav>
+        
+        <nav class="mt-4">
+            <div class="px-6 py-2 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Dashboard</div>
+            <div class="nav-item active">
+                <span>🏠</span> Dashboard
+            </div>
+            
+            <div class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Gestão de Ciclo</div>
+            <div class="nav-item"><span>🎯</span> Minhas Metas (OKR)</div>
+            <div class="nav-item"><span>🔄</span> Avaliações 360°</div>
+            <div class="nav-item"><span>📈</span> PDI Individual</div>
 
-    <main class="max-w-6xl mx-auto p-8 pt-12">
-        <header class="mb-12">
-            <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight italic uppercase">Painel de Gestão</h2>
-            <p class="text-slate-500 font-semibold">Olá, Graziela! Bem-vinda ao seu centro de controle.</p>
+            <div class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Edição (Instrutor)</div>
+            <div onclick="window.location.href='avaliar.html'" class="nav-item"><span>👥</span> Colaboradores</div>
+            <div onclick="window.location.href='avaliacoes.html'" class="nav-item"><span>📝</span> Relatórios BI</div>
+        </nav>
+
+        <div class="absolute bottom-0 w-full p-6">
+            <button onclick="window.location.href='index.html'" class="w-full py-3 text-sm font-bold text-slate-400 hover:text-white transition flex items-center gap-2">
+                <span>🚪</span> Sair do Sistema
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="flex justify-between items-center mb-12">
+            <div>
+                <h2 class="text-4xl font-extrabold text-slate-900 tracking-tight">Olá, Graziela!</h2>
+                <p class="text-slate-500 font-medium mt-1">PAINEL GERAL DE NAVEGAÇÃO</p>
+            </div>
+            <div class="text-right">
+                <p class="font-bold text-slate-800">Graziela de Castro</p>
+                <p class="text-xs text-blue-600 font-bold uppercase tracking-widest">Administrador</p>
+            </div>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
-            <button onclick="window.location.href='avaliar.html'" class="group bg-slate-900 text-white p-8 rounded-[2rem] text-left hover:bg-slate-800 transition-all shadow-xl flex justify-between items-center">
-                <div>
-                    <h3 class="text-xl font-black italic uppercase">Nova Avaliação</h3>
-                    <p class="text-slate-400 text-xs">Registrar desempenho agora</p>
-                </div>
-                <span class="text-2xl">→</span>
-            </button>
-            <button onclick="window.location.href='avaliacoes.html'" class="group bg-blue-600 text-white p-8 rounded-[2rem] text-left hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 flex justify-between items-center">
-                <div>
-                    <h3 class="text-xl font-black italic uppercase">Histórico / BI</h3>
-                    <p class="text-blue-200 text-xs">Ver e editar registros</p>
-                </div>
-                <span class="text-2xl">→</span>
-            </button>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            
+            <div onclick="window.location.href='avaliar.html'" class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100 cursor-pointer hover:shadow-xl transition-all">
+                <div class="text-4xl mb-6">👥</div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">Colaboradores</h3>
+                <p class="text-slate-500 text-sm leading-relaxed">Gerencie equipes, cargos e dados profissionais de forma centralizada.</p>
+            </div>
+
+            <div class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100 cursor-pointer hover:shadow-xl transition-all">
+                <div class="text-4xl mb-6">🎯</div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">Metas OKR</h3>
+                <p class="text-slate-500 text-sm leading-relaxed">Defina objetivos estratégicos e acompanhe KPIs de desempenho.</p>
+            </div>
+
+            <div onclick="window.location.href='avaliacoes.html'" class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100 cursor-pointer hover:shadow-xl transition-all">
+                <div class="text-4xl mb-6">📈</div>
+                <h3 class="text-xl font-bold text-slate-900 mb-2">Avaliações</h3>
+                <p class="text-slate-500 text-sm leading-relaxed">Feedbacks periódicos, ciclos 360° e acompanhamento contínuo.</p>
+            </div>
+
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            
-            <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm">
-                <h4 class="text-blue-600 font-black uppercase text-xs tracking-widest mb-6">Estrutura de Papéis</h4>
-                <ul class="space-y-4">
-                    <li class="flex gap-3"><b class="text-slate-900">Colaborador:</b> <span class="text-slate-500 text-sm italic">Registra metas, autoavaliação e feedbacks.</span></li>
-                    <li class="flex gap-3"><b class="text-slate-900">Gestor:</b> <span class="text-slate-500 text-sm italic">Define metas, avalia e dá feedback contínuo.</span></li>
-                    <li class="flex gap-3"><b class="text-slate-900">RH / BP:</b> <span class="text-slate-500 text-sm italic">Configura políticas e calibra indicadores.</span></li>
-                    <li class="flex gap-3"><b class="text-slate-900">Pares:</b> <span class="text-slate-500 text-sm italic">Contribuem com feedback 360°.</span></li>
-                    <li class="flex gap-3"><b class="text-slate-900">Adm:</b> <span class="text-slate-500 text-sm italic">Gerencia usuários e ciclos.</span></li>
-                </ul>
+        <div class="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+            <h4 class="text-blue-600 font-black uppercase text-xs tracking-widest mb-6">Estrutura do Sistema</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 text-sm">
+                <p><b class="text-slate-900">Colaborador:</b> registra metas e feedbacks.</p>
+                <p><b class="text-slate-900">Gestor:</b> avalia e dá feedback contínuo.</p>
+                <p><b class="text-slate-900">RH:</b> configura políticas e indicadores.</p>
+                <p><b class="text-slate-900">Adm:</b> gerencia usuários e ciclos.</p>
             </div>
-
-            <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm">
-                <h4 class="text-blue-600 font-black uppercase text-xs tracking-widest mb-6">Processos do Ciclo</h4>
-                <div class="grid grid-cols-1 gap-2 text-sm">
-                    <div class="flex items-center gap-2 text-slate-600">✓ Cadastrar colaboradores e estrutura</div>
-                    <div class="flex items-center gap-2 text-slate-600">✓ Definir metas (OKR/KPI)</div>
-                    <div class="flex items-center gap-2 text-slate-600">✓ Registrar check-ins e feedbacks</div>
-                    <div class="flex items-center gap-2 text-slate-600">✓ Realizar autoavaliação</div>
-                    <div class="flex items-center gap-2 text-slate-600">✓ Gerar PDI Individual</div>
-                    <div class="flex items-center gap-2 text-slate-600 font-bold text-blue-600 italic underline">✓ Notificações e BI automático</div>
-                </div>
-            </div>
-
         </div>
     </main>
 
-    <script>
-        // Mantive a integração com o seu banco para os números aparecerem se você quiser usar futuramente.
-        const API_URL = 'https://sistema-desempenho-production.up.railway.app';
-        async function carregar() {
-            try {
-                const res = await fetch(`${API_URL}/dashboard-resumo`);
-                const dados = await res.json();
-            } catch (e) { console.log("Sistema pronto"); }
-        }
-        window.onload = carregar;
-    </script>
 </body>
 </html>
