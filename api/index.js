@@ -6,6 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Conexão com o Banco de Dados do Railway
 const db = mysql.createPool({
     host: process.env.MYSQLHOST,
     user: process.env.MYSQLUSER,
@@ -14,7 +15,7 @@ const db = mysql.createPool({
     port: process.env.MYSQLPORT || 3306
 });
 
-// LOGIN
+// --- ROTA DE LOGIN ---
 app.post('/login', async (req, res) => {
     const { login, senha } = req.body;
     try {
@@ -24,33 +25,47 @@ app.post('/login', async (req, res) => {
     } catch (error) { res.status(500).json({ error: 'Erro no servidor' }); }
 });
 
-// LISTAR COLABORADORES
+// --- LISTAR COLABORADORES (Para o Select) ---
 app.get('/colaboradores', async (req, res) => {
     try {
         const [rows] = await db.execute('SELECT pessoa_id, nome FROM tbPessoas ORDER BY nome ASC');
         res.json(rows);
-    } catch (error) { res.status(500).json({ error: 'Erro ao listar' }); }
+    } catch (error) { res.status(500).json({ error: 'Erro ao listar colaboradores' }); }
 });
 
-// SALVAR AVALIAÇÃO
+// --- SALVAR AVALIAÇÃO ---
 app.post('/avaliacao', async (req, res) => {
     const { funcionario_id, observacao } = req.body;
     try {
         const dataHoje = new Date().toISOString().split('T')[0];
-        const statusId = 1; // Pendente
-        const seuId = 5; // ID da Graziela de Castro
+        const statusId = 1; // ID 'Pendente'
+        const seuId = 5; // ID da Graziela como atualizadora
 
         const sql = `
             INSERT INTO tbAvaliacao 
             (data, observacao, funcionario_id, avaliacao_status_id, atualizado_por, atualizado_em) 
             VALUES (?, ?, ?, ?, ?, NOW())
         `;
-        
         await db.execute(sql, [dataHoje, observacao, funcionario_id, statusId, seuId]);
         res.status(201).json({ success: true });
     } catch (error) {
-        console.error("Erro no Banco:", error.message);
-        res.status(500).json({ error: 'Erro no Banco: ' + error.message });
+        res.status(500).json({ error: 'Erro ao salvar: ' + error.message });
+    }
+});
+
+// --- LISTAR HISTÓRICO (O que faz aparecer na tabela) ---
+app.get('/listar-avaliacoes', async (req, res) => {
+    try {
+        const sql = `
+            SELECT a.data, a.observacao, p.nome as nome_colaborador 
+            FROM tbAvaliacao a
+            JOIN tbPessoas p ON a.funcionario_id = p.pessoa_id
+            ORDER BY a.data DESC
+        `;
+        const [rows] = await db.execute(sql);
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao buscar histórico' });
     }
 });
 
