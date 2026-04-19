@@ -30,9 +30,13 @@ app.get('/dashboard-resumo', async (req, res) => {
     try {
         const [totalAvaliacoes] = await db.execute('SELECT COUNT(*) as total FROM tbAvaliacao');
         const [totalPessoas] = await db.execute('SELECT COUNT(*) as total FROM tbPessoas');
+        // Adicionada contagem de metas para o Dashboard
+        const [totalMetas] = await db.execute('SELECT COUNT(*) as total FROM tbMetas');
+        
         res.json({ 
             avaliacoes: totalAvaliacoes[0].total, 
-            colaboradores: totalPessoas[0].total 
+            colaboradores: totalPessoas[0].total,
+            metas: totalMetas[0].total
         });
     } catch (error) {
         res.status(500).json({ error: 'Erro ao buscar resumo' });
@@ -58,13 +62,28 @@ app.post('/avaliacao', async (req, res) => {
     } catch (error) { res.status(500).json({ error: 'Erro ao salvar' }); }
 });
 
-// --- LISTAR HISTÓRICO ---
+// --- LISTAR HISTÓRICO DE AVALIAÇÕES ---
 app.get('/listar-avaliacoes', async (req, res) => {
     try {
         const sql = `SELECT a.avaliacao_id, a.data, a.observacao, p.nome as nome_colaborador FROM tbAvaliacao a JOIN tbPessoas p ON a.funcionario_id = p.pessoa_id ORDER BY a.data DESC`;
         const [rows] = await db.execute(sql);
         res.json(rows);
     } catch (error) { res.status(500).json({ error: 'Erro ao buscar histórico' }); }
+});
+
+// --- ROTA PARA SALVAR A META NO BANCO ---
+app.post('/metas', async (req, res) => {
+    const { pessoa_id, titulo, descricao, prazo } = req.body;
+    
+    try {
+        const sql = `INSERT INTO tbMetas (pessoa_id, titulo, descricao, prazo) VALUES (?, ?, ?, ?)`;
+        const [result] = await db.execute(sql, [pessoa_id, titulo, descricao, prazo]);
+        
+        res.status(201).json({ success: true, message: 'Meta salva com sucesso!' });
+    } catch (error) {
+        console.error('Erro ao inserir meta:', error);
+        res.status(500).json({ error: 'Erro ao salvar meta no banco de dados' });
+    }
 });
 
 // --- EDITAR AVALIAÇÃO ---
