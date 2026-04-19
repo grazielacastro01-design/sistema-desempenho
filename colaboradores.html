@@ -26,6 +26,7 @@
                         <tr class="bg-slate-50/50 border-b border-slate-100">
                             <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">ID</th>
                             <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nome</th>
+                            <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Telefone</th>
                             <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Ações</th>
                         </tr>
                     </thead>
@@ -49,6 +50,7 @@
                         <tr class="border-b border-slate-50 hover:bg-blue-50/30 transition-all">
                             <td class="p-6 text-sm font-bold text-slate-400">#${colab.pessoa_id}</td>
                             <td class="p-6 text-sm font-black text-slate-800">${colab.nome}</td>
+                            <td class="p-6 text-sm text-slate-500">${colab.telefone || '---'}</td>
                             <td class="p-6 text-center">
                                 <button onclick="excluirColaborador(${colab.pessoa_id})" class="text-slate-400 hover:text-red-600 transition">
                                     <i class="fas fa-trash"></i>
@@ -59,49 +61,72 @@
             } catch (e) { console.error(e); }
         }
 
-        async function excluirColaborador(id) {
-            const result = await Swal.fire({
-                title: 'Confirmar exclusão?',
-                text: "O registro será removido do banco de dados.",
-                icon: 'warning',
+        async function abrirModalCadastro() {
+            const { value: formValues } = await Swal.fire({
+                title: 'Novo Cadastro (Sprint 7)',
+                html:
+                    `<div class="flex flex-col gap-3 text-left">
+                        <label class="text-xs font-bold text-slate-400 uppercase">Nome Completo</label>
+                        <input id="swal-input1" class="swal2-input m-0 w-full" placeholder="Nome">
+                        
+                        <label class="text-xs font-bold text-slate-400 uppercase">Telefone</label>
+                        <input id="swal-input2" class="swal2-input m-0 w-full" placeholder="(00) 00000-0000">
+                        
+                        <label class="text-xs font-bold text-slate-400 uppercase">Data de Nascimento</label>
+                        <input id="swal-input3" type="date" class="swal2-input m-0 w-full">
+                        
+                        <label class="text-xs font-bold text-slate-400 uppercase">Tipo de Perfil</label>
+                        <select id="swal-input4" class="swal2-input m-0 w-full">
+                            <option value="1">Colaborador</option>
+                            <option value="2">Gestor</option>
+                        </select>
+                    </div>`,
+                focusConfirm: false,
                 showCancelButton: true,
                 confirmButtonColor: '#2563eb',
-                cancelButtonColor: '#f87171',
-                confirmButtonText: 'Sim, deletar'
+                preConfirm: () => {
+                    return {
+                        nome: document.getElementById('swal-input1').value,
+                        telefone: document.getElementById('swal-input2').value,
+                        nascimento: document.getElementById('swal-input3').value,
+                        pessoa_tipo_id: document.getElementById('swal-input4').value
+                    }
+                }
             });
 
-            if (result.isConfirmed) {
+            if (formValues) {
+                if (!formValues.nome || !formValues.nascimento) {
+                    return Swal.fire('Erro', 'Nome e Data são obrigatórios!', 'error');
+                }
+
                 try {
-                    const res = await fetch(`${API_URL}/colaborador/${id}`, { method: 'DELETE' });
-                    
+                    const res = await fetch(`${API_URL}/colaborador`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(formValues)
+                    });
                     if (res.ok) {
-                        Swal.fire('Sucesso!', 'Removido com sucesso.', 'success');
+                        Swal.fire('Salvo!', 'Colaborador cadastrado com sucesso.', 'success');
                         carregarColaboradores();
-                    } else {
-                        throw new Error('Erro ao excluir');
                     }
                 } catch (e) {
-                    Swal.fire('Erro', 'Não foi possível excluir. Verifique se o backend está atualizado.', 'error');
+                    Swal.fire('Erro', 'Falha ao conectar com o servidor.', 'error');
                 }
             }
         }
 
-        async function abrirModalCadastro() {
-            const { value: nome } = await Swal.fire({
-                title: 'Novo Cadastro',
-                input: 'text',
-                inputLabel: 'Nome do Colaborador',
+        async function excluirColaborador(id) {
+            const result = await Swal.fire({
+                title: 'Deletar?',
+                icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#2563eb'
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: 'Sim, excluir'
             });
 
-            if (nome) {
-                const res = await fetch(`${API_URL}/colaborador`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nome })
-                });
-                if (res.ok) { carregarColaboradores(); Swal.fire('Salvo!', '', 'success'); }
+            if (result.isConfirmed) {
+                const res = await fetch(`${API_URL}/colaborador/${id}`, { method: 'DELETE' });
+                if (res.ok) { carregarColaboradores(); Swal.fire('Removido!', '', 'success'); }
             }
         }
 
