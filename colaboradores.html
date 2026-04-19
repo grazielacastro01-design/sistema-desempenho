@@ -27,6 +27,7 @@
                             <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">ID</th>
                             <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nome</th>
                             <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Telefone</th>
+                            <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Perfil</th>
                             <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Ações</th>
                         </tr>
                     </thead>
@@ -46,11 +47,19 @@
                 const tbody = document.getElementById('tabelaCorpo');
                 tbody.innerHTML = '';
                 dados.forEach(colab => {
+                    // Lógica para mostrar o nome do perfil baseado no ID do seu diagrama
+                    const perfil = colab.pessoa_tipo_id == 2 ? 'Gestor' : 'Colaborador';
+                    
                     tbody.innerHTML += `
                         <tr class="border-b border-slate-50 hover:bg-blue-50/30 transition-all">
                             <td class="p-6 text-sm font-bold text-slate-400">#${colab.pessoa_id}</td>
                             <td class="p-6 text-sm font-black text-slate-800">${colab.nome}</td>
                             <td class="p-6 text-sm text-slate-500">${colab.telefone || '---'}</td>
+                            <td class="p-6 text-sm">
+                                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase ${colab.pessoa_tipo_id == 2 ? 'bg-purple-100 text-purple-700' : 'bg-blue-100 text-blue-700'}">
+                                    ${perfil}
+                                </span>
+                            </td>
                             <td class="p-6 text-center">
                                 <button onclick="excluirColaborador(${colab.pessoa_id})" class="text-slate-400 hover:text-red-600 transition">
                                     <i class="fas fa-trash"></i>
@@ -63,7 +72,7 @@
 
         async function abrirModalCadastro() {
             const { value: formValues } = await Swal.fire({
-                title: 'Novo Cadastro (Sprint 7)',
+                title: 'Novo Cadastro',
                 html:
                     `<div class="flex flex-col gap-3 text-left">
                         <label class="text-xs font-bold text-slate-400 uppercase">Nome Completo</label>
@@ -106,11 +115,11 @@
                         body: JSON.stringify(formValues)
                     });
                     if (res.ok) {
-                        Swal.fire('Salvo!', 'Colaborador cadastrado com sucesso.', 'success');
+                        Swal.fire('Salvo!', 'Cadastrado com sucesso.', 'success');
                         carregarColaboradores();
                     }
                 } catch (e) {
-                    Swal.fire('Erro', 'Falha ao conectar com o servidor.', 'error');
+                    Swal.fire('Erro', 'Falha ao conectar.', 'error');
                 }
             }
         }
