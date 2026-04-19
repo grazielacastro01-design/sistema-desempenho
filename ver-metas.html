@@ -44,14 +44,19 @@
                     return;
                 }
 
-                container.innerHTML = ''; // Limpa o carregando
+                container.innerHTML = ''; 
 
                 metas.forEach(meta => {
-                    // Formatação da data para o padrão brasileiro
                     const dataFormatada = new Date(meta.prazo).toLocaleDateString('pt-BR');
                     
                     container.innerHTML += `
-                        <div class="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-200 hover:shadow-xl transition-shadow group">
+                        <div class="bg-white p-8 rounded-[3rem] shadow-sm border border-slate-200 hover:shadow-xl transition-shadow group relative">
+                            <button onclick="apagarMeta(${meta.meta_id})" class="absolute top-6 right-6 text-slate-300 hover:text-red-500 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                            </button>
+
                             <div class="flex justify-between items-start mb-6">
                                 <span class="bg-emerald-100 text-emerald-600 text-[10px] font-black px-3 py-1 rounded-full uppercase">Ativa</span>
                                 <span class="text-[10px] font-bold text-slate-300 italic">#${meta.meta_id}</span>
@@ -80,6 +85,27 @@
             } catch (error) {
                 console.error("Erro ao carregar metas:", error);
                 document.getElementById('lista-metas').innerHTML = '<p class="text-red-500 font-bold uppercase text-xs">Erro ao conectar com o servidor.</p>';
+            }
+        }
+
+        // FUNÇÃO PARA CHAMAR A EXCLUSÃO
+        async function apagarMeta(id) {
+            if (confirm("Deseja mesmo excluir esta meta? Esta ação não pode ser desfeita.")) {
+                try {
+                    const res = await fetch(`${API_URL}/deletar-meta/${id}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (res.ok) {
+                        alert("Meta apagada!");
+                        location.reload(); 
+                    } else {
+                        alert("Não foi possível apagar a meta.");
+                    }
+                } catch (error) {
+                    console.error("Erro:", error);
+                    alert("Erro de conexão com o servidor.");
+                }
             }
         }
 

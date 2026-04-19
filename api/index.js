@@ -25,7 +25,7 @@ app.post('/login', async (req, res) => {
     } catch (error) { res.status(500).json({ error: 'Erro no servidor' }); }
 });
 
-// --- ROTA DO DASHBOARD (Resumo Numérico Atualizado) ---
+// --- ROTA DO DASHBOARD ---
 app.get('/dashboard-resumo', async (req, res) => {
     try {
         const [totalAvaliacoes] = await db.execute('SELECT COUNT(*) as total FROM tbAvaliacao');
@@ -39,6 +39,18 @@ app.get('/dashboard-resumo', async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({ error: 'Erro ao buscar resumo' });
+    }
+});
+
+// --- ROTA PARA DELETAR META (NOVA) ---
+app.delete('/deletar-meta/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await db.execute('DELETE FROM tbMetas WHERE meta_id = ?', [id]);
+        res.json({ success: true, message: "Meta apagada com sucesso!" });
+    } catch (error) {
+        console.error("Erro ao deletar:", error);
+        res.status(500).json({ error: "Erro ao deletar meta" });
     }
 });
 
@@ -70,7 +82,7 @@ app.get('/listar-avaliacoes', async (req, res) => {
     } catch (error) { res.status(500).json({ error: 'Erro ao buscar histórico' }); }
 });
 
-// --- ROTA PARA SALVAR A META NO BANCO ---
+// --- SALVAR META ---
 app.post('/metas', async (req, res) => {
     const { pessoa_id, titulo, descricao, prazo } = req.body;
     try {
@@ -83,7 +95,7 @@ app.post('/metas', async (req, res) => {
     }
 });
 
-// --- ROTA PARA LISTAR METAS (Para a tela de visualização) ---
+// --- LISTAR METAS ---
 app.get('/listar-metas', async (req, res) => {
     try {
         const sql = `SELECT m.*, p.nome as nome_colaborador FROM tbMetas m JOIN tbPessoas p ON m.pessoa_id = p.pessoa_id ORDER BY m.prazo ASC`;
