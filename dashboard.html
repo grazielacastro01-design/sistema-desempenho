@@ -28,7 +28,7 @@
             
             <div class="space-y-3">
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4 font-black">Gestão de Ciclo</p>
-                <a href="metas.html" class="block p-3 text-[11px] text-slate-300 hover:text-white hover:bg-white/5 rounded-xl transition uppercase font-black tracking-wider">Minhas Metas (OKR)</a>
+                <a href="ver-metas.html" class="block p-3 text-[11px] text-slate-300 hover:text-white hover:bg-white/5 rounded-xl transition uppercase font-black tracking-wider">Visualizar Metas</a>
                 <a href="avaliacoes360.html" class="block p-3 text-[11px] text-slate-300 hover:text-white hover:bg-white/5 rounded-xl transition uppercase font-black tracking-wider">Avaliações 360°</a>
                 <a href="pdi.html" class="block p-3 text-[11px] text-slate-300 hover:text-white hover:bg-white/5 rounded-xl transition uppercase font-black tracking-wider">PDI Individual</a>
             </div>
@@ -57,21 +57,47 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div onclick="location.href='avaliar.html'" class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-200 hover:shadow-xl transition cursor-pointer group">
-                <h3 class="text-xl font-black text-slate-900 mb-2 uppercase italic tracking-tighter">Colaboradores</h3>
+                <h3 class="text-xl font-black text-slate-900 mb-2 uppercase italic tracking-tighter">
+                    Colaboradores (<span id="cont-colaboradores">--</span>)
+                </h3>
                 <p class="text-slate-500 text-sm leading-relaxed font-semibold">Gerencie equipes, cargos e dados profissionais de forma centralizada.</p>
             </div>
 
             <div onclick="location.href='metas.html'" class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-200 hover:shadow-xl transition cursor-pointer group">
-                <h3 class="text-xl font-black text-slate-900 mb-2 uppercase italic tracking-tighter">Metas OKR</h3>
+                <h3 class="text-xl font-black text-slate-900 mb-2 uppercase italic tracking-tighter">
+                    Metas OKR (<span id="cont-metas">--</span>)
+                </h3>
                 <p class="text-slate-500 text-sm leading-relaxed font-semibold">Defina objetivos estratégicos e acompanhe KPIs de desempenho.</p>
             </div>
 
             <div onclick="location.href='avaliacoes.html'" class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-200 hover:shadow-xl transition cursor-pointer group">
-                <h3 class="text-xl font-black text-slate-900 mb-2 uppercase italic tracking-tighter">Avaliações</h3>
+                <h3 class="text-xl font-black text-slate-900 mb-2 uppercase italic tracking-tighter">
+                    Avaliações (<span id="cont-avaliacoes">--</span>)
+                </h3>
                 <p class="text-slate-500 text-sm leading-relaxed font-semibold">Feedbacks periódicos, ciclos 360° e acompanhamento contínuo.</p>
             </div>
         </div>
     </main>
+
+    <script>
+        const API_URL = 'https://sistema-desempenho-production.up.railway.app';
+
+        async function carregarResumo() {
+            try {
+                const res = await fetch(`${API_URL}/dashboard-resumo`);
+                const dados = await res.json();
+                
+                // Preenche os números dentro dos parênteses
+                document.getElementById('cont-colaboradores').textContent = dados.colaboradores;
+                document.getElementById('cont-avaliacoes').textContent = dados.avaliacoes;
+                document.getElementById('cont-metas').textContent = dados.metas;
+            } catch (error) {
+                console.error("Erro ao carregar resumo:", error);
+            }
+        }
+
+        window.onload = carregarResumo;
+    </script>
 
 </body>
 </html>
