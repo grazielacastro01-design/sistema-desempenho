@@ -11,24 +11,84 @@
 
     <nav class="bg-white border-b border-slate-200 p-6 flex justify-between items-center">
         <button onclick="window.location.href='dashboard.html'" class="flex items-center gap-2 text-blue-600 font-black text-xs uppercase tracking-widest hover:underline">
-            ← Voltar ao Início
+            ← VOLTAR AO INÍCIO
         </button>
-        <h1 class="text-xs font-black text-slate-400 uppercase tracking-widest">Registrar Nova Avaliação</h1>
+        <h1 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Registrar Nova Avaliação</h1>
     </nav>
 
     <main class="max-w-3xl mx-auto p-12">
         <div class="bg-white p-12 rounded-[3rem] shadow-sm border border-slate-100">
-            <h2 class="text-2xl font-black text-slate-900 mb-8 italic uppercase tracking-tighter">Ficha de Avaliação</h2>
+            <h2 class="text-2xl font-black text-slate-900 mb-8 italic uppercase tracking-tighter text-center">Ficha de Avaliação</h2>
+            
             <form id="form-avaliacao" class="space-y-6">
                 <div>
                     <label class="block text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest">Colaborador</label>
                     <select id="nome" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-blue-500 transition font-bold" required>
-                        <option value="">Selecione...</option>
+                        <option value="">Carregando colaboradores...</option>
                     </select>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest">Feedback / Observação</label>
+                    <textarea id="observacao" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl h-32 outline-none focus:border-blue-500 transition font-bold" placeholder="Digite aqui o desempenho..." required></textarea>
                 </div>
                 <button type="submit" class="w-full bg-blue-600 text-white p-5 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-700 transition shadow-lg shadow-blue-100">Salvar Avaliação</button>
             </form>
         </div>
     </main>
+
+    <script>
+        const API_URL = 'https://sistema-desempenho-production.up.railway.app';
+
+        // 1. Busca os colaboradores do banco assim que a página carrega
+        async function carregarColaboradores() {
+            try {
+                const res = await fetch(`${API_URL}/colaboradores`);
+                const colaboradores = await res.json();
+                const select = document.getElementById('nome');
+                
+                select.innerHTML = '<option value="">Selecione o funcionário...</option>';
+                
+                colaboradores.forEach(colab => {
+                    const option = document.createElement('option');
+                    // Usando pessoa_id porque é o que está no seu app.get('/colaboradores')
+                    option.value = colab.pessoa_id; 
+                    option.textContent = colab.nome;
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                console.error("Erro ao carregar colaboradores:", error);
+                document.getElementById('nome').innerHTML = '<option value="">Erro ao carregar lista</option>';
+            }
+        }
+
+        // 2. Envia a avaliação para a sua rota app.post('/avaliacao')
+        document.getElementById('form-avaliacao').onsubmit = async (e) => {
+            e.preventDefault();
+            
+            const dados = {
+                funcionario_id: document.getElementById('nome').value,
+                observacao: document.getElementById('observacao').value
+            };
+
+            try {
+                const res = await fetch(`${API_URL}/avaliacao`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+
+                if (res.ok) {
+                    alert('Avaliação salva com sucesso!');
+                    window.location.href = 'avaliacoes.html';
+                } else {
+                    alert('Erro ao salvar. Verifique o servidor.');
+                }
+            } catch (error) {
+                alert('Erro de conexão com o servidor.');
+            }
+        };
+
+        window.onload = carregarColaboradores;
+    </script>
 </body>
 </html>
