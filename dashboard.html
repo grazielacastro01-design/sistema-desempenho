@@ -12,7 +12,7 @@
                 <h1 class="text-3xl font-black text-slate-900 uppercase italic tracking-tighter">SD PERFORMANCE</h1>
                 <p class="text-slate-500 font-medium">Bem-vinda, Graziela</p>
             </div>
-            <button onclick="window.location.href='login.html'" class="text-red-500 font-bold uppercase text-xs">Sair</button>
+            <button onclick="window.location.href='index.html'" class="text-red-500 font-bold uppercase text-xs">Sair</button>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
@@ -40,13 +40,20 @@
 
     <script>
         const API_URL = 'https://sistema-desempenho-production.up.railway.app';
+        
         async function carregarDashboard() {
             try {
+                // Isso busca os números direto do seu banco de dados no Railway
                 const res = await fetch(`${API_URL}/dashboard-resumo`);
                 const dados = await res.json();
-                document.getElementById('num-avaliacoes').innerText = dados.avaliacoes;
-                document.getElementById('num-colaboradores').innerText = dados.colaboradores;
-            } catch (e) { console.error("Erro no Railway"); }
+                
+                document.getElementById('num-avaliacoes').innerText = dados.avaliacoes || 0;
+                document.getElementById('num-colaboradores').innerText = dados.colaboradores || 0;
+            } catch (e) { 
+                console.error("Erro ao carregar números");
+                document.getElementById('num-avaliacoes').innerText = "0";
+                document.getElementById('num-colaboradores').innerText = "0";
+            }
         }
         window.onload = carregarDashboard;
     </script>
