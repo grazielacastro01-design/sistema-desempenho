@@ -9,7 +9,7 @@
 <body class="bg-slate-50 min-h-screen">
     <header class="bg-white p-6 flex justify-between items-center border-b shadow-sm">
         <h2 class="text-xl font-black text-slate-800 uppercase italic">Histórico de Avaliações</h2>
-        <button onclick="window.location.href='dashboard.html'" class="bg-slate-100 text-slate-600 px-6 py-2 rounded-xl font-bold uppercase text-xs">Voltar</button>
+        <button onclick="window.location.href='dashboard.html'" class="bg-slate-100 text-slate-500 px-6 py-2 rounded-xl font-bold uppercase text-[10px]">Voltar ao Início</button>
     </header>
 
     <div class="p-8">
@@ -31,20 +31,19 @@
     <script>
         const API_URL = 'https://sistema-desempenho-production.up.railway.app';
 
-        async function carregarHistorico() {
+        async function carregar() {
             const res = await fetch(`${API_URL}/listar-avaliacoes`);
             const dados = await res.json();
             const tbody = document.getElementById('tabela-corpo');
-            tbody.innerHTML = ''; 
-
+            tbody.innerHTML = '';
             dados.forEach(a => {
                 const dataF = new Date(a.data).toLocaleDateString('pt-BR');
                 tbody.innerHTML += `
-                    <tr class="border-b hover:bg-slate-50 transition-all">
+                    <tr class="border-b hover:bg-slate-50">
                         <td class="p-6 text-sm text-slate-500">${dataF}</td>
                         <td class="p-6 text-sm font-black text-slate-800">${a.nome_colaborador}</td>
                         <td class="p-6 text-sm text-slate-600">${a.observacao}</td>
-                        <td class="p-6 text-right space-x-3">
+                        <td class="p-6 text-right space-x-4">
                             <button onclick="editar(${a.avaliacao_id}, '${a.observacao}')" class="text-blue-500 font-bold uppercase text-[10px]">Editar</button>
                             <button onclick="excluir(${a.avaliacao_id})" class="text-red-500 font-bold uppercase text-[10px]">Excluir</button>
                         </td>
@@ -53,48 +52,24 @@
         }
 
         async function editar(id, texto) {
-            const { value: novoTexto } = await Swal.fire({
-                title: 'Editar Avaliação',
-                input: 'textarea',
-                inputValue: texto,
-                showCancelButton: true,
-                confirmButtonText: 'Salvar',
-                confirmButtonColor: '#2563eb'
-            });
-
-            if (novoTexto) {
-                const res = await fetch(`${API_URL}/avaliacao/${id}`, {
+            const { value: novo } = await Swal.fire({ title: 'Editar', input: 'textarea', inputValue: texto, showCancelButton: true });
+            if (novo) {
+                await fetch(`${API_URL}/avaliacao/${id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ observacao: novoTexto })
+                    body: JSON.stringify({ observacao: novo })
                 });
-                if (res.ok) {
-                    Swal.fire('Sucesso!', 'Avaliação atualizada.', 'success');
-                    carregarHistorico();
-                }
+                carregar();
             }
         }
 
         async function excluir(id) {
-            const result = await Swal.fire({
-                title: 'Tem certeza?',
-                text: "Você não poderá reverter isso!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#ef4444',
-                confirmButtonText: 'Sim, excluir!'
-            });
-
-            if (result.isConfirmed) {
-                const res = await fetch(`${API_URL}/avaliacao/${id}`, { method: 'DELETE' });
-                if (res.ok) {
-                    Swal.fire('Excluído!', '', 'success');
-                    carregarHistorico();
-                }
+            if (confirm('Deseja excluir?')) {
+                await fetch(`${API_URL}/avaliacao/${id}`, { method: 'DELETE' });
+                carregar();
             }
         }
-
-        window.onload = carregarHistorico;
+        window.onload = carregar;
     </script>
 </body>
 </html>

@@ -15,7 +15,7 @@ const db = mysql.createPool({
     port: process.env.MYSQLPORT || 3306
 });
 
-// --- LOGIN ---
+// --- ROTA DE LOGIN ---
 app.post('/login', async (req, res) => {
     const { login, senha } = req.body;
     try {
@@ -25,13 +25,18 @@ app.post('/login', async (req, res) => {
     } catch (error) { res.status(500).json({ error: 'Erro no servidor' }); }
 });
 
-// --- DASHBOARD (RESUMO) ---
+// --- ROTA DO DASHBOARD (Resumo Numérico) ---
 app.get('/dashboard-resumo', async (req, res) => {
     try {
         const [totalAvaliacoes] = await db.execute('SELECT COUNT(*) as total FROM tbAvaliacao');
         const [totalPessoas] = await db.execute('SELECT COUNT(*) as total FROM tbPessoas');
-        res.json({ avaliacoes: totalAvaliacoes[0].total, colaboradores: totalPessoas[0].total });
-    } catch (error) { res.status(500).json({ error: 'Erro ao buscar resumo' }); }
+        res.json({ 
+            avaliacoes: totalAvaliacoes[0].total, 
+            colaboradores: totalPessoas[0].total 
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao buscar resumo' });
+    }
 });
 
 // --- LISTAR COLABORADORES ---
@@ -42,7 +47,7 @@ app.get('/colaboradores', async (req, res) => {
     } catch (error) { res.status(500).json({ error: 'Erro ao listar colaboradores' }); }
 });
 
-// --- SALVAR NOVA AVALIAÇÃO ---
+// --- SALVAR AVALIAÇÃO ---
 app.post('/avaliacao', async (req, res) => {
     const { funcionario_id, observacao } = req.body;
     try {
@@ -50,7 +55,7 @@ app.post('/avaliacao', async (req, res) => {
         const sql = `INSERT INTO tbAvaliacao (data, observacao, funcionario_id, avaliacao_status_id, atualizado_por, atualizado_em) VALUES (?, ?, ?, 1, 5, NOW())`;
         await db.execute(sql, [dataHoje, observacao, funcionario_id]);
         res.status(201).json({ success: true });
-    } catch (error) { res.status(500).json({ error: 'Erro ao salvar: ' + error.message }); }
+    } catch (error) { res.status(500).json({ error: 'Erro ao salvar' }); }
 });
 
 // --- LISTAR HISTÓRICO ---

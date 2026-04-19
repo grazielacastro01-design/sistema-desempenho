@@ -5,48 +5,50 @@
     <title>Painel | SD Performance</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-slate-50 min-h-screen p-8 font-sans">
+<body class="bg-slate-50 min-h-screen p-8">
     <div class="max-w-5xl mx-auto">
         <header class="flex justify-between items-center mb-12">
             <div>
-                <h1 class="text-3xl font-black text-slate-900 uppercase italic tracking-tighter">SD Performance</h1>
-                <p class="text-slate-500 font-medium">Painel de Controle - Graziela</p>
+                <h1 class="text-3xl font-black text-slate-900 uppercase italic tracking-tighter">SD PERFORMANCE</h1>
+                <p class="text-slate-500 font-medium">Bem-vinda, Graziela</p>
             </div>
-            <button onclick="window.location.href='login.html'" class="text-red-500 font-bold uppercase text-xs hover:underline">Sair</button>
+            <button onclick="window.location.href='login.html'" class="text-red-500 font-bold uppercase text-xs">Sair</button>
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
             <div class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Avaliações</p>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Avaliações Realizadas</p>
                 <h2 id="num-avaliacoes" class="text-6xl font-black text-blue-600 mt-2">...</h2>
             </div>
             <div class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-100">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Colaboradores</p>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Colaboradores no Banco</p>
                 <h2 id="num-colaboradores" class="text-6xl font-black text-slate-900 mt-2">...</h2>
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <button onclick="window.location.href='avaliar.html'" class="bg-slate-900 text-white p-10 rounded-[2.5rem] hover:scale-[1.02] transition-all text-left">
+            <button onclick="window.location.href='avaliar.html'" class="bg-slate-900 text-white p-10 rounded-[2.5rem] hover:bg-slate-800 text-left transition-all">
                 <h3 class="text-xl font-black uppercase italic">Nova Avaliação</h3>
-                <p class="text-slate-400 text-sm mt-1">Registrar novo feedback</p>
+                <p class="text-slate-400 text-sm mt-1">Lançar novo feedback no sistema</p>
             </button>
-            <button onclick="window.location.href='avaliacoes.html'" class="bg-blue-600 text-white p-10 rounded-[2.5rem] hover:scale-[1.02] transition-all text-left">
+            <button onclick="window.location.href='avaliacoes.html'" class="bg-blue-600 text-white p-10 rounded-[2.5rem] hover:bg-blue-700 text-left transition-all shadow-lg shadow-blue-200">
                 <h3 class="text-xl font-black uppercase italic">Ver Histórico</h3>
-                <p class="text-blue-200 text-sm mt-1">Listar, editar ou excluir</p>
+                <p class="text-blue-100 text-sm mt-1">Consultar, editar ou excluir registros</p>
             </button>
         </div>
     </div>
 
     <script>
         const API_URL = 'https://sistema-desempenho-production.up.railway.app';
-        async function carregarResumo() {
-            const res = await fetch(`${API_URL}/dashboard-resumo`);
-            const dados = await res.json();
-            document.getElementById('num-avaliacoes').innerText = dados.avaliacoes;
-            document.getElementById('num-colaboradores').innerText = dados.colaboradores;
+        async function carregarDashboard() {
+            try {
+                const res = await fetch(`${API_URL}/dashboard-resumo`);
+                const dados = await res.json();
+                document.getElementById('num-avaliacoes').innerText = dados.avaliacoes;
+                document.getElementById('num-colaboradores').innerText = dados.colaboradores;
+            } catch (e) { console.error("Erro no Railway"); }
         }
-        window.onload = carregarResumo;
+        window.onload = carregarDashboard;
     </script>
 </body>
 </html>
