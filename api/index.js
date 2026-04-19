@@ -6,6 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Conexão com Railway usando variáveis de ambiente
 const db = mysql.createPool({
     host: process.env.MYSQLHOST,
     user: process.env.MYSQLUSER,
@@ -24,7 +25,7 @@ app.post('/login', async (req, res) => {
     } catch (error) { res.status(500).json({ error: 'Erro no servidor' }); }
 });
 
-// LISTAR COLABORADORES (Pega da tbPessoas que agora tem dados!)
+// LISTAR COLABORADORES
 app.get('/colaboradores', async (req, res) => {
     try {
         const [rows] = await db.execute('SELECT pessoa_id, nome FROM tbPessoas ORDER BY nome ASC');
@@ -32,17 +33,27 @@ app.get('/colaboradores', async (req, res) => {
     } catch (error) { res.status(500).json({ error: 'Erro ao listar' }); }
 });
 
-// SALVAR AVALIAÇÃO (Ajustado para seu diagrama)
+// LISTAR HISTÓRICO DE AVALIAÇÕES (Para a página avaliacoes.html)
+app.get('/listar-avaliacoes', async (req, res) => {
+    try {
+        const sql = `
+            SELECT a.data, a.observacao, p.nome as nome_colaborador 
+            FROM tbAvaliacao a
+            JOIN tbPessoas p ON a.funcionario_id = p.pessoa_id
+            ORDER BY a.data DESC
+        `;
+        const [rows] = await db.execute(sql);
+        res.json(rows);
+    } catch (error) { res.status(500).json({ error: 'Erro ao buscar histórico' }); }
+});
+
+// SALVAR AVALIAÇÃO - AJUSTADO PARA O DIAGRAMA
 app.post('/avaliacao', async (req, res) => {
     const { funcionario_id, observacao } = req.body;
-    
     try {
-        const dataHoje = new Date().toISOString().split('T')[0]; // Formato DATE: YYYY-MM-DD
-        const statusId = 1; // ID 1 = 'Pendente' que já existe
-        
-        // No seu diagrama, o campo 'atualizado_por' é obrigatório (INT)
-        // Usaremos o ID 5 (seu ID na tbPessoas) como padrão por enquanto
-        const usuarioAtualizador = 5; 
+        const dataHoje = new Date().toISOString().split('T')[0];
+        const statusId = 1; // ID 'Pendente' na tbAvaliacaoStatus
+        const usuarioLogadoId = 5; // Seu ID (Graziela) para satisfazer a FK de atualizado_por
 
         const sql = `
             INSERT INTO tbAvaliacao 
@@ -50,14 +61,13 @@ app.post('/avaliacao', async (req, res) => {
             VALUES (?, ?, ?, ?, ?, NOW())
         `;
         
-        await db.execute(sql, [dataHoje, observacao, funcionario_id, statusId, usuarioAtualizador]);
-        
+        await db.execute(sql, [dataHoje, observacao, funcionario_id, statusId, usuarioLogadoId]);
         res.status(201).json({ success: true });
     } catch (error) {
-        console.error("ERRO DETALHADO NO BANCO:", error.message);
-        res.status(500).json({ error: 'Erro técnico: ' + error.message });
+        console.error("ERRO NO BANCO:", error.message);
+        res.status(500).json({ error: 'Erro no Banco: ' + error.message });
     }
 });
 
 const port = process.env.PORT || 3000;
-app.listen(port, '0.0.0.0', () => console.log(`Servidor rodando na porta ${port}`));
+app.listen(port, '0.0.0.0', () => console.log(`🚀 Servidor rodando na porta ${port}`));
