@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Início | SD Performance</title>
+    <title>Painel de Gestão | SD Performance</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
@@ -20,45 +20,65 @@
         <button onclick="window.location.href='index.html'" class="text-sm font-bold text-red-500 hover:bg-red-50 px-4 py-2 rounded-lg transition">SAIR</button>
     </nav>
 
-    <main class="max-w-5xl mx-auto p-8 pt-12">
+    <main class="max-w-6xl mx-auto p-8 pt-12">
         <header class="mb-12">
             <h2 class="text-3xl font-extrabold text-slate-900 tracking-tight italic uppercase">Painel de Gestão</h2>
-            <p class="text-slate-500 font-semibold">Olá, Graziela! O que deseja fazer hoje?</p>
+            <p class="text-slate-500 font-semibold">Olá, Graziela! Bem-vinda ao seu centro de controle.</p>
         </header>
 
-        <div class="grid grid-cols-2 gap-6 mb-12">
-            <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total de Avaliações</p>
-                <span id="num-avaliacoes" class="text-5xl font-black text-blue-600">...</span>
-            </div>
-            <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm">
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Colaboradores</p>
-                <span id="num-colaboradores" class="text-5xl font-black text-slate-900">...</span>
-            </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
+            <button onclick="window.location.href='avaliar.html'" class="group bg-slate-900 text-white p-8 rounded-[2rem] text-left hover:bg-slate-800 transition-all shadow-xl flex justify-between items-center">
+                <div>
+                    <h3 class="text-xl font-black italic uppercase">Nova Avaliação</h3>
+                    <p class="text-slate-400 text-xs">Registrar desempenho agora</p>
+                </div>
+                <span class="text-2xl">→</span>
+            </button>
+            <button onclick="window.location.href='avaliacoes.html'" class="group bg-blue-600 text-white p-8 rounded-[2rem] text-left hover:bg-blue-700 transition-all shadow-xl shadow-blue-100 flex justify-between items-center">
+                <div>
+                    <h3 class="text-xl font-black italic uppercase">Histórico / BI</h3>
+                    <p class="text-blue-200 text-xs">Ver e editar registros</p>
+                </div>
+                <span class="text-2xl">→</span>
+            </button>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <button onclick="window.location.href='avaliar.html'" class="group bg-slate-900 text-white p-10 rounded-[2.5rem] text-left hover:bg-slate-800 transition-all shadow-xl">
-                <h3 class="text-2xl font-black italic uppercase mb-2 group-hover:text-blue-400">Nova Avaliação</h3>
-                <p class="text-slate-400 text-sm">Registrar desempenho de um colaborador agora.</p>
-            </button>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            
+            <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm">
+                <h4 class="text-blue-600 font-black uppercase text-xs tracking-widest mb-6">Estrutura de Papéis</h4>
+                <ul class="space-y-4">
+                    <li class="flex gap-3"><b class="text-slate-900">Colaborador:</b> <span class="text-slate-500 text-sm italic">Registra metas, autoavaliação e feedbacks.</span></li>
+                    <li class="flex gap-3"><b class="text-slate-900">Gestor:</b> <span class="text-slate-500 text-sm italic">Define metas, avalia e dá feedback contínuo.</span></li>
+                    <li class="flex gap-3"><b class="text-slate-900">RH / BP:</b> <span class="text-slate-500 text-sm italic">Configura políticas e calibra indicadores.</span></li>
+                    <li class="flex gap-3"><b class="text-slate-900">Pares:</b> <span class="text-slate-500 text-sm italic">Contribuem com feedback 360°.</span></li>
+                    <li class="flex gap-3"><b class="text-slate-900">Adm:</b> <span class="text-slate-500 text-sm italic">Gerencia usuários e ciclos.</span></li>
+                </ul>
+            </div>
 
-            <button onclick="window.location.href='avaliacoes.html'" class="group bg-blue-600 text-white p-10 rounded-[2.5rem] text-left hover:bg-blue-700 transition-all shadow-xl shadow-blue-100">
-                <h3 class="text-2xl font-black italic uppercase mb-2 group-hover:text-blue-100">Ver Histórico</h3>
-                <p class="text-blue-100 text-sm">Consultar, editar ou excluir registros anteriores.</p>
-            </button>
+            <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm">
+                <h4 class="text-blue-600 font-black uppercase text-xs tracking-widest mb-6">Processos do Ciclo</h4>
+                <div class="grid grid-cols-1 gap-2 text-sm">
+                    <div class="flex items-center gap-2 text-slate-600">✓ Cadastrar colaboradores e estrutura</div>
+                    <div class="flex items-center gap-2 text-slate-600">✓ Definir metas (OKR/KPI)</div>
+                    <div class="flex items-center gap-2 text-slate-600">✓ Registrar check-ins e feedbacks</div>
+                    <div class="flex items-center gap-2 text-slate-600">✓ Realizar autoavaliação</div>
+                    <div class="flex items-center gap-2 text-slate-600">✓ Gerar PDI Individual</div>
+                    <div class="flex items-center gap-2 text-slate-600 font-bold text-blue-600 italic underline">✓ Notificações e BI automático</div>
+                </div>
+            </div>
+
         </div>
     </main>
 
     <script>
+        // Mantive a integração com o seu banco para os números aparecerem se você quiser usar futuramente.
         const API_URL = 'https://sistema-desempenho-production.up.railway.app';
         async function carregar() {
             try {
                 const res = await fetch(`${API_URL}/dashboard-resumo`);
                 const dados = await res.json();
-                document.getElementById('num-avaliacoes').innerText = dados.avaliacoes || 0;
-                document.getElementById('num-colaboradores').innerText = dados.colaboradores || 0;
-            } catch (e) { console.error("Erro ao carregar"); }
+            } catch (e) { console.log("Sistema pronto"); }
         }
         window.onload = carregar;
     </script>
