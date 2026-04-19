@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDI Individual | SD PERFORMANCE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+    <nav class="bg-white border-b p-6 flex justify-between items-center shadow-sm">
+        <button onclick="window.location.href='dashboard.html'" class="text-blue-600 font-black text-xs uppercase tracking-widest hover:underline">← Voltar</button>
+        <h1 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Plano de Desenvolvimento Individual</h1>
+        <div class="w-20"></div>
+    </nav>
+
+    <main class="max-w-4xl mx-auto p-8">
+        <div class="bg-white p-10 rounded-[3rem] shadow-xl border border-slate-200">
+            <h2 class="text-3xl font-black text-slate-800 italic uppercase tracking-tighter mb-8">Novo PDI</h2>
+            
+            <form id="formPDI" class="space-y-6">
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Colaborador</label>
+                    <select id="selectColaborador" required class="w-full p-4 bg-slate-50 border-none rounded-2xl text-sm font-bold text-slate-700 focus:ring-2 focus:ring-blue-500 transition-all">
+                        <option value="">Selecione quem irá desenvolver...</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Objetivo de Carreira</label>
+                    <input type="text" id="objetivo" placeholder="Ex: Especialização em React ou Liderança de Equipes" required class="w-full p-4 bg-slate-50 border-none rounded-2xl text-sm font-bold text-slate-700">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Ações e Cursos</label>
+                    <textarea id="descricao" rows="4" placeholder="Descreva os passos para atingir o objetivo..." class="w-full p-4 bg-slate-50 border-none rounded-2xl text-sm font-bold text-slate-700"></textarea>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Prazo Previsto</label>
+                        <input type="date" id="prazo" required class="w-full p-4 bg-slate-50 border-none rounded-2xl text-sm font-bold text-slate-700">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-slate-900 text-white p-5 rounded-2xl font-black uppercase tracking-[0.2em] text-xs hover:bg-blue-600 transition-all shadow-lg active:scale-[0.98]">Salvar Plano de Desenvolvimento</button>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        const API_URL = 'https://sistema-desempenho-production.up.railway.app';
+
+        // Carregar colaboradores no Select
+        async function carregarColaboradores() {
+            try {
+                const res = await fetch(`${API_URL}/colaboradores`);
+                const dados = await res.json();
+                const select = document.getElementById('selectColaborador');
+                dados.forEach(p => {
+                    select.innerHTML += `<option value="${p.pessoa_id}">${p.nome}</option>`;
+                });
+            } catch (e) { console.error("Erro ao carregar colaboradores"); }
+        }
+
+        // Salvar PDI
+        document.getElementById('formPDI').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const dados = {
+                pessoa_id: document.getElementById('selectColaborador').value,
+                objetivo: document.getElementById('objetivo').value,
+                descricao: document.getElementById('descricao').value,
+                prazo: document.getElementById('prazo').value
+            };
+
+            try {
+                const res = await fetch(`${API_URL}/pdi`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+                if (res.ok) {
+                    alert("PDI registrado com sucesso!");
+                    window.location.href = 'dashboard.html';
+                }
+            } catch (err) { alert("Erro ao salvar PDI"); }
+        });
+
+        window.onload = carregarColaboradores;
+    </script>
+</body>
+</html>

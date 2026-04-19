@@ -42,7 +42,7 @@ app.get('/dashboard-resumo', async (req, res) => {
     }
 });
 
-// --- ROTA PARA DELETAR META (NOVA) ---
+// --- ROTA PARA DELETAR META ---
 app.delete('/deletar-meta/:id', async (req, res) => {
     const { id } = req.params;
     try {
@@ -102,6 +102,30 @@ app.get('/listar-metas', async (req, res) => {
         const [rows] = await db.execute(sql);
         res.json(rows);
     } catch (error) { res.status(500).json({ error: 'Erro ao buscar metas' }); }
+});
+
+// --- SALVAR PDI (NOVA ROTA) ---
+app.post('/pdi', async (req, res) => {
+    const { pessoa_id, objetivo, descricao, prazo } = req.body;
+    try {
+        const sql = `INSERT INTO tbPDI (pessoa_id, objetivo, descricao, prazo) VALUES (?, ?, ?, ?)`;
+        await db.execute(sql, [pessoa_id, objetivo, descricao, prazo]);
+        res.status(201).json({ success: true, message: 'PDI salvo com sucesso!' });
+    } catch (error) {
+        console.error('Erro ao salvar PDI:', error);
+        res.status(500).json({ error: 'Erro ao salvar PDI' });
+    }
+});
+
+// --- LISTAR PDIs (NOVA ROTA) ---
+app.get('/listar-pdi', async (req, res) => {
+    try {
+        const sql = `SELECT pdi.*, p.nome as nome_colaborador FROM tbPDI pdi JOIN tbPessoas p ON pdi.pessoa_id = p.pessoa_id ORDER BY pdi.prazo ASC`;
+        const [rows] = await db.execute(sql);
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao buscar PDIs' });
+    }
 });
 
 // --- EDITAR AVALIAÇÃO ---
