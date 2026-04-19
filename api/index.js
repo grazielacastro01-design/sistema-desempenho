@@ -104,7 +104,7 @@ app.get('/listar-metas', async (req, res) => {
     } catch (error) { res.status(500).json({ error: 'Erro ao buscar metas' }); }
 });
 
-// --- SALVAR PDI (NOVA ROTA) ---
+// --- SALVAR PDI ---
 app.post('/pdi', async (req, res) => {
     const { pessoa_id, objetivo, descricao, prazo } = req.body;
     try {
@@ -117,7 +117,7 @@ app.post('/pdi', async (req, res) => {
     }
 });
 
-// --- LISTAR PDIs (NOVA ROTA) ---
+// --- LISTAR PDIs ---
 app.get('/listar-pdi', async (req, res) => {
     try {
         const sql = `SELECT pdi.*, p.nome as nome_colaborador FROM tbPDI pdi JOIN tbPessoas p ON pdi.pessoa_id = p.pessoa_id ORDER BY pdi.prazo ASC`;
@@ -125,6 +125,19 @@ app.get('/listar-pdi', async (req, res) => {
         res.json(rows);
     } catch (error) {
         res.status(500).json({ error: 'Erro ao buscar PDIs' });
+    }
+});
+
+// --- SALVAR AVALIAÇÃO 360 (NOVA ROTA) ---
+app.post('/avaliacao360', async (req, res) => {
+    const { avaliado_id, avaliador_id, nota_proatividade, nota_comunicacao, nota_equipe, comentario } = req.body;
+    try {
+        const sql = `INSERT INTO tbAvaliacao360 (avaliado_id, avaliador_id, nota_proatividade, nota_comunicacao, nota_equipe, comentario) VALUES (?, ?, ?, ?, ?, ?)`;
+        await db.execute(sql, [avaliado_id, avaliador_id, nota_proatividade, nota_comunicacao, nota_equipe, comentario]);
+        res.status(201).json({ success: true });
+    } catch (error) {
+        console.error('Erro ao salvar avaliação 360:', error);
+        res.status(500).json({ error: 'Erro ao salvar avaliação 360' });
     }
 });
 
