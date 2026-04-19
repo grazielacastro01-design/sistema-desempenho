@@ -73,14 +73,15 @@
             if (result.isConfirmed) {
                 try {
                     const res = await fetch(`${API_URL}/colaborador/${id}`, { method: 'DELETE' });
+                    
                     if (res.ok) {
-                        Swal.fire('Sucesso!', 'Removido.', 'success');
+                        Swal.fire('Sucesso!', 'Removido com sucesso.', 'success');
                         carregarColaboradores();
                     } else {
-                        throw new Error();
+                        throw new Error('Erro ao excluir');
                     }
                 } catch (e) {
-                    Swal.fire('Erro', 'Não foi possível excluir. Verifique o CORS.', 'error');
+                    Swal.fire('Erro', 'Não foi possível excluir. Verifique se o backend está atualizado.', 'error');
                 }
             }
         }

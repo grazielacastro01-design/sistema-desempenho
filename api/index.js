@@ -4,16 +4,16 @@ const mysql = require('mysql2/promise');
 
 const app = express();
 
-// CONFIGURAÇÃO DE CORS REFORÇADA - Resolve o erro das imagens que você mandou
+// CONFIGURAÇÃO REFORÇADA DO CORS - Resolve o erro de bloqueio do navegador
 app.use(cors({
-    origin: '*',
+    origin: '*', 
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept']
 }));
 
 app.use(express.json());
 
-// CONFIGURAÇÃO DO BANCO DE DADOS (Railway)
+// CONEXÃO COM O BANCO DE DADOS (RAILWAY)
 const db = mysql.createPool({
     host: process.env.MYSQLHOST,
     user: process.env.MYSQLUSER,
@@ -30,14 +30,14 @@ app.post('/login', async (req, res) => {
         if (rows.length > 0) {
             res.json({ success: true, user: rows[0] });
         } else {
-            res.status(401).json({ success: false, message: 'Credenciais inválidas' });
+            res.status(401).json({ success: false, message: 'Incorreto' });
         }
     } catch (error) {
         res.status(500).json({ error: 'Erro no servidor' });
     }
 });
 
-// ROTA DE LISTAGEM (READ)
+// ROTA DE LISTAGEM
 app.get('/colaboradores', async (req, res) => {
     try {
         const [rows] = await db.execute('SELECT pessoa_id, nome FROM tbPessoas ORDER BY pessoa_id DESC');
@@ -47,7 +47,7 @@ app.get('/colaboradores', async (req, res) => {
     }
 });
 
-// ROTA DE CADASTRO (CREATE)
+// ROTA DE CADASTRO
 app.post('/colaborador', async (req, res) => {
     const { nome } = req.body;
     try {
@@ -60,20 +60,23 @@ app.post('/colaborador', async (req, res) => {
     }
 });
 
-// ROTA DE EXCLUSÃO (DELETE) - Ativa a lixeira
+// ROTA DE EXCLUSÃO (A lixeira usa esta rota)
 app.delete('/colaborador/:id', async (req, res) => {
     const { id } = req.params;
     try {
         const [result] = await db.execute('DELETE FROM tbPessoas WHERE pessoa_id = ?', [id]);
         if (result.affectedRows > 0) {
-            res.json({ success: true, message: 'Excluído' });
+            res.json({ success: true, message: 'Excluído com sucesso' });
         } else {
-            res.status(404).json({ error: 'Não encontrado' });
+            res.status(404).json({ error: 'ID não encontrado' });
         }
     } catch (error) {
-        res.status(500).json({ error: 'Erro ao excluir' });
+        console.error(error);
+        res.status(500).json({ error: 'Erro ao excluir no banco' });
     }
 });
 
 const port = process.env.PORT || 3000;
-app.listen(port, '0.0.0.0', () => console.log(`🚀 Servidor na porta ${port}`));
+app.listen(port, '0.0.0.0', () => {
+    console.log(`🚀 Servidor rodando na porta ${port}`);
+});
