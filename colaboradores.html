@@ -3,19 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Colaboradores | SD Performance</title>
+    <title>Gestão | SD Performance</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="bg-slate-50 flex min-h-screen font-sans">
-    <main class="flex-1 flex flex-col min-w-0">
+    <main class="flex-1 flex flex-col">
         <header class="bg-white p-6 flex justify-between items-center border-b border-slate-100">
             <h2 class="text-xl font-black text-slate-800 uppercase tracking-tighter">Gestão de Colaboradores</h2>
             <div class="flex items-center gap-4">
-                <button onclick="gerarPDF()" class="text-slate-500 hover:text-blue-600 font-bold text-xs uppercase tracking-widest transition">
-                    <i class="fas fa-file-pdf mr-1"></i> Exportar PDF
-                </button>
                 <button onclick="abrirModalCadastro()" class="bg-blue-600 text-white px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-blue-700 transition shadow-lg shadow-blue-200">
                     <i class="fas fa-plus mr-2"></i> Novo Cadastro
                 </button>
@@ -28,7 +25,7 @@
                     <thead>
                         <tr class="bg-slate-50/50 border-b border-slate-100">
                             <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">ID</th>
-                            <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nome Completo</th>
+                            <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nome</th>
                             <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Ações</th>
                         </tr>
                     </thead>
@@ -44,11 +41,10 @@
         async function carregarColaboradores() {
             try {
                 const response = await fetch(`${API_URL}/colaboradores`);
-                const colaboradores = await response.json();
+                const dados = await response.json();
                 const tbody = document.getElementById('tabelaCorpo');
                 tbody.innerHTML = '';
-
-                colaboradores.forEach(colab => {
+                dados.forEach(colab => {
                     tbody.innerHTML += `
                         <tr class="border-b border-slate-50 hover:bg-blue-50/30 transition-all">
                             <td class="p-6 text-sm font-bold text-slate-400">#${colab.pessoa_id}</td>
@@ -60,61 +56,53 @@
                             </td>
                         </tr>`;
                 });
-            } catch (error) { console.error('Erro ao carregar:', error); }
+            } catch (e) { console.error(e); }
         }
 
         async function excluirColaborador(id) {
             const result = await Swal.fire({
-                title: 'Tem certeza?',
-                text: "O colaborador será removido permanentemente!",
+                title: 'Confirmar exclusão?',
+                text: "O registro será removido do banco de dados.",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#2563eb',
                 cancelButtonColor: '#f87171',
-                confirmButtonText: 'Sim, excluir'
+                confirmButtonText: 'Sim, deletar'
             });
 
             if (result.isConfirmed) {
                 try {
                     const res = await fetch(`${API_URL}/colaborador/${id}`, { method: 'DELETE' });
                     if (res.ok) {
-                        Swal.fire('Deletado!', 'O colaborador foi removido.', 'success');
+                        Swal.fire('Sucesso!', 'Removido.', 'success');
                         carregarColaboradores();
+                    } else {
+                        throw new Error();
                     }
-                } catch (error) {
-                    Swal.fire('Erro', 'Não foi possível excluir.', 'error');
+                } catch (e) {
+                    Swal.fire('Erro', 'Não foi possível excluir. Verifique o CORS.', 'error');
                 }
             }
         }
 
         async function abrirModalCadastro() {
             const { value: nome } = await Swal.fire({
-                title: 'Cadastrar Colaborador',
+                title: 'Novo Cadastro',
                 input: 'text',
-                inputLabel: 'Nome Completo',
-                inputPlaceholder: 'Digite o nome aqui...',
+                inputLabel: 'Nome do Colaborador',
                 showCancelButton: true,
                 confirmButtonColor: '#2563eb'
             });
 
             if (nome) {
-                try {
-                    const res = await fetch(`${API_URL}/colaborador`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ nome })
-                    });
-                    if (res.ok) {
-                        Swal.fire('Sucesso!', 'Colaborador cadastrado.', 'success');
-                        carregarColaboradores();
-                    }
-                } catch (error) {
-                    Swal.fire('Erro', 'Falha ao cadastrar.', 'error');
-                }
+                const res = await fetch(`${API_URL}/colaborador`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nome })
+                });
+                if (res.ok) { carregarColaboradores(); Swal.fire('Salvo!', '', 'success'); }
             }
         }
-
-        function gerarPDF() { Swal.fire('Aguarde', 'Esta função faz parte da Sprint de Junho.', 'info'); }
 
         window.onload = carregarColaboradores;
     </script>
