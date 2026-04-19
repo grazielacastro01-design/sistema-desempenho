@@ -2,22 +2,26 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Histórico | Sistema de Desempenho</title>
+    <title>Histórico | SD PERFORMANCE</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
 </head>
 <body class="bg-slate-50 min-h-screen">
     
     <nav class="bg-white border-b border-slate-200 p-6 flex justify-between items-center">
-        <button onclick="window.location.href='dashboard.html'" class="flex items-center gap-2 text-blue-600 font-black text-xs uppercase tracking-widest hover:underline">
-            ← Voltar ao Início
-        </button>
+        <button onclick="window.location.href='dashboard.html'" class="text-blue-600 font-black text-xs uppercase tracking-widest hover:underline">← Voltar</button>
         <h1 class="text-xs font-black text-slate-400 uppercase tracking-widest">Histórico de Avaliações</h1>
+        <button onclick="gerarPDF()" class="bg-slate-900 text-white px-4 py-2 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-blue-600 transition">Gerar Relatório PDF</button>
     </nav>
 
-    <div class="p-8 max-w-7xl mx-auto">
+    <div id="relatorio-secao" class="p-8 max-w-7xl mx-auto">
+        <div class="mb-6">
+            <h2 class="text-2xl font-black text-slate-800 italic uppercase italic">Relatório de Feedbacks</h2>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">SD PERFORMANCE - Gestão de Talentos</p>
+        </div>
         <div class="bg-white rounded-[2.5rem] shadow-sm border overflow-hidden">
             <table class="w-full text-left">
                 <thead class="bg-slate-50">
@@ -25,7 +29,6 @@
                         <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Data</th>
                         <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Colaborador</th>
                         <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Observação</th>
-                        <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Ações</th>
                     </tr>
                 </thead>
                 <tbody id="tabela-corpo"></tbody>
@@ -48,32 +51,21 @@
                         <td class="p-6 text-sm text-slate-500 font-bold">${dataF}</td>
                         <td class="p-6 text-sm font-black text-slate-800 uppercase">${a.nome_colaborador}</td>
                         <td class="p-6 text-sm text-slate-600 font-medium">${a.observacao}</td>
-                        <td class="p-6 text-right space-x-4">
-                            <button onclick="editar(${a.avaliacao_id}, '${a.observacao}')" class="text-blue-500 font-black uppercase text-[10px] hover:underline tracking-widest">Editar</button>
-                            <button onclick="excluir(${a.avaliacao_id})" class="text-red-500 font-black uppercase text-[10px] hover:underline tracking-widest">Excluir</button>
-                        </td>
                     </tr>`;
             });
         }
 
-        async function editar(id, texto) {
-            const { value: novo } = await Swal.fire({ title: 'Editar', input: 'textarea', inputValue: texto, showCancelButton: true });
-            if (novo) {
-                await fetch(`${API_URL}/avaliacao/${id}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ observacao: novo })
-                });
-                carregar();
-            }
+        function gerarPDF() {
+            const elemento = document.getElementById('relatorio-secao');
+            const opt = {
+                margin: 10,
+                filename: 'Relatorio_Avaliacoes.pdf',
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(elemento).save();
         }
 
-        async function excluir(id) {
-            if (confirm('Deseja excluir?')) {
-                await fetch(`${API_URL}/avaliacao/${id}`, { method: 'DELETE' });
-                carregar();
-            }
-        }
         window.onload = carregar;
     </script>
 </body>
