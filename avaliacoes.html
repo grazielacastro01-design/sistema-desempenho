@@ -9,7 +9,7 @@
 <body class="bg-slate-50 min-h-screen">
     <header class="bg-white p-6 flex justify-between items-center border-b shadow-sm">
         <h2 class="text-xl font-black text-slate-800 uppercase italic">Histórico de Avaliações</h2>
-        <button onclick="window.location.href='avaliar.html'" class="bg-blue-600 text-white px-6 py-2 rounded-xl font-bold uppercase text-xs">Nova Avaliação</button>
+        <button onclick="window.location.href='dashboard.html'" class="bg-slate-100 text-slate-600 px-6 py-2 rounded-xl font-bold uppercase text-xs">Voltar</button>
     </header>
 
     <div class="p-8">
@@ -40,11 +40,11 @@
             dados.forEach(a => {
                 const dataF = new Date(a.data).toLocaleDateString('pt-BR');
                 tbody.innerHTML += `
-                    <tr class="border-b hover:bg-slate-50">
+                    <tr class="border-b hover:bg-slate-50 transition-all">
                         <td class="p-6 text-sm text-slate-500">${dataF}</td>
                         <td class="p-6 text-sm font-black text-slate-800">${a.nome_colaborador}</td>
                         <td class="p-6 text-sm text-slate-600">${a.observacao}</td>
-                        <td class="p-6 text-right space-x-4">
+                        <td class="p-6 text-right space-x-3">
                             <button onclick="editar(${a.avaliacao_id}, '${a.observacao}')" class="text-blue-500 font-bold uppercase text-[10px]">Editar</button>
                             <button onclick="excluir(${a.avaliacao_id})" class="text-red-500 font-bold uppercase text-[10px]">Excluir</button>
                         </td>
@@ -52,12 +52,14 @@
             });
         }
 
-        async function editar(id, textoAntigo) {
+        async function editar(id, texto) {
             const { value: novoTexto } = await Swal.fire({
-                title: 'Editar Observação',
+                title: 'Editar Avaliação',
                 input: 'textarea',
-                inputValue: textoAntigo,
-                showCancelButton: true
+                inputValue: texto,
+                showCancelButton: true,
+                confirmButtonText: 'Salvar',
+                confirmButtonColor: '#2563eb'
             });
 
             if (novoTexto) {
@@ -67,16 +69,28 @@
                     body: JSON.stringify({ observacao: novoTexto })
                 });
                 if (res.ok) {
-                    Swal.fire('Atualizado!', '', 'success');
+                    Swal.fire('Sucesso!', 'Avaliação atualizada.', 'success');
                     carregarHistorico();
                 }
             }
         }
 
         async function excluir(id) {
-            if (confirm('Deseja excluir?')) {
+            const result = await Swal.fire({
+                title: 'Tem certeza?',
+                text: "Você não poderá reverter isso!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                confirmButtonText: 'Sim, excluir!'
+            });
+
+            if (result.isConfirmed) {
                 const res = await fetch(`${API_URL}/avaliacao/${id}`, { method: 'DELETE' });
-                if (res.ok) carregarHistorico();
+                if (res.ok) {
+                    Swal.fire('Excluído!', '', 'success');
+                    carregarHistorico();
+                }
             }
         }
 
