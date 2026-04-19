@@ -63,7 +63,7 @@
                 <p class="text-slate-500 text-sm leading-relaxed font-semibold">Gerencie equipes, cargos e dados profissionais de forma centralizada.</p>
             </div>
 
-            <div onclick="location.href='metas.html'" class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-200 hover:shadow-xl transition cursor-pointer group">
+            <div onclick="location.href='ver-metas.html'" class="bg-white p-10 rounded-[2.5rem] shadow-sm border border-slate-200 hover:shadow-xl transition cursor-pointer group">
                 <h3 class="text-xl font-black text-slate-900 mb-2 uppercase italic tracking-tighter">
                     Metas OKR (<span id="cont-metas">--</span>)
                 </h3>
@@ -87,7 +87,7 @@
                 const res = await fetch(`${API_URL}/dashboard-resumo`);
                 const dados = await res.json();
                 
-                // Substitui os "--" pelos números reais vindos do seu index.js
+                // Preenche os números dinamicamente
                 document.getElementById('cont-colaboradores').textContent = dados.colaboradores;
                 document.getElementById('cont-avaliacoes').textContent = dados.avaliacoes;
                 document.getElementById('cont-metas').textContent = dados.metas;
@@ -96,9 +96,8 @@
             }
         }
 
-        // Executa a função assim que a página carregar
+        // Executa a função ao carregar a página
         window.onload = carregarResumo;
     </script>
-
 </body>
 </html>
