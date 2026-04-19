@@ -2,36 +2,34 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Avaliar | SD Performance</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="bg-slate-50 min-h-screen font-sans p-4">
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4">
 
-    <div class="max-w-xl mx-auto bg-white rounded-[2.5rem] shadow-xl border border-slate-100 overflow-hidden mt-10">
-        <header class="bg-slate-900 p-8 text-white text-center">
-            <button onclick="window.location.href='dashboard.html'" class="float-left text-slate-500 hover:text-white">
+    <div class="max-w-lg w-full bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-100">
+        <header class="bg-slate-900 p-8 text-center relative">
+            <button onclick="window.location.href='dashboard.html'" class="absolute left-6 top-9 text-slate-500 hover:text-white">
                 <i class="fas fa-times"></i>
             </button>
-            <h1 class="text-2xl font-black uppercase italic tracking-tighter">Registrar Avaliação</h1>
+            <h1 class="text-xl font-black text-white uppercase tracking-tighter italic">Registrar Avaliação</h1>
         </header>
 
-        <div class="p-8 space-y-6">
-            <div class="space-y-2">
+        <div class="p-10 space-y-8">
+            <div class="space-y-3">
                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Colaborador</label>
-                <select id="listaColaboradores" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl p-4 font-bold text-slate-700 outline-none focus:border-blue-500">
-                    <option value="">Carregando...</option>
+                <select id="selectColab" class="w-full bg-slate-50 border-2 border-slate-100 rounded-2xl p-5 font-bold text-slate-700 outline-none focus:border-blue-500 transition-all">
+                    <option value="">Carregando lista...</option>
                 </select>
             </div>
 
-            <div class="space-y-2">
+            <div class="space-y-3">
                 <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Feedback/Observações</label>
-                <textarea id="feedbackTexto" rows="5" placeholder="Como foi o desempenho?" class="w-full bg-slate-50 border-2 border-slate-100 rounded-3xl p-6 font-medium text-slate-700 outline-none focus:border-blue-500 resize-none"></textarea>
+                <textarea id="textoFeedback" rows="6" placeholder="Escreva o desempenho aqui..." class="w-full bg-slate-50 border-2 border-slate-100 rounded-[2rem] p-6 font-medium text-slate-700 outline-none focus:border-blue-500 transition-all resize-none"></textarea>
             </div>
 
-            <button onclick="salvarAvaliacao()" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-5 rounded-2xl font-black uppercase tracking-widest shadow-lg shadow-blue-100 transition-all">
+            <button onclick="enviarAvaliacao()" class="w-full bg-blue-600 hover:bg-blue-700 text-white p-6 rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-blue-100 transition-all active:scale-95">
                 Salvar Avaliação
             </button>
         </div>
@@ -40,36 +38,42 @@
     <script>
         const API_URL = 'https://sistema-desempenho-production.up.railway.app';
 
+        // Carrega os colaboradores no Select
         async function carregarColaboradores() {
             try {
-                const response = await fetch(`${API_URL}/colaboradores`);
-                const dados = await response.json();
-                const select = document.getElementById('listaColaboradores');
-                select.innerHTML = '<option value="">Selecione o funcionário</option>';
-                dados.forEach(colab => {
-                    select.innerHTML += `<option value="${colab.pessoa_id}">${colab.nome}</option>`;
+                const res = await fetch(`${API_URL}/colaboradores`);
+                const dados = await res.json();
+                const select = document.getElementById('selectColab');
+                select.innerHTML = '<option value="">Selecione o colaborador</option>';
+                dados.forEach(c => {
+                    select.innerHTML += `<option value="${c.pessoa_id}">${c.nome}</option>`;
                 });
             } catch (e) { console.error(e); }
         }
 
-        async function salvarAvaliacao() {
-            const id = document.getElementById('listaColaboradores').value;
-            const texto = document.getElementById('feedbackTexto').value;
+        // Função do Botão Salvar
+        async function enviarAvaliacao() {
+            const id = document.getElementById('selectColab').value;
+            const obs = document.getElementById('textoFeedback').value;
 
-            if (!id || !texto) return Swal.fire('Atenção', 'Preencha todos os campos!', 'warning');
+            if (!id || !obs) {
+                return Swal.fire('Atenção', 'Selecione um colaborador e escreva o feedback.', 'warning');
+            }
 
             try {
                 const res = await fetch(`${API_URL}/avaliacao`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ funcionario_id: id, observacao: texto })
+                    body: JSON.stringify({ funcionario_id: id, observacao: obs })
                 });
 
                 if (res.ok) {
-                    await Swal.fire('Sucesso!', 'Avaliação salva!', 'success');
-                    window.location.href = 'avaliacoes.html'; // Vai para a lista ver o resultado
+                    await Swal.fire('Sucesso!', 'Avaliação salva com sucesso!', 'success');
+                    window.location.href = 'avaliacoes.html';
                 }
-            } catch (e) { Swal.fire('Erro', 'Falha ao salvar.', 'error'); }
+            } catch (e) {
+                Swal.fire('Erro', 'Não foi possível conectar ao servidor.', 'error');
+            }
         }
 
         window.onload = carregarColaboradores;
