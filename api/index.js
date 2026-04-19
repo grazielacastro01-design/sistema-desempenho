@@ -20,8 +20,7 @@ const db = mysql.createPool({
     port: process.env.MYSQLPORT || 3306
 });
 
-// --- ROTAS DE USUÁRIOS E PESSOAS ---
-
+// LOGIN
 app.post('/login', async (req, res) => {
     const { login, senha } = req.body;
     try {
@@ -31,13 +30,15 @@ app.post('/login', async (req, res) => {
     } catch (error) { res.status(500).json({ error: 'Erro no servidor' }); }
 });
 
+// LISTAR COLABORADORES (Para os Selects e Tabela)
 app.get('/colaboradores', async (req, res) => {
     try {
-        const [rows] = await db.execute('SELECT pessoa_id, nome, telefone, nascimento, pessoa_tipo_id FROM tbPessoas ORDER BY pessoa_id DESC');
+        const [rows] = await db.execute('SELECT pessoa_id, nome, telefone, nascimento, pessoa_tipo_id FROM tbPessoas ORDER BY nome ASC');
         res.json(rows);
     } catch (error) { res.status(500).json({ error: 'Erro ao listar' }); }
 });
 
+// CADASTRAR COLABORADOR
 app.post('/colaborador', async (req, res) => {
     const { nome, nascimento, telefone, pessoa_tipo_id } = req.body;
     try {
@@ -48,6 +49,7 @@ app.post('/colaborador', async (req, res) => {
     } catch (error) { res.status(500).json({ error: 'Erro ao salvar' }); }
 });
 
+// EXCLUIR COLABORADOR
 app.delete('/colaborador/:id', async (req, res) => {
     const { id } = req.params;
     try {
@@ -56,23 +58,32 @@ app.delete('/colaborador/:id', async (req, res) => {
     } catch (error) { res.status(500).json({ error: 'Erro ao excluir' }); }
 });
 
-// --- NOVA ROTA: MÓDULO DE AVALIAÇÃO (SPRINT 8) ---
+// --- MÓDULO DE AVALIAÇÃO ---
 
-// Rota para salvar uma nova avaliação/feedback
+// SALVAR NOVA AVALIAÇÃO
 app.post('/avaliacao', async (req, res) => {
     const { funcionario_id, observacao } = req.body;
     try {
-        const dataHoje = new Date().toISOString().split('T')[0]; // Pega a data atual (AAAA-MM-DD)
-        const statusPendente = 1; // ID 1 da sua tbAvaliacaoStatus
-
+        const dataHoje = new Date().toISOString().split('T')[0];
+        const statusPendente = 1; // ID do status no seu banco
         const sql = 'INSERT INTO tbAvaliacao (data, observacao, funcionario_id, avaliacao_status_id) VALUES (?, ?, ?, ?)';
         await db.execute(sql, [dataHoje, observacao, funcionario_id, statusPendente]);
-        
-        res.status(201).json({ success: true, message: 'Avaliação registrada!' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Erro ao salvar avaliação' });
-    }
+        res.status(201).json({ success: true });
+    } catch (error) { res.status(500).json({ error: 'Erro ao salvar avaliação' }); }
+});
+
+// LISTAR HISTÓRICO (Para a página avaliacoes.html)
+app.get('/listar-avaliacoes', async (req, res) => {
+    try {
+        const sql = `
+            SELECT a.data, a.observacao, p.nome as nome_colaborador 
+            FROM tbAvaliacao a
+            JOIN tbPessoas p ON a.funcionario_id = p.pessoa_id
+            ORDER BY a.data DESC
+        `;
+        const [rows] = await db.execute(sql);
+        res.json(rows);
+    } catch (error) { res.status(500).json({ error: 'Erro ao buscar histórico' }); }
 });
 
 const port = process.env.PORT || 3000;

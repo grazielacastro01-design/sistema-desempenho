@@ -1,83 +1,82 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="h-full">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Avaliação de Desempenho | Sistema 2026</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Avaliações | SD Performance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
-<body class="h-full bg-slate-50 flex flex-col font-['Plus_Jakarta_Sans']">
+<body class="bg-slate-50 min-h-screen font-sans">
 
-  <header class="bg-slate-900 text-white shadow-md p-4">
-    <div class="max-w-7xl mx-auto flex justify-between items-center">
-      <div class="flex items-center gap-2">
-        <div class="w-8 h-8 bg-rose-500 rounded flex items-center justify-center font-bold italic">A</div>
-        <h1 class="text-xl font-bold">Ciclo de Avaliação</h1>
-      </div>
-      <a href="dashboard.html" class="text-slate-400 hover:text-white text-sm font-semibold">← Painel Inicial</a>
-    </div>
-  </header>
+    <main class="flex-1 flex flex-col">
+        <header class="bg-white p-6 flex justify-between items-center border-b border-slate-100">
+            <div class="flex items-center gap-4">
+                <button onclick="window.location.href='dashboard.html'" class="text-slate-400 hover:text-slate-600">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <h2 class="text-xl font-black text-slate-800 uppercase tracking-tighter">Histórico de Avaliações</h2>
+            </div>
+            <button onclick="window.location.href='avaliar.html'" class="bg-red-600 text-white px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-red-700 transition shadow-lg shadow-red-200">
+                <i class="fas fa-star mr-2"></i> Nova Avaliação
+            </button>
+        </header>
 
-  <main class="flex-grow flex items-center justify-center p-6">
-    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-3xl border-t-4 border-rose-500">
-      <div class="mb-8">
-        <h2 class="text-2xl font-bold text-slate-800 tracking-tight">Avaliação de Performance</h2>
-        <p class="text-slate-500">Registre feedbacks, autoavaliações e notas de competências.</p>
-      </div>
+        <section class="p-8">
+            <div class="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="bg-slate-50/50 border-b border-slate-100">
+                            <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Data</th>
+                            <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Colaborador</th>
+                            <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Feedback / Observação</th>
+                            <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaAvaliacoes">
+                        </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
 
-      <form class="space-y-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label class="block text-sm font-bold text-slate-700 mb-1 uppercase">Colaborador Avaliado</label>
-            <select class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-rose-500 outline-none transition cursor-pointer">
-              <option value="">Selecione o funcionário...</option>
-              <option value="1">Graziela Castro</option>
-              <option value="2">Brenda Silva</option>
-            </select>
-          </div>
+    <script>
+        const API_URL = 'https://sistema-desempenho-production.up.railway.app';
 
-          <div>
-            <label class="block text-sm font-bold text-slate-700 mb-1 uppercase">Tipo de Avaliação</label>
-            <select class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-rose-500 outline-none transition cursor-pointer">
-              <option value="auto">Autoavaliação (Própria)</option>
-              <option value="gestor">Avaliação do Gestor</option>
-              <option value="360">Avaliação 360° (Par)</option>
-            </select>
-          </div>
-        </div>
+        async function carregarHistorico() {
+            try {
+                // Precisaremos criar essa rota no backend para listar as avaliações
+                const response = await fetch(`${API_URL}/listar-avaliacoes`);
+                const avaliacoes = await response.json();
+                const tbody = document.getElementById('tabelaAvaliacoes');
+                tbody.innerHTML = '';
 
-        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 space-y-6">
-          <h3 class="font-bold text-slate-700 text-sm uppercase tracking-widest">Competências (Nota 1 a 5)</h3>
-          
-          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <span class="text-slate-600 font-semibold italic text-sm">Produtividade e Entrega</span>
-            <input type="range" min="1" max="5" step="1" class="w-full md:w-64 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-rose-500">
-          </div>
+                avaliacoes.forEach(av => {
+                    // Formata a data para o padrão brasileiro
+                    const dataFormatada = new Date(av.data).toLocaleDateString('pt-BR');
+                    
+                    tbody.innerHTML += `
+                        <tr class="border-b border-slate-50 hover:bg-slate-50/50 transition-all">
+                            <td class="p-6 text-sm font-bold text-slate-500">${dataFormatada}</td>
+                            <td class="p-6 text-sm font-black text-slate-800">${av.nome_colaborador}</td>
+                            <td class="p-6 text-sm text-slate-600 italic">"${av.observacao}"</td>
+                            <td class="p-6 text-center">
+                                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase bg-green-100 text-green-700">
+                                    Concluída
+                                </span>
+                            </td>
+                        </tr>`;
+                });
+            } catch (e) {
+                console.error("Erro ao carregar histórico:", e);
+                document.getElementById('tabelaAvaliacoes').innerHTML = `
+                    <tr><td colspan="4" class="p-10 text-center text-slate-400 font-bold">Nenhuma avaliação encontrada.</td></tr>
+                `;
+            }
+        }
 
-          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-t border-slate-200 pt-4">
-            <span class="text-slate-600 font-semibold italic text-sm">Trabalho em Equipe</span>
-            <input type="range" min="1" max="5" step="1" class="w-full md:w-64 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-rose-500">
-          </div>
-        </div>
-
-        <div>
-          <label class="block text-sm font-bold text-slate-700 mb-1 uppercase">Feedback e Comentários Gerais</label>
-          <textarea rows="4" placeholder="Escreva os pontos fortes e as oportunidades de melhoria..." class="w-full p-3 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-rose-500 outline-none transition"></textarea>
-        </div>
-
-        <div class="mt-4">
-          <button type="submit" class="w-full bg-rose-600 text-white py-4 rounded-xl font-bold hover:bg-rose-700 shadow-lg shadow-rose-500/20 transition transform active:scale-95">
-            Finalizar e Salvar Avaliação
-          </button>
-        </div>
-      </form>
-    </div>
-  </main>
-
-  <footer class="bg-white border-t border-slate-200 py-6 text-center text-slate-400 text-xs font-bold tracking-widest">
-    © 2026 SISTEMA DE DESEMPENHO PROFISSIONAL
-  </footer>
-
+        window.onload = carregarHistorico;
+    </script>
 </body>
 </html>
