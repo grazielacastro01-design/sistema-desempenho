@@ -25,18 +25,17 @@ app.post('/login', async (req, res) => {
     } catch (error) { res.status(500).json({ error: 'Erro no servidor' }); }
 });
 
-// --- ROTA DO DASHBOARD (Resumo Numérico) ---
+// --- ROTA DO DASHBOARD (Resumo Numérico Atualizado) ---
 app.get('/dashboard-resumo', async (req, res) => {
     try {
         const [totalAvaliacoes] = await db.execute('SELECT COUNT(*) as total FROM tbAvaliacao');
         const [totalPessoas] = await db.execute('SELECT COUNT(*) as total FROM tbPessoas');
-        // Adicionada contagem de metas para o Dashboard
-        const [totalMetas] = await db.execute('SELECT COUNT(*) as total FROM tbMetas');
+        const [totalMetas] = await db.execute('SELECT COUNT(*) as total FROM tbMetas'); 
         
         res.json({ 
             avaliacoes: totalAvaliacoes[0].total, 
             colaboradores: totalPessoas[0].total,
-            metas: totalMetas[0].total
+            metas: totalMetas[0].total 
         });
     } catch (error) {
         res.status(500).json({ error: 'Erro ao buscar resumo' });
@@ -74,16 +73,23 @@ app.get('/listar-avaliacoes', async (req, res) => {
 // --- ROTA PARA SALVAR A META NO BANCO ---
 app.post('/metas', async (req, res) => {
     const { pessoa_id, titulo, descricao, prazo } = req.body;
-    
     try {
         const sql = `INSERT INTO tbMetas (pessoa_id, titulo, descricao, prazo) VALUES (?, ?, ?, ?)`;
-        const [result] = await db.execute(sql, [pessoa_id, titulo, descricao, prazo]);
-        
+        await db.execute(sql, [pessoa_id, titulo, descricao, prazo]);
         res.status(201).json({ success: true, message: 'Meta salva com sucesso!' });
     } catch (error) {
         console.error('Erro ao inserir meta:', error);
         res.status(500).json({ error: 'Erro ao salvar meta no banco de dados' });
     }
+});
+
+// --- ROTA PARA LISTAR METAS (Para a tela de visualização) ---
+app.get('/listar-metas', async (req, res) => {
+    try {
+        const sql = `SELECT m.*, p.nome as nome_colaborador FROM tbMetas m JOIN tbPessoas p ON m.pessoa_id = p.pessoa_id ORDER BY m.prazo ASC`;
+        const [rows] = await db.execute(sql);
+        res.json(rows);
+    } catch (error) { res.status(500).json({ error: 'Erro ao buscar metas' }); }
 });
 
 // --- EDITAR AVALIAÇÃO ---
