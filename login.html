@@ -31,7 +31,6 @@
             const senhaValue = document.getElementById('senhaInput').value;
 
             try {
-                // FETCH CONECTANDO AO RAILWAY
                 const response = await fetch('https://sistema-desempenho-production.up.railway.app/login', { 
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -46,6 +45,9 @@
 
                     if (!finalId) throw new Error("ID de usuário não retornado pelo servidor.");
 
+                    // SALVA O NOME PARA AS BOAS-VINDAS
+                    localStorage.setItem('nomeUsuario', userRoot.nome || loginValue); 
+                    
                     const usuarioParaSalvar = { ...userRoot, pessoa_id: finalId };
                     localStorage.setItem('user', JSON.stringify(usuarioParaSalvar));
                     
