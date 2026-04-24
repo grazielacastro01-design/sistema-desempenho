@@ -34,11 +34,9 @@
             const login = document.getElementById('login').value;
             const senha = document.getElementById('senha').value;
 
-            // URL DA SUA API NO RAILWAY
             const API_URL = 'https://sistema-desempenho-production.up.railway.app';
 
             try {
-                // CORREÇÃO: Usando a URL completa da API
                 const response = await fetch(`${API_URL}/cadastrar-usuario`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -52,7 +50,6 @@
                         window.location.href = 'login.html';
                     });
                 } else {
-                    // Exibe a mensagem de erro que vem do servidor, se houver
                     Swal.fire('Erro', data.message || 'Não foi possível criar a conta', 'error');
                 }
             } catch (error) {
