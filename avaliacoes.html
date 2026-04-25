@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Histórico | SD PERFORMANCE</title>
+    <title>📊</title>
     <link rel="icon" type="image/png" href="https://sistema-desempenho-1x3s.vercel.app/img/logo.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -20,7 +20,7 @@
 
     <div id="relatorio-secao" class="p-8 max-w-7xl mx-auto">
         <div class="mb-6">
-            <h2 class="text-2xl font-black text-slate-800 italic uppercase italic">Relatório de Feedbacks</h2>
+            <h2 class="text-2xl font-black text-slate-800 italic uppercase">Relatório de Feedbacks</h2>
             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">SD PERFORMANCE - Gestão de Talentos</p>
         </div>
         <div class="bg-white rounded-[2.5rem] shadow-sm border overflow-hidden">
@@ -41,19 +41,21 @@
         const API_URL = 'https://sistema-desempenho-production.up.railway.app';
 
         async function carregar() {
-            const res = await fetch(`${API_URL}/listar-avaliacoes`);
-            const dados = await res.json();
-            const tbody = document.getElementById('tabela-corpo');
-            tbody.innerHTML = '';
-            dados.forEach(a => {
-                const dataF = new Date(a.data).toLocaleDateString('pt-BR');
-                tbody.innerHTML += `
-                    <tr class="border-b hover:bg-slate-50 transition">
-                        <td class="p-6 text-sm text-slate-500 font-bold">${dataF}</td>
-                        <td class="p-6 text-sm font-black text-slate-800 uppercase">${a.nome_colaborador}</td>
-                        <td class="p-6 text-sm text-slate-600 font-medium">${a.observacao}</td>
-                    </tr>`;
-            });
+            try {
+                const res = await fetch(`${API_URL}/listar-avaliacoes`);
+                const dados = await res.json();
+                const tbody = document.getElementById('tabela-corpo');
+                tbody.innerHTML = '';
+                dados.forEach(a => {
+                    const dataF = new Date(a.data).toLocaleDateString('pt-BR');
+                    tbody.innerHTML += `
+                        <tr class="border-b hover:bg-slate-50 transition">
+                            <td class="p-6 text-sm text-slate-500 font-bold">${dataF}</td>
+                            <td class="p-6 text-sm font-black text-slate-800 uppercase">${a.nome_colaborador}</td>
+                            <td class="p-6 text-sm text-slate-600 font-medium">${a.observacao}</td>
+                        </tr>`;
+                });
+            } catch (error) { console.error("Erro ao carregar"); }
         }
 
         function gerarPDF() {
