@@ -6,16 +6,19 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='10' y='10' width='80' height='80' rx='20' fill='%232563eb'/><rect x='30' y='55' width='10' height='20' fill='white'/><rect x='45' y='40' width='10' height='35' fill='white'/><rect x='60' y='30' width='10' height='45' fill='white'/></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        @media print { .no-print { display: none; } }
+    </style>
 </head>
 <body class="bg-slate-50 min-h-screen">
     
-    <nav class="bg-white border-b border-slate-200 p-6 flex justify-between items-center">
+    <nav class="bg-white border-b border-slate-200 p-6 flex justify-between items-center no-print">
         <button onclick="window.location.href='dashboard.html'" class="text-blue-600 font-black text-xs uppercase tracking-widest hover:underline">← Painel</button>
         <h1 class="text-xs font-black text-slate-400 uppercase tracking-widest">Gestão de Usuários</h1>
         <div class="flex gap-2">
             <button onclick="window.print()" class="bg-slate-100 text-slate-600 px-4 py-2 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-slate-200 transition">Imprimir</button>
-            <button onclick="window.location.href='usuarios-novo.html'" class="bg-blue-600 text-white px-4 py-2 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-blue-700 transition">Novo Usuário +</button>
+            <button onclick="window.location.href='usuarios-cadastro.html'" class="bg-blue-600 text-white px-4 py-2 rounded-xl font-bold text-[10px] uppercase tracking-widest hover:bg-blue-700 transition">Novo Usuário +</button>
         </div>
     </nav>
 
@@ -27,7 +30,7 @@
                         <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">ID</th>
                         <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nome Completo</th>
                         <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Login / E-mail</th>
-                        <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Ações</th>
+                        <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right no-print">Ações</th>
                     </tr>
                 </thead>
                 <tbody id="tabela-usuarios">
@@ -52,31 +55,27 @@
                             <td class="p-6 text-sm text-slate-400 font-bold">#${user.usuario_id}</td>
                             <td class="p-6 text-sm font-black text-slate-800 uppercase">${user.nome}</td>
                             <td class="p-6 text-sm text-slate-600 font-medium">${user.login}</td>
-                            <td class="p-6 text-right">
-                                <button onclick="editarUsuario(${user.usuario_id})" class="text-blue-600 font-bold text-xs mr-4 hover:underline">EDITAR</button>
-                                <button onclick="excluirUsuario(${user.usuario_id})" class="text-red-500 font-bold text-xs hover:underline">EXCLUIR</button>
+                            <td class="p-6 text-right no-print">
+                                <button onclick="editarUsuario(${user.usuario_id})" class="text-blue-600 font-bold text-xs mr-4 hover:underline uppercase">Editar</button>
+                                <button onclick="excluirUsuario(${user.usuario_id})" class="text-red-500 font-bold text-xs hover:underline uppercase">Excluir</button>
                             </td>
                         </tr>`;
                 });
-            } catch (error) {
-                console.error("Erro ao carregar usuários");
-            }
+            } catch (error) { console.error("Erro ao carregar usuários:", error); }
         }
 
         async function excluirUsuario(id) {
-            if(confirm("Tem certeza que deseja excluir este usuário?")) {
+            if(confirm("Deseja realmente excluir este usuário?")) {
                 try {
                     const res = await fetch(`${API_URL}/usuarios/${id}`, { method: 'DELETE' });
-                    if(res.ok) {
-                        alert("Usuário removido!");
-                        carregarUsuarios();
-                    }
+                    if(res.ok) { alert("Removido!"); carregarUsuarios(); }
                 } catch (error) { alert("Erro ao excluir."); }
             }
         }
 
         function editarUsuario(id) {
-            window.location.href = `usuarios-editar.html?id=${id}`;
+            // Opcional: Criar tela de edição ou usar o cadastro com ID na URL
+            window.location.href = `usuarios-cadastro.html?id=${id}`;
         }
 
         window.onload = carregarUsuarios;

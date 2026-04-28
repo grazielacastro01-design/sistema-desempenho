@@ -20,7 +20,7 @@
             <h1 class="text-lg font-black italic tracking-tighter uppercase leading-none">Sistema de<br>Desempenho</h1>
         </div>
         
-        <nav class="space-y-6 flex-1">
+        <nav class="space-y-6 flex-1 overflow-y-auto">
             <div>
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4 font-black">Dashboard</p>
                 <a href="dashboard.html" class="flex items-center gap-3 bg-white/10 p-3 rounded-xl text-xs font-black uppercase tracking-widest">Início</a>
@@ -37,6 +37,11 @@
                 <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4 font-black">Edição (Instrutor)</p>
                 <a href="avaliar.html" class="block p-3 text-[11px] text-slate-300 hover:text-white hover:bg-white/5 rounded-xl transition uppercase font-black tracking-wider">Colaboradores</a>
                 <a href="avaliacoes.html" class="block p-3 text-[11px] text-slate-300 hover:text-white hover:bg-white/5 rounded-xl transition uppercase font-black tracking-wider">Relatórios BI</a>
+            </div>
+
+            <div class="space-y-3 pt-6 border-t border-white/5">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4 font-black">Configurações</p>
+                <a href="usuarios.html" class="block p-3 text-[11px] text-slate-300 hover:text-white hover:bg-white/5 rounded-xl transition uppercase font-black tracking-wider">Gerenciar Usuários</a>
             </div>
         </nav>
 
@@ -86,30 +91,21 @@
             try {
                 const res = await fetch(`${API_URL}/dashboard-resumo`);
                 const dados = await res.json();
-                
-                document.getElementById('cont-colaboradores').textContent = dados.colaboradores;
-                document.getElementById('cont-avaliacoes').textContent = dados.avaliacoes;
-                document.getElementById('cont-metas').textContent = dados.metas;
-            } catch (error) {
-                console.error("Erro ao carregar resumo:", error);
-            }
+                document.getElementById('cont-colaboradores').textContent = dados.colaboradores || 0;
+                document.getElementById('cont-avaliacoes').textContent = dados.avaliacoes || 0;
+                document.getElementById('cont-metas').textContent = dados.metas || 0;
+            } catch (error) { console.error("Erro ao carregar resumo:", error); }
         }
 
         function gerirSessao() {
             const nomeSessao = localStorage.getItem('nomeUsuario');
-            const elementoH2 = document.getElementById('boas-vindas');
-            const elementoLateral = document.getElementById('nome-lateral');
-            
             if (nomeSessao) {
-                elementoH2.innerText = `OLÁ, ${nomeSessao.toUpperCase()}!`;
-                elementoLateral.innerText = nomeSessao;
+                document.getElementById('boas-vindas').innerText = `OLÁ, ${nomeSessao.toUpperCase()}!`;
+                document.getElementById('nome-lateral').innerText = nomeSessao;
             }
         }
 
-        window.onload = function() {
-            carregarResumo();
-            gerirSessao();
-        };
+        window.onload = function() { carregarResumo(); gerirSessao(); };
     </script>
 </body>
 </html>
