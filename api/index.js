@@ -25,16 +25,49 @@ app.post('/login', async (req, res) => {
     } catch (error) { res.status(500).json({ error: 'Erro no servidor' }); }
 });
 
-// --- NOVA ROTA: CADASTRO DE USUÁRIO ---
-app.post('/cadastrar-usuario', async (req, res) => {
+// --- SPRINT 6: CRUD DE USUÁRIOS ---
+
+// 1. ROTA PARA LISTAR (Usada pelo usuarios.html)
+app.get('/usuarios', async (req, res) => {
+    try {
+        const [results] = await db.execute("SELECT usuario_id, nome, login FROM tbUsuarios");
+        res.json(results);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// 2. ROTA PARA INCLUIR (Usada pelo usuarios-cadastro.html)
+app.post('/usuarios', async (req, res) => {
     const { nome, login, senha } = req.body;
     try {
-        const sql = `INSERT INTO tbUsuarios (nome, login, senha) VALUES (?, ?, ?)`;
-        await db.execute(sql, [nome, login, senha]);
-        res.status(201).json({ success: true, message: 'Usuário cadastrado com sucesso!' });
-    } catch (error) {
-        console.error('Erro ao cadastrar usuário:', error);
-        res.status(500).json({ error: 'Erro ao salvar usuário no banco de dados' });
+        const sql = "INSERT INTO tbUsuarios (nome, login, senha) VALUES (?, ?, ?)";
+        const [result] = await db.execute(sql, [nome, login, senha]);
+        res.status(201).json({ message: "Usuário cadastrado!", id: result.insertId });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// 3. ROTA PARA BUSCAR UM USUÁRIO (Necessária para a função de EDITAR)
+app.get('/usuarios/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const [result] = await db.execute("SELECT * FROM tbUsuarios WHERE usuario_id = ?", [id]);
+        res.json(result[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// 4. ROTA PARA EXCLUIR (Usada pelo botão excluir no usuarios.html)
+app.delete('/usuarios/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        await db.execute("DELETE FROM tbUsuarios WHERE usuario_id = ?", [id]);
+        res.json({ message: "Usuário removido com sucesso!" });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 });
 
@@ -63,8 +96,7 @@ app.get('/colaboradores', async (req, res) => {
     } catch (error) { res.status(500).json({ error: 'Erro ao listar colaboradores' }); }
 });
 
-// As demais rotas (Avaliação, Metas, PDI) continuam iguais abaixo...
-// [O restante do seu código permanece o mesmo]
+// As demais rotas continuam aqui abaixo...
 
 const port = process.env.PORT || 3000;
 app.listen(port, '0.0.0.0', () => console.log(`Servidor rodando na porta ${port}`));
