@@ -19,7 +19,7 @@ const db = mysql.createPool({
 
 // --- ROTAS DO SISTEMA ---
 
-// 1. Rota para listar colaboradores
+// 1. Rota para listar colaboradores (Popula o select no formulário)
 app.get('/colaboradores', async (req, res) => {
     try {
         const [rows] = await db.execute('SELECT pessoa_id, nome FROM tbPessoas');
@@ -47,9 +47,8 @@ app.post('/avaliar', async (req, res) => {
 
 // 3. Rota de Login (Corrigida com a coluna 'login' conforme image_1f9cbb.png)
 app.post('/login', async (req, res) => {
-    const { usuario, senha } = req.body; // 'usuario' vem do seu formulário HTML
+    const { usuario, senha } = req.body; 
     try {
-        // Mudamos de 'usuario = ?' para 'login = ?' para bater com o seu banco
         const [rows] = await db.execute(
             'SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?', 
             [usuario, senha]
@@ -63,6 +62,18 @@ app.post('/login', async (req, res) => {
     } catch (err) {
         console.error("Erro no Login:", err);
         res.status(500).json({ message: 'Erro interno no servidor' });
+    }
+});
+
+// 4. Rota para listar usuários (Para preencher a tabela na image_1f90ff.png)
+app.get('/usuarios', async (req, res) => {
+    try {
+        // Busca os dados para exibir na tela de Gestão de Usuários
+        const [rows] = await db.execute('SELECT usuario_id, nome, login FROM tbUsuarios');
+        res.json(rows);
+    } catch (err) {
+        console.error("Erro ao listar usuários:", err);
+        res.status(500).json({ error: 'Erro ao carregar a lista de usuários' });
     }
 });
 
