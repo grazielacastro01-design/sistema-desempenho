@@ -11,7 +11,7 @@
 <body class="bg-slate-50 min-h-screen">
 
     <nav class="bg-white border-b p-6 flex justify-between items-center shadow-sm">
-        <button onclick="window.location.href='dashboard.html'" class="text-blue-600 font-black text-xs uppercase tracking-widest hover:underline">← Voltar ao Início</button>
+        <button onclick="window.location.href='dashboard.html'" class="text-blue-600 font-black text-xs uppercase tracking-widest">← Voltar ao Início</button>
         <h1 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Registrar Nova Avaliação</h1>
         <div class="w-20"></div>
     </nav>
@@ -23,14 +23,12 @@
             <form id="form-avaliacao" class="space-y-6">
                 <div>
                     <label class="block text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest">Colaborador</label>
-                    <!-- ID alterado para select-colaborador para bater com o script -->
                     <select id="select-colaborador" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-blue-500 transition font-bold" required>
                         <option value="">Carregando colaboradores...</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest">Feedback / Observação</label>
-                    <!-- ID alterado para input-feedback para bater com o script -->
                     <textarea id="input-feedback" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl h-32 outline-none focus:border-blue-500 transition font-bold" placeholder="Digite aqui o desempenho..." required></textarea>
                 </div>
                 <button type="submit" class="w-full bg-blue-600 text-white p-5 rounded-2xl font-black uppercase tracking-widest hover:bg-blue-700 transition shadow-lg shadow-blue-100">Salvar Avaliação</button>
@@ -39,35 +37,28 @@
     </main>
 
     <script>
+        // Use o seu link real do Railway aqui
         const API_URL = 'https://sistema-desempenho-production.up.railway.app';
 
-        // Função para carregar os nomes no Select
         async function carregarColaboradores() {
             try {
                 const res = await fetch(`${API_URL}/colaboradores`);
                 const colaboradores = await res.json();
                 const select = document.getElementById('select-colaborador');
-                
                 select.innerHTML = '<option value="">Selecione o funcionário...</option>';
-                
                 colaboradores.forEach(colab => {
                     const option = document.createElement('option');
-                    option.value = colab.pessoa_id || colab.id; // Garante que pega o ID correto
+                    option.value = colab.pessoa_id;
                     option.textContent = colab.nome;
                     select.appendChild(option);
                 });
             } catch (error) {
-                console.error("Erro ao carregar colaboradores:", error);
-                document.getElementById('select-colaborador').innerHTML = '<option value="">Erro ao carregar lista</option>';
+                console.error("Erro ao carregar:", error);
             }
         }
 
-        // Script de salvamento que você solicitou
-        const form = document.getElementById('form-avaliacao');
-
-        form.onsubmit = async (e) => {
+        document.getElementById('form-avaliacao').onsubmit = async (e) => {
             e.preventDefault();
-            
             const dados = {
                 colaborador_id: document.getElementById('select-colaborador').value,
                 feedback: document.getElementById('input-feedback').value
@@ -82,13 +73,12 @@
 
                 if (response.ok) {
                     alert('Avaliação salva com sucesso!');
-                    window.location.href = 'avaliacoes.html'; // Redireciona após sucesso
+                    window.location.href = 'avaliacoes.html';
                 } else {
-                    alert('Erro ao salvar. Verifique o servidor.');
+                    alert('Erro ao salvar no servidor.');
                 }
             } catch (error) {
-                console.error('Erro na requisição:', error);
-                alert('Erro de conexão com o servidor.');
+                alert('Erro de conexão. Verifique se o Railway está ativo.');
             }
         };
 
