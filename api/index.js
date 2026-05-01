@@ -17,7 +17,7 @@ const db = mysql.createPool({
     port: process.env.MYSQLPORT
 });
 
-// Rota para listar colaboradores (Alimenta o select do formulário)
+// Rota para listar colaboradores
 app.get('/colaboradores', async (req, res) => {
     try {
         const [rows] = await db.execute('SELECT pessoa_id, nome FROM tbPessoas');
@@ -27,18 +27,19 @@ app.get('/colaboradores', async (req, res) => {
     }
 });
 
-// Rota para salvar a avaliação (Referente ao erro da image_2100fb.png)
+// Rota para salvar a avaliação - CORRIGIDA para o nome singular
 app.post('/avaliar', async (req, res) => {
     const { colaborador_id, feedback } = req.body;
     try {
+        // Ajustado para tbAvaliacao (singular) conforme sua imagem do Railway
         const [result] = await db.execute(
-            'INSERT INTO tbAvaliacoes (colaborador_id, feedback, data_avaliacao) VALUES (?, ?, NOW())',
+            'INSERT INTO tbAvaliacao (colaborador_id, feedback, data_avaliacao) VALUES (?, ?, NOW())',
             [colaborador_id, feedback]
         );
         res.status(201).json({ message: 'Salvo com sucesso!', id: result.insertId });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Erro ao salvar no banco' });
+        console.error("Erro no Banco:", err);
+        res.status(500).json({ error: 'Erro ao salvar no banco. Verifique se a tabela tbAvaliacao existe.' });
     }
 });
 
