@@ -19,7 +19,7 @@ const db = mysql.createPool({
 
 // --- ROTAS DO SISTEMA ---
 
-// 1. Rota para listar colaboradores (Popula o select no formulário)
+// 1. Rota para listar colaboradores
 app.get('/colaboradores', async (req, res) => {
     try {
         const [rows] = await db.execute('SELECT pessoa_id, nome FROM tbPessoas');
@@ -30,7 +30,7 @@ app.get('/colaboradores', async (req, res) => {
     }
 });
 
-// 2. Rota para salvar a avaliação (Corrigida para o nome singular tbAvaliacao)
+// 2. Rota para salvar a avaliação (Tabela: tbAvaliacao)
 app.post('/avaliar', async (req, res) => {
     const { colaborador_id, feedback } = req.body;
     try {
@@ -45,24 +45,23 @@ app.post('/avaliar', async (req, res) => {
     }
 });
 
-// 3. Rota de Login (Resolve o erro 404 da image_201897.png)
+// 3. Rota de Login (Corrigida com a coluna 'login' conforme image_1f9cbb.png)
 app.post('/login', async (req, res) => {
-    const { usuario, senha } = req.body;
+    const { usuario, senha } = req.body; // 'usuario' vem do seu formulário HTML
     try {
-        // Busca na tabela tbUsuarios (Certifique-se de que este nome está correto no seu MySQL)
+        // Mudamos de 'usuario = ?' para 'login = ?' para bater com o seu banco
         const [rows] = await db.execute(
-            'SELECT * FROM tbUsuarios WHERE usuario = ? AND senha = ?', 
+            'SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?', 
             [usuario, senha]
         );
 
         if (rows.length > 0) {
-            // Retorna os dados do primeiro usuário encontrado
             res.json(rows[0]);
         } else {
             res.status(401).json({ message: 'Usuário ou senha incorretos' });
         }
     } catch (err) {
-        console.error("Erro no processo de login:", err);
+        console.error("Erro no Login:", err);
         res.status(500).json({ message: 'Erro interno no servidor' });
     }
 });
