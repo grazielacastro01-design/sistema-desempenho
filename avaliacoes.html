@@ -39,38 +39,48 @@
     </div>
 
     <script>
-        const API_URL = 'https://sistema-desempenho-production.up.railway.app';
+    const API_URL = 'https://sistema-desempenho-production.up.railway.app';
 
-        async function carregar() {
-            try {
-                const res = await fetch(`${API_URL}/listar-avaliacoes`);
-                const dados = await res.json();
-                const tbody = document.getElementById('tabela-corpo');
-                tbody.innerHTML = '';
-                dados.forEach(a => {
-                    const dataF = new Date(a.data).toLocaleDateString('pt-BR');
-                    tbody.innerHTML += `
-                        <tr class="border-b hover:bg-slate-50 transition">
-                            <td class="p-6 text-sm text-slate-500 font-bold">${dataF}</td>
-                            <td class="p-6 text-sm font-black text-slate-800 uppercase">${a.nome_colaborador}</td>
-                            <td class="p-6 text-sm text-slate-600 font-medium">${a.observacao}</td>
-                        </tr>`;
-                });
-            } catch (error) { console.error("Erro ao carregar"); }
+    async function carregar() {
+        try {
+            // Ajustado para bater com a rota do seu servidor
+            const res = await fetch(`${API_URL}/avaliacoes`); 
+            const dados = await res.json();
+            
+            const tbody = document.getElementById('tabela-corpo');
+            tbody.innerHTML = '';
+            
+            dados.forEach(a => {
+                // Usamos a data que já vem formatada do banco ou formatamos aqui
+                const dataF = a.data; 
+                
+                tbody.innerHTML += `
+                    <tr class="border-b hover:bg-slate-50 transition">
+                        <td class="p-6 text-sm text-slate-500 font-bold">${dataF}</td>
+                        <td class="p-6 text-sm font-black text-slate-800 uppercase">${a.colaborador}</td>
+                        <td class="p-6 text-sm text-slate-600 font-medium">${a.observacao}</td>
+                    </tr>`;
+            });
+        } catch (error) { 
+            console.error("Erro ao carregar:", error);
+            Swal.fire('Erro', 'Não foi possível carregar o histórico.', 'error');
         }
+    }
 
-        function gerarPDF() {
-            const elemento = document.getElementById('relatorio-secao');
-            const opt = {
-                margin: 10,
-                filename: 'Relatorio_Avaliacoes.pdf',
-                html2canvas: { scale: 2 },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-            html2pdf().set(opt).from(elemento).save();
-        }
+    function gerarPDF() {
+        const elemento = document.getElementById('relatorio-secao');
+        const opt = {
+            margin: 10,
+            filename: 'Relatorio_Avaliacoes.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(elemento).save();
+    }
 
-        window.onload = carregar;
-    </script>
+    window.onload = carregar;
+</script>
+           
 </body>
 </html>
