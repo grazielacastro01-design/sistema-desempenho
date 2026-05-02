@@ -30,18 +30,19 @@ app.get('/colaboradores', async (req, res) => {
     }
 });
 
-// 2. Rota para salvar a avaliação (Tabela: tbAvaliacao)
+// 2. Rota para salvar a avaliação (Ajustada para os nomes da image_20811d.png)
 app.post('/avaliar', async (req, res) => {
     const { colaborador_id, feedback } = req.body;
     try {
+        // Usando 'funcionario_id' e 'observacao' para bater exatamente com sua tabela tbAvaliacao
         const [result] = await db.execute(
-            'INSERT INTO tbAvaliacao (colaborador_id, feedback, data_avaliacao) VALUES (?, ?, NOW())',
+            'INSERT INTO tbAvaliacao (funcionario_id, observacao, data) VALUES (?, ?, NOW())',
             [colaborador_id, feedback]
         );
         res.status(201).json({ message: 'Salvo com sucesso!', id: result.insertId });
     } catch (err) {
-        console.error("Erro ao salvar avaliação:", err);
-        res.status(500).json({ error: 'Erro ao salvar no banco. Verifique se a tabela tbAvaliacao existe.' });
+        console.error("Erro detalhado ao salvar:", err);
+        res.status(500).json({ error: 'Erro ao salvar no banco. Verifique os nomes das colunas.' });
     }
 });
 
@@ -68,7 +69,6 @@ app.post('/login', async (req, res) => {
 // 4. Rota para listar usuários (Para preencher a tabela na image_1f90ff.png)
 app.get('/usuarios', async (req, res) => {
     try {
-        // Busca os dados para exibir na tela de Gestão de Usuários
         const [rows] = await db.execute('SELECT usuario_id, nome, login FROM tbUsuarios');
         res.json(rows);
     } catch (err) {
