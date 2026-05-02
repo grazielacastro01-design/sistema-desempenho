@@ -30,24 +30,24 @@ app.get('/colaboradores', async (req, res) => {
     }
 });
 
-// 2. Rota para salvar a avaliação (Ajustada para os campos obrigatórios do seu banco)
+// 2. Rota para salvar a avaliação (Ajustada para os campos obrigatórios da tbAvaliacao)
 app.post('/avaliar', async (req, res) => {
     const { colaborador_id, feedback } = req.body;
     try {
         // Incluímos 'avaliacao_status_id' e 'atualizado_por' com valores padrão (1 e 5) 
-        // baseados no que já existe na sua tabela para evitar o Erro 500.
+        // para evitar erros de campo obrigatório no banco.
         const [result] = await db.execute(
             'INSERT INTO tbAvaliacao (funcionario_id, observacao, data, avaliacao_status_id, atualizado_por) VALUES (?, ?, NOW(), 1, 5)',
             [colaborador_id, feedback]
         );
         res.status(201).json({ message: 'Salvo com sucesso!', id: result.insertId });
     } catch (err) {
-        console.error("ERRO DETALHADO NO BANCO:", err.message);
-        res.status(500).json({ error: 'Erro ao salvar. Verifique se os campos obrigatórios estão preenchidos.' });
+        console.error("Erro detalhado ao salvar:", err.message);
+        res.status(500).json({ error: 'Erro ao salvar no banco.' });
     }
-    });
+});
 
-// 3. Rota de Login (Corrigida com a coluna 'login' conforme image_1f9cbb.png)
+// 3. Rota de Login (Verifica login e senha na tbUsuarios)
 app.post('/login', async (req, res) => {
     const { usuario, senha } = req.body; 
     try {
@@ -67,7 +67,7 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// 4. Rota para listar usuários (Para preencher a tabela na image_1f90ff.png)
+// 4. Rota para listar usuários (Gestão de Usuários)
 app.get('/usuarios', async (req, res) => {
     try {
         const [rows] = await db.execute('SELECT usuario_id, nome, login FROM tbUsuarios');
@@ -78,10 +78,10 @@ app.get('/usuarios', async (req, res) => {
     }
 });
 
-// 5. Rota para listar o histórico de avaliações (Para a tela avaliacoes.html)
+// 5. Rota para carregar o histórico (Tela avaliacoes.html)
 app.get('/avaliacoes', async (req, res) => {
     try {
-        // Fazemos um JOIN com tbPessoas para pegar o nome do colaborador em vez de apenas o ID
+        // Buscamos os dados e usamos um JOIN para trazer o nome do colaborador da tbPessoas
         const [rows] = await db.execute(`
             SELECT 
                 DATE_FORMAT(a.data, '%d/%m/%Y') AS data, 
