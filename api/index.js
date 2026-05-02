@@ -46,7 +46,7 @@ app.post('/avaliar', async (req, res) => {
         res.status(500).json({ error: 'Erro ao salvar. Verifique se os campos obrigatórios estão preenchidos.' });
     }
     });
-    
+
 // 3. Rota de Login (Corrigida com a coluna 'login' conforme image_1f9cbb.png)
 app.post('/login', async (req, res) => {
     const { usuario, senha } = req.body; 
@@ -75,6 +75,26 @@ app.get('/usuarios', async (req, res) => {
     } catch (err) {
         console.error("Erro ao listar usuários:", err);
         res.status(500).json({ error: 'Erro ao carregar a lista de usuários' });
+    }
+});
+
+// 5. Rota para listar o histórico de avaliações (Para a tela avaliacoes.html)
+app.get('/avaliacoes', async (req, res) => {
+    try {
+        // Fazemos um JOIN com tbPessoas para pegar o nome do colaborador em vez de apenas o ID
+        const [rows] = await db.execute(`
+            SELECT 
+                DATE_FORMAT(a.data, '%d/%m/%Y') AS data, 
+                p.nome AS colaborador, 
+                a.observacao 
+            FROM tbAvaliacao a
+            JOIN tbPessoas p ON a.funcionario_id = p.pessoa_id
+            ORDER BY a.data DESC
+        `);
+        res.json(rows);
+    } catch (err) {
+        console.error("Erro ao listar avaliações:", err);
+        res.status(500).json({ error: 'Erro ao carregar o histórico' });
     }
 });
 
