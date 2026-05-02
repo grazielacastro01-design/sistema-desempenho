@@ -30,22 +30,23 @@ app.get('/colaboradores', async (req, res) => {
     }
 });
 
-// 2. Rota para salvar a avaliação (Ajustada para os nomes da image_20811d.png)
+// 2. Rota para salvar a avaliação (Ajustada para os campos obrigatórios do seu banco)
 app.post('/avaliar', async (req, res) => {
     const { colaborador_id, feedback } = req.body;
     try {
-        // Usando 'funcionario_id' e 'observacao' para bater exatamente com sua tabela tbAvaliacao
+        // Incluímos 'avaliacao_status_id' e 'atualizado_por' com valores padrão (1 e 5) 
+        // baseados no que já existe na sua tabela para evitar o Erro 500.
         const [result] = await db.execute(
-            'INSERT INTO tbAvaliacao (funcionario_id, observacao, data) VALUES (?, ?, NOW())',
+            'INSERT INTO tbAvaliacao (funcionario_id, observacao, data, avaliacao_status_id, atualizado_por) VALUES (?, ?, NOW(), 1, 5)',
             [colaborador_id, feedback]
         );
         res.status(201).json({ message: 'Salvo com sucesso!', id: result.insertId });
     } catch (err) {
-        console.error("Erro detalhado ao salvar:", err);
-        res.status(500).json({ error: 'Erro ao salvar no banco. Verifique os nomes das colunas.' });
+        console.error("ERRO DETALHADO NO BANCO:", err.message);
+        res.status(500).json({ error: 'Erro ao salvar. Verifique se os campos obrigatórios estão preenchidos.' });
     }
-});
-
+    });
+    
 // 3. Rota de Login (Corrigida com a coluna 'login' conforme image_1f9cbb.png)
 app.post('/login', async (req, res) => {
     const { usuario, senha } = req.body; 
