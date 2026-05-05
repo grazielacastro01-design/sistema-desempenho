@@ -44,8 +44,10 @@
 
         async function carregarUsuarios() {
             try {
+                // Chama a rota 4 do seu index.js
                 const res = await fetch(`${API_URL}/usuarios`);
                 const usuarios = await res.json();
+                
                 const tbody = document.getElementById('tabela-usuarios');
                 tbody.innerHTML = '';
 
@@ -61,23 +63,31 @@
                             </td>
                         </tr>`;
                 });
-            } catch (error) { console.error("Erro ao carregar usuários:", error); }
+            } catch (error) { 
+                console.error("Erro ao carregar usuários:", error); 
+            }
         }
 
         async function excluirUsuario(id) {
             if(confirm("Deseja realmente excluir este usuário?")) {
                 try {
+                    // Nota: Você precisará criar essa rota DELETE no seu index.js se quiser que funcione
                     const res = await fetch(`${API_URL}/usuarios/${id}`, { method: 'DELETE' });
-                    if(res.ok) { alert("Removido!"); carregarUsuarios(); }
-                } catch (error) { alert("Erro ao excluir."); }
+                    if(res.ok) { 
+                        alert("Usuário removido com sucesso!"); 
+                        carregarUsuarios(); 
+                    }
+                } catch (error) { 
+                    alert("Erro ao excluir o usuário."); 
+                }
             }
         }
 
         function editarUsuario(id) {
-            // Opcional: Criar tela de edição ou usar o cadastro com ID na URL
             window.location.href = `usuarios-cadastro.html?id=${id}`;
         }
 
+        // Inicializa a carga de dados ao abrir a página
         window.onload = carregarUsuarios;
     </script>
 </body>
