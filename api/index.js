@@ -47,16 +47,17 @@ app.post('/avaliar', async (req, res) => {
     }
 });
 
-// 3. Rota de Login (Verifica login e senha na tbUsuarios)
+// 3. Rota de Login (Atualizada para retornar o perfil do usuário)
 app.post('/login', async (req, res) => {
     const { usuario, senha } = req.body; 
     try {
         const [rows] = await db.execute(
-            'SELECT * FROM tbUsuarios WHERE login = ? AND senha = ?', 
+            'SELECT usuario_id, nome, login, perfil FROM tbUsuarios WHERE login = ? AND senha = ?', 
             [usuario, senha]
         );
 
         if (rows.length > 0) {
+            // Agora envia o ID, Nome, Login E o Perfil (Admin/Gestor) para o navegador
             res.json(rows[0]);
         } else {
             res.status(401).json({ message: 'Usuário ou senha incorretos' });

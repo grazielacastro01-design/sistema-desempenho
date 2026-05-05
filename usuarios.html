@@ -30,11 +30,12 @@
                         <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">ID</th>
                         <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nome Completo</th>
                         <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Login / E-mail</th>
+                        <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Perfil</th>
                         <th class="p-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right no-print">Ações</th>
                     </tr>
                 </thead>
                 <tbody id="tabela-usuarios">
-                    </tbody>
+                </tbody>
             </table>
         </div>
     </div>
@@ -44,7 +45,6 @@
 
         async function carregarUsuarios() {
             try {
-                // Chama a rota 4 do seu index.js
                 const res = await fetch(`${API_URL}/usuarios`);
                 const usuarios = await res.json();
                 
@@ -52,11 +52,17 @@
                 tbody.innerHTML = '';
 
                 usuarios.forEach(user => {
+                    // Cria uma etiqueta com cores diferentes para destacar o Admin do Gestor
+                    const perfilTag = user.perfil === 'Admin' 
+                        ? `<span class="bg-blue-100 text-blue-700 px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-wider">Admin</span>`
+                        : `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-wider">Gestor</span>`;
+
                     tbody.innerHTML += `
                         <tr class="border-b hover:bg-slate-50 transition">
                             <td class="p-6 text-sm text-slate-400 font-bold">#${user.usuario_id}</td>
                             <td class="p-6 text-sm font-black text-slate-800 uppercase">${user.nome}</td>
                             <td class="p-6 text-sm text-slate-600 font-medium">${user.login}</td>
+                            <td class="p-6 text-sm font-medium">${perfilTag}</td>
                             <td class="p-6 text-right no-print">
                                 <button onclick="editarUsuario(${user.usuario_id})" class="text-blue-600 font-bold text-xs mr-4 hover:underline uppercase">Editar</button>
                                 <button onclick="excluirUsuario(${user.usuario_id})" class="text-red-500 font-bold text-xs hover:underline uppercase">Excluir</button>
@@ -71,7 +77,6 @@
         async function excluirUsuario(id) {
             if(confirm("Deseja realmente excluir este usuário?")) {
                 try {
-                    // Nota: Você precisará criar essa rota DELETE no seu index.js se quiser que funcione
                     const res = await fetch(`${API_URL}/usuarios/${id}`, { method: 'DELETE' });
                     if(res.ok) { 
                         alert("Usuário removido com sucesso!"); 
