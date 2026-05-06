@@ -78,7 +78,6 @@
         }
 
         async function excluirUsuario(id) {
-            // Tira o confirm antigo do navegador e coloca o SweetAlert lindo!
             Swal.fire({
                 title: 'Tem certeza?',
                 text: "Você não poderá reverter a exclusão deste usuário!",
@@ -91,30 +90,16 @@
             }).then(async (result) => {
                 if (result.isConfirmed) {
                     try {
-                        // CORREÇÃO DA ROTA: Manda o DELETE contendo o id na URL e também no body estruturado
+                        // Faz a chamada para a nova rota DELETE estruturada no backend
                         const res = await fetch(`${API_URL}/usuarios/${id}`, { 
-                            method: 'DELETE',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ usuario_id: id }) 
+                            method: 'DELETE'
                         });
 
                         if(res.ok) { 
                             Swal.fire('Excluído!', 'O usuário foi removido com sucesso.', 'success');
                             carregarUsuarios(); 
                         } else {
-                            // TENTATIVA B: Caso a rota do backend seja apenas /usuarios usando o ID no body
-                            const resFallback = await fetch(`${API_URL}/usuarios`, {
-                                method: 'DELETE',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ usuario_id: id })
-                            });
-
-                            if(resFallback.ok) {
-                                Swal.fire('Excluído!', 'O usuário foi removido com sucesso.', 'success');
-                                carregarUsuarios();
-                            } else {
-                                Swal.fire('Erro', 'Não foi possível excluir. Verifique as rotas do backend.', 'error');
-                            }
+                            Swal.fire('Erro', 'O servidor recusou a exclusão. Verifique os logs do Railway.', 'error');
                         }
                     } catch (error) { 
                         console.error("Erro na requisição de exclusão:", error);

@@ -83,7 +83,7 @@ app.get('/usuarios', async (req, res) => {
 app.post('/usuarios', async (req, res) => {
     const { nome, login, senha } = req.body;
     try {
-        // Define 'Gestor' automaticamente para novos cadastros
+        // Define 'Gestor' automaticamente para novos cadastros de fora
         const query = 'INSERT INTO tbUsuarios (nome, login, senha, perfil) VALUES (?, ?, ?, "Gestor")';
         await db.execute(query, [nome, login, senha]);
         
@@ -94,21 +94,21 @@ app.post('/usuarios', async (req, res) => {
     }
 });
 
-// 4.2 ROTA PARA ATUALIZAR UM USUÁRIO EXISTENTE (PUT)
+// 4.2 ROTA PARA ATUALIZAR UM USUÁRIO EXISTENTE (PUT) - CORRIGIDA PARA ATUALIZAR PERFIL TOO
 app.put('/usuarios/:id', async (req, res) => {
     const { id } = req.params;
-    const { nome, login, senha } = req.body;
+    const { nome, login, senha, perfil } = req.body; 
     try {
         let query;
         let params;
 
         // Se o usuário digitou uma senha nova, atualiza ela. Se deixou em branco, mantém a antiga.
         if (senha && senha.trim() !== "") {
-            query = 'UPDATE tbUsuarios SET nome = ?, login = ?, senha = ? WHERE usuario_id = ?';
-            params = [nome, login, senha, id];
+            query = 'UPDATE tbUsuarios SET nome = ?, login = ?, senha = ?, perfil = ? WHERE usuario_id = ?';
+            params = [nome, login, senha, perfil, id];
         } else {
-            query = 'UPDATE tbUsuarios SET nome = ?, login = ? WHERE usuario_id = ?';
-            params = [nome, login, id];
+            query = 'UPDATE tbUsuarios SET nome = ?, login = ?, perfil = ? WHERE usuario_id = ?';
+            params = [nome, login, perfil, id];
         }
 
         await db.execute(query, params);
@@ -116,6 +116,19 @@ app.put('/usuarios/:id', async (req, res) => {
     } catch (err) {
         console.error("Erro ao atualizar usuário:", err);
         res.status(500).json({ message: 'Erro interno no servidor' });
+    }
+});
+
+// 4.3 ROTA PARA DELETAR UM USUÁRIO (DELETE) - ADICIONADA AGORA DE FORMA DEFINITIVA
+app.delete('/usuarios/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const query = 'DELETE FROM tbUsuarios WHERE usuario_id = ?';
+        await db.execute(query, [id]);
+        res.json({ message: 'Usuário removido com sucesso!' });
+    } catch (err) {
+        console.error("Erro ao deletar usuário:", err);
+        res.status(500).json({ message: 'Erro interno no servidor ao tentar excluir.' });
     }
 });
 
