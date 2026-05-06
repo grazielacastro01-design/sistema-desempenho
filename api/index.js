@@ -22,7 +22,7 @@ const db = mysql.createPool({
 // 1. Rota para listar colaboradores (Popula o select no formulário)
 app.get('/colaboradores', async (req, res) => {
     try {
-        const [rows] = await db.execute('SELECT pessoa_id, nome FROM tbPessoas');
+        const [rows] = await db.execute('SELECT p.pessoa_id, p.nome FROM tbPessoas p');
         res.json(rows);
     } catch (err) {
         console.error("Erro ao buscar colaboradores:", err);
@@ -68,14 +68,54 @@ app.post('/login', async (req, res) => {
     }
 });
 
-// 4. Rota para listar usuários (Gestão de Usuários)
+// 4. Rota para listar usuários (Atualizada para incluir o campo 'perfil')
 app.get('/usuarios', async (req, res) => {
     try {
-        const [rows] = await db.execute('SELECT usuario_id, nome, login FROM tbUsuarios');
+        const [rows] = await db.execute('SELECT usuario_id, nome, login, perfil FROM tbUsuarios');
         res.json(rows);
     } catch (err) {
         console.error("Erro ao listar usuários:", err);
         res.status(500).json({ error: 'Erro ao carregar a lista de usuários' });
+    }
+});
+
+// 4.1 ROTA PARA CADASTRAR NOVO USUÁRIO (POST)
+app.post('/usuarios', async (req, res) => {
+    const { nome, login, senha } = req.body;
+    try {
+        // Define 'Gestor' automaticamente para novos cadastros
+        const query = 'INSERT INTO tbUsuarios (nome, login, senha, perfil) VALUES (?, ?, ?, "Gestor")';
+        await db.execute(query, [nome, login, senha]);
+        
+        res.status(201).json({ message: 'Usuário cadastrado com sucesso!' });
+    } catch (err) {
+        console.error("Erro ao cadastrar usuário:", err);
+        res.status(500).json({ message: 'Erro interno no servidor' });
+    }
+});
+
+// 4.2 ROTA PARA ATUALIZAR UM USUÁRIO EXISTENTE (PUT)
+app.put('/usuarios/:id', async (req, res) => {
+    const { id } = req.params;
+    const { nome, login, senha } = req.body;
+    try {
+        let query;
+        let params;
+
+        // Se o usuário digitou uma senha nova, atualiza ela. Se deixou em branco, mantém a antiga.
+        if (senha && senha.trim() !== "") {
+            query = 'UPDATE tbUsuarios SET nome = ?, login = ?, senha = ? WHERE usuario_id = ?';
+            params = [nome, login, senha, id];
+        } else {
+            query = 'UPDATE tbUsuarios SET nome = ?, login = ? WHERE usuario_id = ?';
+            params = [nome, login, id];
+        }
+
+        await db.execute(query, params);
+        res.json({ message: 'Usuário atualizado com sucesso!' });
+    } catch (err) {
+        console.error("Erro ao atualizar usuário:", err);
+        res.status(500).json({ message: 'Erro interno no servidor' });
     }
 });
 
