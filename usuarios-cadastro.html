@@ -36,6 +36,14 @@
                 </div>
 
                 <div>
+                    <label class="block text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest">Perfil de Acesso</label>
+                    <select id="perfil" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-blue-500 transition font-bold cursor-pointer">
+                        <option value="Gestor">Gestor</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                </div>
+
+                <div>
                     <label class="block text-[10px] font-black uppercase text-slate-400 mb-2 tracking-widest">Senha de Acesso</label>
                     <input type="password" id="senha" class="w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl outline-none focus:border-blue-500 transition font-bold" placeholder="••••••••" required>
                 </div>
@@ -72,6 +80,8 @@
                     if (usuarioEdicao) {
                         document.getElementById('nome').value = usuarioEdicao.nome;
                         document.getElementById('login').value = usuarioEdicao.login;
+                        // PREENCHE O PERFIL: Faz o select marcar automaticamente Admin ou Gestor vindo do banco
+                        document.getElementById('perfil').value = usuarioEdicao.perfil || 'Gestor';
                     }
                 } catch (error) {
                     console.error("Erro ao carregar dados do usuário para edição:", error);
@@ -86,6 +96,7 @@
             const dados = {
                 nome: document.getElementById('nome').value,
                 login: document.getElementById('login').value,
+                perfil: document.getElementById('perfil').value, // ENVIA O PERFIL SELECIONADO
                 senha: document.getElementById('senha').value
             };
 
