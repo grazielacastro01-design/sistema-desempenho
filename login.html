@@ -39,16 +39,15 @@
                 const response = await fetch(`${API_URL}/login`, { 
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    // Enviando como 'usuario' para bater com o backend
                     body: JSON.stringify({ usuario: usuarioValue, senha: senhaValue })
                 });
 
-                // Se o servidor der 404, o catch(error) vai pegar ou o response.ok será false
                 const data = await response.json();
 
                 if (response.ok) {
+                    // CORREÇÃO AQUI: Salvando como 'usuario' para bater perfeitamente com o auth.js do seu grupo!
                     localStorage.setItem('nomeUsuario', data.nome || usuarioValue); 
-                    localStorage.setItem('user', JSON.stringify(data));
+                    localStorage.setItem('usuario', JSON.stringify(data));
                     
                     Swal.fire({
                         title: 'Sucesso!',
