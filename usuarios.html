@@ -6,6 +6,9 @@
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='10' y='10' width='80' height='80' rx='20' fill='%232563eb'/><rect x='30' y='55' width='10' height='20' fill='white'/><rect x='45' y='40' width='10' height='35' fill='white'/><rect x='60' y='30' width='10' height='45' fill='white'/></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+    
+    <script src="auth.js"></script>
+
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
         @media print { .no-print { display: none; } }
@@ -41,17 +44,6 @@
     </div>
 
     <script>
-        // 1. Pega os dados do usuário que foram salvos no localStorage na hora do login
-        const usuarioLogado = localStorage.getItem('usuario') 
-            ? JSON.parse(localStorage.getItem('usuario')) 
-            : null;
-
-        // 2. Trava de segurança: Se não estiver logado OU não for Admin, chuta de volta pro Dashboard
-        if (!usuarioLogado || usuarioLogado.perfil !== 'Admin') {
-            alert("Acesso negado! Apenas administradores podem acessar esta página.");
-            window.location.href = 'dashboard.html';
-        }
-
         const API_URL = 'https://sistema-desempenho-production.up.railway.app';
 
         async function carregarUsuarios() {
@@ -94,7 +86,7 @@
                         carregarUsuarios(); 
                     }
                 } catch (error) { 
-                    alert("Erro ao excluir the usuário."); 
+                    alert("Erro ao excluir o usuário."); 
                 }
             }
         }
