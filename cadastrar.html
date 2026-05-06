@@ -37,7 +37,8 @@
             const API_URL = 'https://sistema-desempenho-production.up.railway.app';
 
             try {
-                const response = await fetch(`${API_URL}/cadastrar-usuario`, {
+                // CORREÇÃO DA ROTA: Alterado de /cadastrar-usuario para /usuarios
+                const response = await fetch(`${API_URL}/usuarios`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ nome, login, senha })
