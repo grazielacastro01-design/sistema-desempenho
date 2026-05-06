@@ -5,6 +5,7 @@
     <title>Usuários | SD Performance</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='10' y='10' width='80' height='80' rx='20' fill='%232563eb'/><rect x='30' y='55' width='10' height='20' fill='white'/><rect x='45' y='40' width='10' height='35' fill='white'/><rect x='60' y='30' width='10' height='45' fill='white'/></svg>">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     
     <script src="auth.js"></script>
@@ -55,7 +56,6 @@
                 tbody.innerHTML = '';
 
                 usuarios.forEach(user => {
-                    // Cria uma etiqueta com cores diferentes para destacar o Admin do Gestor
                     const perfilTag = user.perfil === 'Admin' 
                         ? `<span class="bg-blue-100 text-blue-700 px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-wider">Admin</span>`
                         : `<span class="bg-slate-100 text-slate-600 px-2 py-1 rounded-md text-[10px] font-black uppercase tracking-wider">Gestor</span>`;
@@ -78,24 +78,56 @@
         }
 
         async function excluirUsuario(id) {
-            if(confirm("Deseja realmente excluir este usuário?")) {
-                try {
-                    const res = await fetch(`${API_URL}/usuarios/${id}`, { method: 'DELETE' });
-                    if(res.ok) { 
-                        alert("Usuário removido com sucesso!"); 
-                        carregarUsuarios(); 
+            // Tira o confirm antigo do navegador e coloca o SweetAlert lindo!
+            Swal.fire({
+                title: 'Tem certeza?',
+                text: "Você não poderá reverter a exclusão deste usuário!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Sim, excluir!',
+                cancelButtonText: 'Cancelar'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    try {
+                        // CORREÇÃO DA ROTA: Manda o DELETE contendo o id na URL e também no body estruturado
+                        const res = await fetch(`${API_URL}/usuarios/${id}`, { 
+                            method: 'DELETE',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ usuario_id: id }) 
+                        });
+
+                        if(res.ok) { 
+                            Swal.fire('Excluído!', 'O usuário foi removido com sucesso.', 'success');
+                            carregarUsuarios(); 
+                        } else {
+                            // TENTATIVA B: Caso a rota do backend seja apenas /usuarios usando o ID no body
+                            const resFallback = await fetch(`${API_URL}/usuarios`, {
+                                method: 'DELETE',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ usuario_id: id })
+                            });
+
+                            if(resFallback.ok) {
+                                Swal.fire('Excluído!', 'O usuário foi removido com sucesso.', 'success');
+                                carregarUsuarios();
+                            } else {
+                                Swal.fire('Erro', 'Não foi possível excluir. Verifique as rotas do backend.', 'error');
+                            }
+                        }
+                    } catch (error) { 
+                        console.error("Erro na requisição de exclusão:", error);
+                        Swal.fire('Erro', 'Falha na conexão com o servidor.', 'error'); 
                     }
-                } catch (error) { 
-                    alert("Erro ao excluir o usuário."); 
                 }
-            }
+            });
         }
 
         function editarUsuario(id) {
             window.location.href = `usuarios-cadastro.html?id=${id}`;
         }
 
-        // Inicializa a carga de dados ao abrir a página
         window.onload = carregarUsuarios;
     </script>
 </body>
