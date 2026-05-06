@@ -12,12 +12,12 @@
 
     <nav class="bg-white border-b border-slate-200 p-6 flex justify-between items-center">
         <button onclick="window.location.href='usuarios.html'" class="text-blue-600 font-black text-xs uppercase tracking-widest hover:underline">← Voltar para Lista</button>
-        <h1 class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Novo Cadastro de Usuário</h1>
+        <h1 id="titulo-pagina" class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Novo Cadastro de Usuário</h1>
     </nav>
 
     <main class="max-w-2xl mx-auto p-12">
         <div class="bg-white p-12 rounded-[3rem] shadow-sm border border-slate-100">
-            <h2 class="text-2xl font-black text-slate-900 mb-8 italic uppercase tracking-tighter text-center">Dados do Usuário</h2>
+            <h2 id="subtitulo-formulario" class="text-2xl font-black text-slate-900 mb-8 italic uppercase tracking-tighter text-center">Dados do Usuário</h2>
             
             <form id="form-usuario" class="space-y-6">
                 <input type="hidden" id="usuario_id">
@@ -45,9 +45,41 @@
     <script>
         const API_URL = 'https://sistema-desempenho-production.up.railway.app';
 
+        // Detecta se estamos editando um usuário existente pela URL (?id=X)
+        const urlParams = new URLSearchParams(window.location.search);
+        const idUsuario = urlParams.get('id');
+
+        // Função executada ao carregar a página para preencher os campos em caso de edição
+        async function carregarDadosEdicao() {
+            if (idUsuario) {
+                // Altera os títulos visuais para o usuário saber que está editando
+                document.getElementById('titulo-pagina').innerText = 'Editar Cadastro de Usuário';
+                document.getElementById('subtitulo-formulario').innerText = 'Editar Dados do Usuário';
+                
+                // A senha deixa de ser estritamente obrigatória na edição se você preferir manter a atual
+                document.getElementById('senha').removeAttribute('required');
+                document.getElementById('senha').placeholder = '(Deixe em branco para não alterar)';
+
+                try {
+                    // Puxa a lista e filtra pelo ID específico
+                    const res = await fetch(`${API_URL}/usuarios`);
+                    const usuarios = await res.json();
+                    const usuarioEdicao = usuarios.find(u => u.usuario_id == idUsuario);
+
+                    if (usuarioEdicao) {
+                        document.getElementById('nome').value = usuarioEdicao.nome;
+                        document.getElementById('login').value = usuarioEdicao.login;
+                    }
+                } catch (error) {
+                    console.error("Erro ao carregar dados do usuário para edição:", error);
+                }
+            }
+        }
+
+        // Lógica de Envio do Formulário (Salvar / Atualizar)
         document.getElementById('form-usuario').onsubmit = async (e) => {
             e.preventDefault();
-            
+
             const dados = {
                 nome: document.getElementById('nome').value,
                 login: document.getElementById('login').value,
@@ -55,22 +87,35 @@
             };
 
             try {
-                const res = await fetch(`${API_URL}/usuarios`, {
-                    method: 'POST',
+                let url = `${API_URL}/usuarios`;
+                let metodo = 'POST';
+
+                // Se houver ID na URL, redireciona para a rota PUT de alteração
+                if (idUsuario) {
+                    url = `${API_URL}/usuarios/${idUsuario}`;
+                    metodo = 'PUT';
+                }
+
+                const res = await fetch(url, {
+                    method: metodo,
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dados)
                 });
 
                 if (res.ok) {
-                    alert('Usuário cadastrado com sucesso!');
+                    alert(idUsuario ? 'Usuário atualizado com sucesso!' : 'Usuário cadastrado com sucesso!');
                     window.location.href = 'usuarios.html';
                 } else {
-                    alert('Erro ao salvar usuário.');
+                    alert('Erro ao salvar usuário no servidor.');
                 }
             } catch (error) {
+                console.error("Erro na requisição:", error);
                 alert('Erro de conexão com o servidor.');
             }
         };
+
+        // Roda a verificação de edição assim que a janela abrir
+        window.onload = carregarDadosEdicao;
     </script>
 </body>
 </html>
