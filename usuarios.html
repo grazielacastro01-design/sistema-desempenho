@@ -41,6 +41,17 @@
     </div>
 
     <script>
+        // 1. Pega os dados do usuário que foram salvos no localStorage na hora do login
+        const usuarioLogado = localStorage.getItem('usuario') 
+            ? JSON.parse(localStorage.getItem('usuario')) 
+            : null;
+
+        // 2. Trava de segurança: Se não estiver logado OU não for Admin, chuta de volta pro Dashboard
+        if (!usuarioLogado || usuarioLogado.perfil !== 'Admin') {
+            alert("Acesso negado! Apenas administradores podem acessar esta página.");
+            window.location.href = 'dashboard.html';
+        }
+
         const API_URL = 'https://sistema-desempenho-production.up.railway.app';
 
         async function carregarUsuarios() {
@@ -83,7 +94,7 @@
                         carregarUsuarios(); 
                     }
                 } catch (error) { 
-                    alert("Erro ao excluir o usuário."); 
+                    alert("Erro ao excluir the usuário."); 
                 }
             }
         }
