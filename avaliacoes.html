@@ -9,6 +9,9 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+    
+    <script src="auth.js"></script>
+
     <style>body { font-family: 'Plus Jakarta Sans', sans-serif; }</style>
 </head>
 <body class="bg-slate-50 min-h-screen">
@@ -39,48 +42,52 @@
     </div>
 
     <script>
-    const API_URL = 'https://sistema-desempenho-production.up.railway.app';
+        // 1. CHAME A FUNÇÃO DE PROTEÇÃO LOGO AQUI NO INÍCIO
+        protegerTelaAdmin(); 
 
-    async function carregar() {
-        try {
-            // Ajustado para bater com a rota do seu servidor
-            const res = await fetch(`${API_URL}/avaliacoes`); 
-            const dados = await res.json();
-            
-            const tbody = document.getElementById('tabela-corpo');
-            tbody.innerHTML = '';
-            
-            dados.forEach(a => {
-                // Usamos a data que já vem formatada do banco ou formatamos aqui
-                const dataF = a.data; 
+        // 2. MANTENHA AS SUAS CONFIGURAÇÕES E FUNÇÕES ATUAIS ABAIXO
+        const API_URL = 'https://sistema-desempenho-production.up.railway.app';
+
+        async function carregarHistorico() {
+            try {
+                // Ajustado para bater com a rota do seu servidor
+                const res = await fetch(`${API_URL}/avaliacoes`); 
+                const dados = await res.json();
                 
-                tbody.innerHTML += `
-                    <tr class="border-b hover:bg-slate-50 transition">
-                        <td class="p-6 text-sm text-slate-500 font-bold">${dataF}</td>
-                        <td class="p-6 text-sm font-black text-slate-800 uppercase">${a.colaborador}</td>
-                        <td class="p-6 text-sm text-slate-600 font-medium">${a.observacao}</td>
-                    </tr>`;
-            });
-        } catch (error) { 
-            console.error("Erro ao carregar:", error);
-            Swal.fire('Erro', 'Não foi possível carregar o histórico.', 'error');
+                const tbody = document.getElementById('tabela-corpo');
+                tbody.innerHTML = '';
+                
+                dados.forEach(a => {
+                    // Usamos a data que já vem formatada do banco ou formatamos aqui
+                    const dataF = a.data; 
+                    
+                    tbody.innerHTML += `
+                        <tr class="border-b hover:bg-slate-50 transition">
+                            <td class="p-6 text-sm text-slate-500 font-bold">${dataF}</td>
+                            <td class="p-6 text-sm font-black text-slate-800 uppercase">${a.colaborador}</td>
+                            <td class="p-6 text-sm text-slate-600 font-medium">${a.observacao}</td>
+                        </tr>`;
+                });
+            } catch (error) { 
+                console.error("Erro ao carregar:", error);
+                Swal.fire('Erro', 'Não foi possível carregar o histórico.', 'error');
+            }
         }
-    }
 
-    function gerarPDF() {
-        const elemento = document.getElementById('relatorio-secao');
-        const opt = {
-            margin: 10,
-            filename: 'Relatorio_Avaliacoes.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-        html2pdf().set(opt).from(elemento).save();
-    }
+        function gerarPDF() {
+            const elemento = document.getElementById('relatorio-secao');
+            const opt = {
+                margin: 10,
+                filename: 'Relatorio_Avaliacoes.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(elemento).save();
+        }
 
-    window.onload = carregar;
-</script>
-           
+        // Executa o carregamento dos dados apenas se o usuário passou na proteção acima
+        window.onload = carregarHistorico;
+    </script>
 </body>
 </html>

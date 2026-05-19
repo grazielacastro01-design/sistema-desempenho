@@ -51,14 +51,22 @@ app.post('/avaliar', async (req, res) => {
 app.post('/login', async (req, res) => {
     const { usuario, senha } = req.body; 
     try {
+        // Exemplo na rota app.post('/login', ...) do teu backend
+        // O comando SQL busca as credenciais adicionando a coluna 'perfil'
         const [rows] = await db.execute(
             'SELECT usuario_id, nome, login, perfil FROM tbUsuarios WHERE login = ? AND senha = ?', 
             [usuario, senha]
         );
 
         if (rows.length > 0) {
-            // Agora envia o ID, Nome, Login E o Perfil (Admin/Gestor) para o navegador
-            res.json(rows[0]);
+            // ... ao enviar a resposta para o frontend:
+            // Retorna o objeto da primeira linha, contendo ID, nome, login e o perfil (Fundamental para o frontend saber quem logou!)
+            res.json({
+                id: rows[0].usuario_id,
+                nome: rows[0].nome,
+                login: rows[0].login,
+                perfil: rows[0].perfil 
+            });
         } else {
             res.status(401).json({ message: 'Usuário ou senha incorretos' });
         }
@@ -94,7 +102,7 @@ app.post('/usuarios', async (req, res) => {
     }
 });
 
-// 4.2 ROTA PARA ATUALIZAR UM USUÁRIO EXISTENTE (PUT) - CORRIGIDA PARA ATUALIZAR PERFIL TOO
+// 4.2 ROTA PARA ATUALIZAR UM USUÁRIO EXISTENTE (PUT) - CORRIGIDA PARA ATUALIZAR PERFIL TAMBÉM
 app.put('/usuarios/:id', async (req, res) => {
     const { id } = req.params;
     const { nome, login, senha, perfil } = req.body; 
@@ -112,7 +120,7 @@ app.put('/usuarios/:id', async (req, res) => {
         }
 
         await db.execute(query, params);
-        res.json({ message: 'Usuário atualizado com sucesso!' });
+        res.json({ message: 'Usuário updated com sucesso!' });
     } catch (err) {
         console.error("Erro ao atualizar usuário:", err);
         res.status(500).json({ message: 'Erro interno no servidor' });
